@@ -129,7 +129,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO DE SOLICITAÇÃO DE ORÇAMENTO COM FOTO -->
+        <!-- SEÇÃO DE SOLICITAÇÃO DE ORÇAMENTO COM FOTO (OCULTA PARA ADMIN) -->
         <section id="secaoSolicitacao" class="bg-slate-100 py-16 border-t border-slate-200 hidden">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200">
@@ -395,7 +395,7 @@
 
     <!-- SCRIPT DE CONEXÃO E SUPABASE -->
     <script>
-        // Inicialização global segura do cliente Supabase
+        // Inicialização global segura do cliente Supabase com checagem de re-declaração
         let supabaseClient = null;
         let usuariosCadastrados = [];
         let orcamentosSolicitados = [];
@@ -419,7 +419,7 @@
                     console.log("[SUPABASE] Conexão estabelecida com sucesso.");
                     return supabaseClient;
                 } else {
-                    console.error("[SUPABASE ERROR] Biblioteca Supabase UMD não encontrada.");
+                    console.error("[SUPABASE ERROR] Biblioteca Supabase UMD não carregada.");
                     return null;
                 }
             } catch (error) {
@@ -432,12 +432,15 @@
         async function listarUsuarios() {
             try {
                 const client = conectarSupabase();
-                if (!client) throw new Error("Cliente Supabase indisponível.");
+                if (!client) {
+                    console.warn("[SUPABASE WARN] Cliente Supabase indisponível. Usando array vazio.");
+                    return [];
+                }
                 
                 console.log("[SUPABASE] Buscando registros na tabela Usuarios...");
                 const { data, error } = await client.from('Usuarios').select('*');
                 if (error) {
-                    console.error("[SUPABASE ERROR] Erro ao listar usuários:", error);
+                    console.error("[SUPABASE ERROR] Erro ao listar usuários:", error.message || error);
                     return [];
                 }
                 console.log("[SUPABASE] Usuários listados com sucesso:", data);
@@ -448,7 +451,6 @@
             }
         }
 
-        // Alias para compatibilidade interna
         async function buscarUsuarios() {
             return await listarUsuarios();
         }
@@ -475,7 +477,7 @@
                 const { data, error } = await client.from('Usuarios').insert([novoUsuario]).select();
                 if (error) {
                     console.error("[SUPABASE ERROR] Erro ao inserir na tabela Usuarios:", error);
-                    mostrarMensagem("Erro de Conexão", "Não foi possível concluir o cadastro.", "fa-triangle-exclamation", "text-rose-600");
+                    mostrarMensagem("Erro de Conexão", error.message || "Não foi possível concluir o cadastro.", "fa-triangle-exclamation", "text-rose-600");
                     return false;
                 }
 
