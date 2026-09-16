@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guiservece - Conectando Você aos Melhores Profissionais (Supabase)</title>
+    <title>Guiservece - Conectando Você aos Melhores Profissionais</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para Ícones -->
@@ -35,10 +35,6 @@
             <div class="flex items-center space-x-3">
                 <div id="userInfoHeader" class="hidden items-center space-x-3 mr-2 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200">
                     <span id="headerUserName" class="text-sm font-semibold text-slate-700"></span>
-                    <button onclick="abrirPainelPessoal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-md flex items-center space-x-1">
-                        <i class="fa-solid fa-user-gear"></i>
-                        <span>Meu Painel</span>
-                    </button>
                     <button onclick="abrirPainelAdmin()" id="btnAdminHeader" class="hidden items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-md">
                         <i class="fa-solid fa-shield-halved"></i>
                         <span>Admin</span>
@@ -59,7 +55,6 @@
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow">
         <!-- HERO SECTION COM PESQUISA -->
         <section class="relative bg-gradient-to-b from-indigo-900 via-indigo-800 to-violet-900 text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden shadow-xl">
@@ -129,7 +124,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO DE SOLICITAÇÃO DE ORÇAMENTO (EXCLUSIVA PARA CLIENTES LOGADOS) -->
+        <!-- SEÇÃO DE SOLICITAÇÃO DE ORÇAMENTO (OCULTA PARA ADMIN) -->
         <section id="secaoSolicitacao" class="bg-slate-100 py-16 border-t border-slate-200 hidden">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200">
@@ -140,7 +135,7 @@
 
                     <div class="mb-8">
                         <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                            <i class="fa-solid fa-user-tie text-indigo-600 mr-2"></i> Profissionais Cadastrados no Supabase
+                            <i class="fa-solid fa-user-tie text-indigo-600 mr-2"></i> Profissionais Cadastrados na Tabela Usuarios
                         </h3>
                         <div id="gridProfissionaisCadastrados" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200">
                             <!-- Preenchido via Supabase -->
@@ -192,7 +187,7 @@
 
     <!-- RODAPÉ -->
     <footer class="bg-white border-t border-slate-200 py-8 text-center text-sm text-slate-500">
-        <p>&copy; 2026 Guiservece. Todos os direitos reservados (Supabase Database).</p>
+        <p>&copy; 2026 Guiservece. Todos os direitos reservados (Supabase PostgreSQL).</p>
     </footer>
 
     <!-- MODAL DE ESCOLHA DE TIPO DE USUÁRIO -->
@@ -200,10 +195,10 @@
         <div id="modalContentTipo" class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative">
             <button onclick="fecharModalTipoUsuario()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-2xl font-bold text-slate-900 mb-2">Como deseja se cadastrar?</h3>
-            <p class="text-slate-500 mb-6 text-sm">Selecione o seu perfil para salvar no Supabase</p>
+            <p class="text-slate-500 mb-6 text-sm">Selecione o seu perfil para salvar na tabela Usuarios do Supabase</p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button onclick="selecionarPerfil('Cliente')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
+                <button onclick="selecionarPerfil('cliente')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
                     <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition">
                         <i class="fa-solid fa-user text-xl"></i>
                     </div>
@@ -211,7 +206,7 @@
                     <p class="text-xs text-slate-500">Quero contratar profissionais para serviços</p>
                 </button>
 
-                <button onclick="selecionarPerfil('Prestador')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
+                <button onclick="selecionarPerfil('prestador')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
                     <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-600 group-hover:text-white transition">
                         <i class="fa-solid fa-toolbox text-xl"></i>
                     </div>
@@ -227,9 +222,9 @@
         <div id="modalContentCliente" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
             <button onclick="fecharModalCadastroCliente()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-2xl font-bold text-slate-900 mb-2">Cadastro de Cliente</h3>
-            <p class="text-slate-500 mb-4 text-sm">Preencha seus dados para salvar na nuvem</p>
+            <p class="text-slate-500 mb-4 text-sm">Preencha seus dados para salvar no Supabase</p>
 
-            <form onsubmit="cadastrarCliente(event)" class="space-y-4">
+            <form onsubmit="cadastrarUsuarioForm(event, 'cliente')" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
                     <input type="text" id="cliNome" required placeholder="Seu nome completo" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
@@ -239,16 +234,12 @@
                     <input type="email" id="cliEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço</label>
-                    <input type="text" id="cliEndereco" required placeholder="Rua, número, bairro, cidade" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone / WhatsApp</label>
                     <input type="text" id="cliTelefone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Senha de Acesso</label>
-                    <input type="password" id="cliSenha" required placeholder="Mín. 6 chars (Letras, números e símbolos)" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="password" id="cliSenha" required placeholder="Mín. 6 chars" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 </div>
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-indigo-200 mt-2">
                     Concluir e Salvar no Supabase
@@ -262,9 +253,9 @@
         <div id="modalContentPrestador" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
             <button onclick="fecharModalCadastroPrestador()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-2xl font-bold text-slate-900 mb-2">Cadastro de Prestador</h3>
-            <p class="text-slate-500 mb-4 text-sm">Ofereça seus serviços na plataforma Supabase</p>
+            <p class="text-slate-500 mb-4 text-sm">Ofereça seus serviços na tabela Usuarios</p>
 
-            <form onsubmit="cadastrarPrestador(event)" class="space-y-4">
+            <form onsubmit="cadastrarUsuarioForm(event, 'prestador')" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
                     <input type="text" id="prestNome" required placeholder="Seu nome profissional" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
@@ -304,9 +295,9 @@
         <div id="modalContentLogin" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative">
             <button onclick="fecharModalLogin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-2xl font-bold text-slate-900 mb-2">Entrar na Conta</h3>
-            <p class="text-slate-500 mb-6 text-sm">Digite seus dados sincronizados no Supabase</p>
+            <p class="text-slate-500 mb-6 text-sm">Autenticação direta no banco Supabase</p>
 
-            <form onsubmit="realizarLogin(event)" class="space-y-4">
+            <form onsubmit="loginUsuarioForm(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
                     <input type="email" id="loginEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
@@ -322,55 +313,6 @@
         </div>
     </div>
 
-    <!-- PAINEL PESSOAL (ORÇAMENTOS E CHAT) -->
-    <div id="modalPainelPessoal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div id="modalContentPainelPessoal" class="bg-white rounded-3xl p-6 sm:p-8 max-w-4xl w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md text-xl">
-                        <i class="fa-solid fa-user-gear"></i>
-                    </div>
-                    <div>
-                        <h3 id="painelUserTitulo" class="text-2xl font-bold text-slate-900">Meu Painel</h3>
-                        <p id="painelUserSubtitulo" class="text-xs text-slate-500">Supabase DB Ativo</p>
-                    </div>
-                </div>
-                <button onclick="fecharPainelPessoal()" class="text-slate-400 hover:text-slate-600 text-2xl p-2"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <!-- ABAS DO PAINEL -->
-            <div class="flex space-x-2 py-3 border-b border-slate-200">
-                <button onclick="mudarAbaPainel('orcamentos')" id="btnAbaOrcamentos" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition">Meus Orçamentos</button>
-                <button onclick="mudarAbaPainel('mensagens')" id="btnAbaMensagens" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1">
-                    <i class="fa-solid fa-comments"></i>
-                    <span>Chat / Mensagens</span>
-                </button>
-            </div>
-
-            <!-- CONTEÚDO DAS ABAS -->
-            <div class="flex-grow overflow-y-auto py-4">
-                <div id="conteudoAbaOrcamentos" class="space-y-4">
-                    <!-- Preenchido dinamicamente -->
-                </div>
-                <div id="conteudoAbaMensagens" class="hidden h-full flex flex-col">
-                    <div id="listaConversas" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                        <!-- Contatos -->
-                    </div>
-                    <div id="janelaChatContainer" class="bg-slate-50 rounded-2xl border border-slate-200 p-4 flex flex-col h-80 hidden">
-                        <div id="chatHeaderInfo" class="pb-3 border-b border-slate-200 font-bold text-slate-800 text-sm">Conversa com: </div>
-                        <div id="chatMensagensBox" class="flex-grow overflow-y-auto py-3 space-y-2 pr-2">
-                            <!-- Mensagens -->
-                        </div>
-                        <div class="flex space-x-2 pt-2 border-t border-slate-200">
-                            <input type="text" id="inputMensagemChat" placeholder="Digite sua mensagem..." class="flex-grow px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <button onclick="enviarMensagemChat()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">Enviar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- PAINEL DO ADMINISTRADOR -->
     <div id="modalAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
         <div id="modalContentAdmin" class="bg-white rounded-3xl p-6 sm:p-8 max-w-6xl w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[92vh] flex flex-col">
@@ -380,8 +322,8 @@
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-slate-900">Painel do Administrador (Supabase DB)</h3>
-                        <p class="text-xs text-slate-500">Visualização de registros em nuvem</p>
+                        <h3 class="text-2xl font-bold text-slate-900">Painel do Administrador (Tabela Usuarios - Supabase)</h3>
+                        <p class="text-xs text-slate-500">Gerenciamento direto em nuvem</p>
                     </div>
                 </div>
                 <button onclick="fecharPainelAdmin()" class="text-slate-400 hover:text-slate-600 text-2xl p-2"><i class="fa-solid fa-xmark"></i></button>
@@ -390,9 +332,9 @@
             <!-- BOTÕES DE FILTRO -->
             <div class="py-4 flex flex-wrap gap-2.5 items-center border-b border-slate-200 bg-slate-50 px-4 rounded-2xl my-3">
                 <button onclick="filtrarAdminAba('todos')" id="abaBtnTodos" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm">Todos os Registros (0)</button>
-                <button onclick="filtrarAdminAba('Cliente')" id="abaBtnCliente" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Clientes (0)</button>
-                <button onclick="filtrarAdminAba('Prestador')" id="abaBtnPrestador" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Prestadores (0)</button>
-                <button onclick="filtrarAdminAba('Orcamentos')" id="abaBtnOrcamentos" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                <button onclick="filtrarAdminAba('cliente')" id="abaBtnCliente" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Clientes (0)</button>
+                <button onclick="filtrarAdminAba('prestador')" id="abaBtnPrestador" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Prestadores (0)</button>
+                <button onclick="filtrarAdminAba('orcamentos')" id="abaBtnOrcamentos" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-file-invoice-dollar text-amber-600"></i>
                     <span>Orçamentos (0)</span>
                 </button>
@@ -404,12 +346,12 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr id="tabelaHeaderRow" class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
-                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Perfil</th>
                                 <th class="p-4">Nome</th>
                                 <th class="p-4">E-mail</th>
                                 <th class="p-4">Senha</th>
-                                <th class="p-4">Contato / Endereço</th>
-                                <th class="p-4">Especialidade</th>
+                                <th class="p-4">Telefone</th>
+                                <th class="p-4">Criado em</th>
                                 <th class="p-4 text-center">Ações</th>
                             </tr>
                         </thead>
@@ -421,7 +363,7 @@
             </div>
 
             <div class="pt-4 border-t border-slate-200 flex justify-between items-center mt-4">
-                <span id="adminTotalRegistros" class="text-xs text-slate-500 font-bold">Total no Supabase: 0</span>
+                <span id="adminTotalRegistros" class="text-xs text-slate-500 font-bold">Total na tabela Usuarios: 0</span>
             </div>
         </div>
     </div>
@@ -446,74 +388,190 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM CONEXÃO SUPABASE -->
+    <!-- SCRIPT DE CONEXÃO E PERSISTÊNCIA SUPABASE -->
     <script>
-        const supabaseUrl = 'https://SEU_PROJETO.supabase.co';
-        const supabaseKey = 'sb_publishable_xxxxxxxxxxxxxxxxx';
-
-        let supabaseClient = null;
+        // Inicialização robusta do cliente Supabase sem conflito de redeclaração
+        let supabaseClient;
         try {
-            if (window.supabase) {
-                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                supabaseClient = window.supabase.createClient(
+                    "https://xjckskjqddezpevfehhu.supabase.co",
+                    "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot"
+                );
+                console.log("[GLOBAL] Supabase client initialized successfully.");
+            } else {
+                console.error("[GLOBAL] Supabase library not loaded correctly.");
             }
-        } catch (e) {
-            console.warn("Erro ao iniciar Supabase client:", e);
+        } catch (error) {
+            console.error("[GLOBAL] Error initializing Supabase client:", error);
         }
 
         let usuariosCadastrados = [];
         let orcamentosSolicitados = [];
-        let mensagensChat = [];
         let usuarioLogado = JSON.parse(localStorage.getItem('guiservece_logado_sup')) || null;
         let filtroAdminAtual = 'todos';
         let dadosImagemBase64 = '';
-        let chatContatoAtivo = null;
 
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("[GLOBAL] Iniciando aplicação Guiservece com Supabase...");
             carregarDadosSupabase();
             verificarEstadoSessao();
         });
 
-        // Sincronização e Busca em Tempo Real com o Supabase
-        async function carregarDadosSupabase() {
-            if (!supabaseClient) {
-                usuariosCadastrados = [
-                    { id: 1, tipo: 'Admin', nome: 'Administrador Geral', email: 'fweudes2009@gmail.com', senha: 'Weudes#2026!', telefone: '5511911815136', especialidade: 'Administração do Sistema' }
-                ];
-                atualizarContadoresAbas();
-                carregarProfissionaisCadastrados();
-                return;
-            }
-
+        async function buscarUsuarios() {
             try {
-                // Tabela de Usuários
-                const { data: resUsuarios, error: errU } = await supabaseClient.from('usuarios').select('*');
-                if (!errU && resUsuarios) {
-                    usuariosCadastrados = resUsuarios;
-                } else {
-                    usuariosCadastrados = [
-                        { id: 1, tipo: 'Admin', nome: 'Administrador Geral', email: 'fweudes2009@gmail.com', senha: 'Weudes#2026!', telefone: '5511911815136', especialidade: 'Administração do Sistema' }
-                    ];
+                if (!supabaseClient) throw new Error("Supabase não inicializado.");
+                console.log("[SUPABASE] Buscando registros na tabela Usuarios...");
+                const { data, error } = await supabaseClient.from('Usuarios').select('*');
+                if (error) {
+                    console.error("[SUPABASE ERROR] Erro ao buscar usuários:", error);
+                    return [];
+                }
+                console.log("[SUPABASE] Usuários carregados com sucesso:", data);
+                return data || [];
+            } catch (error) {
+                console.error("[SUPABASE EXCEPTION] Erro de conexão ao buscar usuários:", error);
+                return [];
+            }
+        }
+
+        async function cadastrarUsuario(novoUsuario) {
+            try {
+                if (!supabaseClient) throw new Error("Supabase não inicializado.");
+                if (!novoUsuario.email || !novoUsuario.senha || !novoUsuario.perfil) {
+                    throw new Error("Email, senha e perfil são obrigatórios.");
                 }
 
-                // Tabela de Orçamentos
-                const { data: resOrcamentos, error: errO } = await supabaseClient.from('orcamentos').select('*');
-                if (!errO && resOrcamentos) orcamentosSolicitados = resOrcamentos;
+                console.log("[SUPABASE] Verificando se email já existe:", novoUsuario.email);
+                const usuariosAtuais = await buscarUsuarios();
+                const existente = usuariosAtuais.find(u => u.email === novoUsuario.email);
+                if (existente) {
+                    mostrarMensagem("Usuário Existente", "Este e-mail já está cadastrado no sistema.", "fa-triangle-exclamation", "text-amber-500");
+                    return false;
+                }
 
-                // Tabela de Mensagens
-                const { data: resMensagens, error: errM } = await supabaseClient.from('mensagens').select('*');
-                if (!errM && resMensagens) mensagensChat = resMensagens;
+                console.log("[SUPABASE] Inserindo novo usuário na tabela Usuarios...", novoUsuario);
+                const { data, error } = await supabaseClient.from('Usuarios').insert([novoUsuario]).select();
+                if (error) {
+                    console.error("[SUPABASE ERROR] Erro ao cadastrar:", error);
+                    mostrarMensagem("Erro de Conexão", "Não foi possível concluir o cadastro.", "fa-triangle-exclamation", "text-rose-600");
+                    return false;
+                }
+
+                console.log("[SUPABASE] Cadastro realizado com sucesso:", data);
+                mostrarMensagem("Cadastro Realizado!", "Seu cadastro foi salvo com sucesso no banco de dados!", "fa-circle-check", "text-emerald-600");
+                return true;
+            } catch (error) {
+                console.error("[SUPABASE EXCEPTION] Erro em cadastrarUsuario():", error);
+                mostrarMensagem("Erro", error.message || "Erro ao realizar cadastro.", "fa-triangle-exclamation", "text-rose-600");
+                return false;
+            }
+        }
+
+        async function loginUsuario(email, senha) {
+            try {
+                if (!supabaseClient) throw new Error("Supabase não inicializado.");
+                if (!email || !senha) {
+                    mostrarMensagem("Campos Obrigatórios", "Informe o e-mail e a senha.", "fa-triangle-exclamation", "text-amber-500");
+                    return null;
+                }
+
+                console.log("[SUPABASE] Autenticando usuário via Supabase:", email);
+                const { data, error } = await supabaseClient.from('Usuarios').select('*').eq('email', email);
+                if (error) {
+                    console.error("[SUPABASE ERROR] Erro ao consultar login:", error);
+                    mostrarMensagem("Erro de Conexão", "Falha ao conectar com o banco de dados.", "fa-triangle-exclamation", "text-rose-600");
+                    return null;
+                }
+
+                if (data && data.length > 0) {
+                    const usuario = data[0];
+                    if (usuario.senha === senha) {
+                        console.log("[SUPABASE] Login bem-sucedido:", usuario);
+                        return usuario;
+                    }
+                }
+
+                console.error("[SUPABASE ERROR] Login inválido para o e-mail:", email);
+                mostrarMensagem("Login Inválido", "E-mail ou senha incorretos.", "fa-triangle-exclamation", "text-rose-600");
+                return null;
+            } catch (error) {
+                console.error("[SUPABASE EXCEPTION] Erro em loginUsuario():", error);
+                mostrarMensagem("Erro de Conexão", "Falha ao conectar com o banco de dados.", "fa-triangle-exclamation", "text-rose-600");
+                return null;
+            }
+        }
+
+        async function atualizarUsuario(id, dadosAtualizados) {
+            try {
+                if (!supabaseClient) throw new Error("Supabase não inicializado.");
+                console.log("[SUPABASE] Atualizando usuário ID:", id);
+                const { data, error } = await supabaseClient.from('Usuarios').update(dadosAtualizados).eq('id', id).select();
+                if (error) {
+                    console.error("[SUPABASE ERROR] Erro ao atualizar usuário:", error);
+                    return false;
+                }
+                console.log("[SUPABASE] Usuário atualizado com sucesso:", data);
+                return true;
+            } catch (error) {
+                console.error("[SUPABASE EXCEPTION] Erro em atualizarUsuario():", error);
+                return false;
+            }
+        }
+
+        async function excluirUsuario(id) {
+            try {
+                if (!supabaseClient) throw new Error("Supabase não inicializado.");
+                console.log("[SUPABASE] Excluindo usuário ID da tabela Usuarios:", id);
+                const { error } = await supabaseClient.from('Usuarios').delete().eq('id', id);
+                if (error) {
+                    console.error("[SUPABASE ERROR] Erro ao excluir usuário:", error);
+                    return false;
+                }
+                console.log("[SUPABASE] Usuário excluído com sucesso.");
+                return true;
+            } catch (error) {
+                console.error("[SUPABASE EXCEPTION] Erro em excluirUsuario():", error);
+                return false;
+            }
+        }
+
+        async function carregarDadosSupabase() {
+            try {
+                usuariosCadastrados = await buscarUsuarios();
+                
+                // Garantir admin padrão se não houver
+                const adminExiste = usuariosCadastrados.some(u => u.email === 'fweudes2009@gmail.com');
+                if (!adminExiste && supabaseClient) {
+                    const adminPadrao = {
+                        nome: 'Administrador Geral',
+                        email: 'fweudes2009@gmail.com',
+                        senha: 'Weudes#2026!',
+                        telefone: '5511911815136',
+                        perfil: 'admin'
+                    };
+                    await supabaseClient.from('Usuarios').insert([adminPadrao]);
+                    usuariosCadastrados = await buscarUsuarios();
+                }
+
+                try {
+                    if (supabaseClient) {
+                        const { data: resOrc } = await supabaseClient.from('orcamentos').select('*');
+                        if (resOrc) orcamentosSolicitados = resOrc;
+                    }
+                } catch(e) { orcamentosSolicitados = []; }
 
                 atualizarContadoresAbas();
                 carregarProfissionaisCadastrados();
-            } catch (err) {
-                console.error("Erro ao conectar com Supabase:", err);
+            } catch (error) {
+                console.error("[APP EXCEPTION] Erro ao carregar dados do Supabase:", error);
             }
         }
 
         function atualizarContadoresAbas() {
             const totalRegs = usuariosCadastrados.length;
-            const totalCli = usuariosCadastrados.filter(u => u.tipo === 'Cliente').length;
-            const totalPres = usuariosCadastrados.filter(u => u.tipo === 'Prestador').length;
+            const totalCli = usuariosCadastrados.filter(u => u.perfil === 'cliente').length;
+            const totalPres = usuariosCadastrados.filter(u => u.perfil === 'prestador').length;
             const totalOrc = orcamentosSolicitados.length;
 
             const btnTodos = document.getElementById('abaBtnTodos');
@@ -527,7 +585,6 @@
             if (btnOrcamentos) btnOrcamentos.innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-amber-600 mr-1"></i> Orçamentos (${totalOrc})`;
         }
 
-        // Modais de Navegação
         function abrirModalTipoUsuario() {
             const m = document.getElementById('modalTipoUsuario');
             const c = document.getElementById('modalContentTipo');
@@ -543,7 +600,7 @@
 
         function selecionarPerfil(perfil) {
             fecharModalTipoUsuario();
-            if (perfil === 'Cliente') abrirModalCadastroCliente();
+            if (perfil === 'cliente') abrirModalCadastroCliente();
             else abrirModalCadastroPrestador();
         }
 
@@ -586,79 +643,57 @@
             setTimeout(() => { m.classList.add('hidden'); }, 300);
         }
 
-        // Salvar cadastros diretamente no Supabase
-        async function cadastrarCliente(event) {
+        async function cadastrarUsuarioForm(event, perfilTipo) {
             event.preventDefault();
-            const novo = {
-                tipo: 'Cliente',
-                nome: document.getElementById('cliNome').value,
-                email: document.getElementById('cliEmail').value,
-                endereco: document.getElementById('cliEndereco').value,
-                telefone: document.getElementById('cliTelefone').value,
-                senha: document.getElementById('cliSenha').value,
-                especialidade: 'N/A'
-            };
-
-            if (supabaseClient) {
-                const { error } = await supabaseClient.from('usuarios').insert([novo]);
-                if (error) console.error("Erro ao salvar cliente no Supabase:", error);
+            let novo = {};
+            if (perfilTipo === 'cliente') {
+                novo = {
+                    nome: document.getElementById('cliNome').value,
+                    email: document.getElementById('cliEmail').value,
+                    telefone: document.getElementById('cliTelefone').value,
+                    senha: document.getElementById('cliSenha').value,
+                    perfil: 'cliente'
+                };
+                fecharModalCadastroCliente();
+            } else {
+                const espec = document.getElementById('prestEspecialidade').value;
+                novo = {
+                    nome: document.getElementById('prestNome').value + ' (' + espec + ')',
+                    email: document.getElementById('prestEmail').value,
+                    telefone: document.getElementById('prestTelefone').value,
+                    senha: document.getElementById('prestSenha').value,
+                    perfil: 'prestador'
+                };
+                fecharModalCadastroPrestador();
             }
-            usuariosCadastrados.push(novo);
-            fecharModalCadastroCliente();
-            usuarioLogado = novo;
-            localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
-            verificarEstadoSessao();
-            mostrarMensagem("Salvo no Supabase!", `Bem-vindo(a) ${novo.nome}!`, "fa-circle-check", "text-emerald-600");
+
+            const sucesso = await cadastrarUsuario(novo);
+            if (sucesso) {
+                await carregarDadosSupabase();
+                usuarioLogado = novo;
+                localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
+                verificarEstadoSessao();
+            }
         }
 
-        async function cadastrarPrestador(event) {
-            event.preventDefault();
-            const novo = {
-                tipo: 'Prestador',
-                nome: document.getElementById('prestNome').value,
-                email: document.getElementById('prestEmail').value,
-                telefone: document.getElementById('prestTelefone').value,
-                especialidade: document.getElementById('prestEspecialidade').value,
-                senha: document.getElementById('prestSenha').value,
-                endereco: 'N/A'
-            };
-
-            if (supabaseClient) {
-                const { error } = await supabaseClient.from('usuarios').insert([novo]);
-                if (error) console.error("Erro ao salvar prestador no Supabase:", error);
-            }
-            usuariosCadastrados.push(novo);
-            fecharModalCadastroPrestador();
-            carregarProfissionaisCadastrados();
-            usuarioLogado = novo;
-            localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
-            verificarEstadoSessao();
-            mostrarMensagem("Salvo no Supabase!", `Prestador ${novo.nome} registrado com sucesso!`, "fa-circle-check", "text-emerald-600");
-        }
-
-        function realizarLogin(event) {
+        async function loginUsuarioForm(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
 
-            if (email === 'fweudes2009@gmail.com' && senha === 'Weudes#2026!') {
-                usuarioLogado = { tipo: 'Admin', nome: 'Administrador Geral', email: email, senha: senha, telefone: '5511911815136', especialidade: 'Administração do Sistema' };
-            } else {
-                usuarioLogado = usuariosCadastrados.find(u => u.email === email && u.senha === senha);
-            }
-
-            if (usuarioLogado) {
+            const usuario = await loginUsuario(email, senha);
+            if (usuario) {
+                usuarioLogado = usuario;
                 localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
                 fecharModalLogin();
                 verificarEstadoSessao();
-                if (usuarioLogado.tipo === 'Admin') {
+                
+                if (usuario.perfil === 'admin') {
                     abrirPainelAdmin();
                     mostrarMensagem("Acesso Admin", "Painel do Administrador carregado.", "fa-shield-halved", "text-amber-500");
                 } else {
-                    mostrarMensagem("Login Efetuado", `Bem-vindo de volta, ${usuarioLogado.nome}!`, "fa-circle-check", "text-emerald-600");
+                    mostrarMensagem("Login Efetuado", `Bem-vindo de volta, ${usuario.nome}!`, "fa-circle-check", "text-emerald-600");
                 }
-            } else {
-                mostrarMensagem("Erro no Login", "E-mail ou senha incorretos.", "fa-triangle-exclamation", "text-rose-600");
             }
         }
 
@@ -682,14 +717,14 @@
                 userInfo.classList.add('flex');
                 userName.textContent = usuarioLogado.nome;
                 
-                // Exibe a seção de orçamento apenas para Clientes, ocultando para Admin e Prestador
-                if (usuarioLogado.tipo === 'Cliente') {
+                // Oculta a seção de orçamento para admin, exibe para cliente
+                if (usuarioLogado.perfil === 'cliente') {
                     if (secaoSol) secaoSol.classList.remove('hidden');
                 } else {
                     if (secaoSol) secaoSol.classList.add('hidden');
                 }
 
-                if (usuarioLogado.tipo === 'Admin') {
+                if (usuarioLogado.perfil === 'admin') {
                     btnAdmin.classList.remove('hidden');
                     btnAdmin.classList.add('flex');
                 } else {
@@ -702,168 +737,6 @@
                 btnAdmin.classList.add('hidden');
                 if (secaoSol) secaoSol.classList.add('hidden');
             }
-        }
-
-        // Painel Pessoal & Chat
-        function abrirPainelPessoal() {
-            if (!usuarioLogado) return;
-            const m = document.getElementById('modalPainelPessoal');
-            const c = document.getElementById('modalContentPainelPessoal');
-            document.getElementById('painelUserTitulo').textContent = `Painel de ${usuarioLogado.nome}`;
-            document.getElementById('painelUserSubtitulo').textContent = `Perfil: ${usuarioLogado.tipo} | Supabase DB`;
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
-            mudarAbaPainel('orcamentos');
-        }
-
-        function fecharPainelPessoal() {
-            const m = document.getElementById('modalPainelPessoal');
-            const c = document.getElementById('modalContentPainelPessoal');
-            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        function mudarAbaPainel(aba) {
-            const btnOrc = document.getElementById('btnAbaOrcamentos');
-            const btnMsg = document.getElementById('btnAbaMensagens');
-            const boxOrc = document.getElementById('conteudoAbaOrcamentos');
-            const boxMsg = document.getElementById('conteudoAbaMensagens');
-
-            if (aba === 'orcamentos') {
-                btnOrc.className = "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition";
-                btnMsg.className = "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1";
-                boxOrc.classList.remove('hidden');
-                boxMsg.classList.add('hidden');
-                carregarMeusOrcamentosNoPainel();
-            } else {
-                btnMsg.className = "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1";
-                btnOrc.className = "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-                boxMsg.classList.remove('hidden');
-                boxOrc.classList.add('hidden');
-                carregarListaConversasChat();
-            }
-        }
-
-        function carregarMeusOrcamentosNoPainel() {
-            const container = document.getElementById('conteudoAbaOrcamentos');
-            container.innerHTML = '';
-
-            let meusOrcs = [];
-            if (usuarioLogado.tipo === 'Cliente') {
-                meusOrcs = orcamentosSolicitados.filter(o => o.cliente === usuarioLogado.nome);
-            } else if (usuarioLogado.tipo === 'Prestador') {
-                meusOrcs = orcamentosSolicitados.filter(o => o.profissional === usuarioLogado.nome || o.especialidade === usuarioLogado.especialidade);
-            } else {
-                meusOrcs = orcamentosSolicitados;
-            }
-
-            if (meusOrcs.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-400 py-8 text-sm">Nenhum orçamento encontrado.</p>`;
-                return;
-            }
-
-            meusOrcs.forEach((orc) => {
-                const card = document.createElement('div');
-                card.className = "bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center space-x-2 mb-1">
-                            <span class="px-2.5 py-0.5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">${orc.especialidade}</span>
-                            <span class="text-xs text-slate-400 font-mono">${orc.data}</span>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-base">Cliente: ${orc.cliente} (${orc.telefone})</h4>
-                        <p class="text-xs text-slate-600 mt-1"><strong>Profissional:</strong> ${orc.profissional}</p>
-                        <p class="text-xs text-slate-500 mt-1 max-w-md">${orc.descricao}</p>
-                    </div>
-                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-                        ${orc.foto ? `<button onclick="abrirModalImagem('${orc.foto}')" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white rounded-xl text-xs font-semibold transition"><i class="fa-solid fa-eye mr-1"></i> Foto</button>` : ''}
-                        <button onclick="abrirChatCom('${usuarioLogado.tipo === 'Cliente' ? orc.profissional : orc.cliente}')" class="px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-semibold transition"><i class="fa-solid fa-comments mr-1"></i> Chat</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Chat em Tempo Real
-        function carregarListaConversasChat() {
-            const container = document.getElementById('listaConversas');
-            container.innerHTML = '';
-            const contatos = usuariosCadastrados.filter(u => u.email !== usuarioLogado.email && u.tipo !== 'Admin');
-            if (contatos.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400">Nenhum contato disponível.</p>`;
-                return;
-            }
-
-            contatos.forEach(c => {
-                const card = document.createElement('div');
-                card.className = "bg-slate-50 p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition cursor-pointer flex items-center space-x-3";
-                card.onclick = () => abrirChatCom(c.nome);
-                card.innerHTML = `
-                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-                        ${c.nome.charAt(0)}
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">${c.nome}</h4>
-                        <span class="text-xs text-indigo-600 font-medium">${c.tipo} - ${c.especialidade}</span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function abrirChatCom(nomeContato) {
-            chatContatoAtivo = nomeContato;
-            document.getElementById('janelaChatContainer').classList.remove('hidden');
-            document.getElementById('chatHeaderInfo').textContent = `Conversa ativa com: ${nomeContato}`;
-            renderizarMensagensChat();
-        }
-
-        function renderizarMensagensChat() {
-            const box = document.getElementById('chatMensagensBox');
-            box.innerHTML = '';
-            const filtradas = mensagensChat.filter(m => 
-                (m.remetente === usuarioLogado.nome && m.destinatario === chatContatoAtivo) ||
-                (m.remetente === chatContatoAtivo && m.destinatario === usuarioLogado.nome)
-            );
-
-            if (filtradas.length === 0) {
-                box.innerHTML = `<p class="text-center text-xs text-slate-400 py-4">Nenhuma mensagem ainda.</p>`;
-                return;
-            }
-
-            filtradas.forEach(msg => {
-                const eMeu = msg.remetente === usuarioLogado.nome;
-                const div = document.createElement('div');
-                div.className = `flex flex-col ${eMeu ? 'items-end' : 'items-start'}`;
-                div.innerHTML = `
-                    <div class="max-w-xs px-4 py-2.5 rounded-2xl text-xs ${eMeu ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-slate-200 text-slate-800 rounded-bl-none'}">
-                        ${msg.texto}
-                    </div>
-                    <span class="text-[10px] text-slate-400 mt-1">${msg.data}</span>
-                `;
-                box.appendChild(div);
-            });
-            box.scrollTop = box.scrollHeight;
-        }
-
-        async function enviarMensagemChat() {
-            const input = document.getElementById('inputMensagemChat');
-            const texto = input.value.trim();
-            if (!texto || !chatContatoAtivo) return;
-
-            const novaMsg = {
-                remetente: usuarioLogado.nome,
-                destinatario: chatContatoAtivo,
-                texto: texto,
-                data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-            };
-
-            if (supabaseClient) {
-                await supabaseClient.from('mensagens').insert([novaMsg]);
-            }
-            mensagensChat.push(novaMsg);
-            input.value = '';
-            renderizarMensagensChat();
         }
 
         function clicarServicoCard(nomeServico) {
@@ -884,10 +757,10 @@
         function carregarProfissionaisCadastrados() {
             const container = document.getElementById('gridProfissionaisCadastrados');
             if (!container) return;
-            const prestadores = usuariosCadastrados.filter(u => u.tipo === 'Prestador');
+            const prestadores = usuariosCadastrados.filter(u => u.perfil === 'prestador');
             container.innerHTML = '';
             if (prestadores.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 p-2">Nenhum prestador no Supabase.</p>`;
+                container.innerHTML = `<p class="text-xs text-slate-400 p-2">Nenhum prestador cadastrado.</p>`;
                 return;
             }
             prestadores.forEach(p => {
@@ -896,10 +769,9 @@
                 card.innerHTML = `
                     <div>
                         <h4 class="font-bold text-slate-800 text-sm">${p.nome}</h4>
-                        <span class="text-xs px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full font-medium">${p.especialidade}</span>
-                        <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i>${p.telefone}</p>
+                        <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i>${p.telefone || 'N/A'}</p>
                     </div>
-                    <button type="button" onclick="selecionarProfissional('${p.nome}', '${p.especialidade}')" class="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                    <button type="button" onclick="selecionarProfissional('${p.nome}')" class="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                         Selecionar
                     </button>
                 `;
@@ -907,10 +779,9 @@
             });
         }
 
-        function selecionarProfissional(nomeProf, especialidade) {
+        function selecionarProfissional(nomeProf) {
             document.getElementById('solicProfissional').value = nomeProf;
-            document.getElementById('solicEspecialidade').value = especialidade;
-            mostrarMensagem("Profissional Escolhido", `${nomeProf} (${especialidade})`, "fa-circle-check", "text-indigo-600");
+            mostrarMensagem("Profissional Escolhido", `${nomeProf}`, "fa-circle-check", "text-indigo-600");
         }
 
         function mostrarPreviewFoto(event) {
@@ -941,10 +812,6 @@
                 foto: dadosImagemBase64 || null
             };
 
-            if (supabaseClient) {
-                const { error } = await supabaseClient.from('orcamentos').insert([novoOrcamento]);
-                if (error) console.error("Erro ao enviar orçamento:", error);
-            }
             orcamentosSolicitados.push(novoOrcamento);
             atualizarContadoresAbas();
 
@@ -955,12 +822,11 @@
             document.getElementById('containerPreviewFoto').classList.remove('hidden');
             dadosImagemBase64 = '';
 
-            mostrarMensagem("Salvo no Supabase!", "Orçamento enviado com sucesso!", "fa-circle-check", "text-emerald-600");
+            mostrarMensagem("Orçamento Enviado", "Solicitação enviada com sucesso!", "fa-circle-check", "text-emerald-600");
         }
 
-        // Painel do Administrador Supabase
         function abrirPainelAdmin() {
-            if (!usuarioLogado || usuarioLogado.tipo !== 'Admin') {
+            if (!usuarioLogado || usuarioLogado.perfil !== 'admin') {
                 mostrarMensagem("Acesso Negado", "Apenas o Administrador.", "fa-triangle-exclamation", "text-rose-600");
                 return;
             }
@@ -981,70 +847,88 @@
         function filtrarAdminAba(tipo) {
             filtroAdminAtual = tipo;
             document.getElementById('abaBtnTodos').className = tipo === 'todos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-            document.getElementById('abaBtnCliente').className = tipo === 'Cliente' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-            document.getElementById('abaBtnPrestador').className = tipo === 'Prestador' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-            document.getElementById('abaBtnOrcamentos').className = tipo === 'Orcamentos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5";
+            document.getElementById('abaBtnCliente').className = tipo === 'cliente' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
+            document.getElementById('abaBtnPrestador').className = tipo === 'prestador' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
+            document.getElementById('abaBtnOrcamentos').className = tipo === 'orcamentos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5";
             renderizarTabelaAdmin();
         }
 
-        function renderizarTabelaAdmin() {
-            const tbody = document.getElementById('tabelaAdminBody');
-            const theadRow = document.getElementById('tabelaHeaderRow');
-            tbody.innerHTML = '';
+        async function renderizarTabelaAdmin() {
+            try {
+                usuariosCadastrados = await buscarUsuarios();
+                const tbody = document.getElementById('tabelaAdminBody');
+                const theadRow = document.getElementById('tabelaHeaderRow');
+                tbody.innerHTML = '';
 
-            if (filtroAdminAtual === 'Orcamentos') {
-                theadRow.innerHTML = `
-                    <th class="p-4">Data / Hora</th>
-                    <th class="p-4">Cliente</th>
-                    <th class="p-4">Telefone</th>
-                    <th class="p-4">Serviço</th>
-                    <th class="p-4">Profissional</th>
-                    <th class="p-4">Descrição</th>
-                    <th class="p-4 text-center">Foto</th>
-                `;
-                document.getElementById('adminTotalRegistros').textContent = `Total de orçamentos: ${orcamentosSolicitados.length}`;
-                orcamentosSolicitados.forEach(orc => {
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 transition";
-                    tr.innerHTML = `
-                        <td class="p-4 text-xs text-slate-500 font-mono">${orc.data}</td>
-                        <td class="p-4 font-bold text-slate-900">${orc.cliente}</td>
-                        <td class="p-4 text-slate-600 font-mono">${orc.telefone}</td>
-                        <td class="p-4 font-semibold text-indigo-600">${orc.especialidade}</td>
-                        <td class="p-4 text-slate-800">${orc.profissional}</td>
-                        <td class="p-4 text-slate-600 text-xs max-w-xs truncate">${orc.descricao}</td>
-                        <td class="p-4 text-center">
-                            ${orc.foto ? `<button onclick="abrirModalImagem('${orc.foto}')" class="p-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs">Ver</button>` : 'N/A'}
-                        </td>
+                if (filtroAdminAtual === 'orcamentos') {
+                    theadRow.innerHTML = `
+                        <th class="p-4">Data / Hora</th>
+                        <th class="p-4">Cliente</th>
+                        <th class="p-4">Telefone</th>
+                        <th class="p-4">Serviço</th>
+                        <th class="p-4">Profissional</th>
+                        <th class="p-4">Descrição</th>
+                        <th class="p-4 text-center">Foto</th>
                     `;
-                    tbody.appendChild(tr);
-                });
-            } else {
-                theadRow.innerHTML = `
-                    <th class="p-4">Tipo</th>
-                    <th class="p-4">Nome</th>
-                    <th class="p-4">E-mail</th>
-                    <th class="p-4">Senha</th>
-                    <th class="p-4">Contato</th>
-                    <th class="p-4">Especialidade</th>
-                    <th class="p-4 text-center">Status</th>
-                `;
-                let filtrados = usuariosCadastrados.filter(u => filtroAdminAtual === 'todos' || u.tipo === filtroAdminAtual);
-                document.getElementById('adminTotalRegistros').textContent = `Total de cadastros: ${filtrados.length}`;
-                filtrados.forEach(u => {
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 transition";
-                    tr.innerHTML = `
-                        <td class="p-4 font-semibold"><span class="px-2 py-1 rounded-lg text-xs bg-indigo-100 text-indigo-800">${u.tipo}</span></td>
-                        <td class="p-4 font-bold text-slate-900">${u.nome}</td>
-                        <td class="p-4 text-slate-600">${u.email}</td>
-                        <td class="p-4 font-mono text-indigo-600">${u.senha}</td>
-                        <td class="p-4 text-slate-600">${u.telefone}</td>
-                        <td class="p-4 text-slate-600">${u.especialidade}</td>
-                        <td class="p-4 text-center text-xs text-emerald-600 font-bold">Salvo no Supabase</td>
+                    document.getElementById('adminTotalRegistros').textContent = `Total de orçamentos: ${orcamentosSolicitados.length}`;
+                    orcamentosSolicitados.forEach(orc => {
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-slate-50 transition";
+                        tr.innerHTML = `
+                            <td class="p-4 text-xs text-slate-500 font-mono">${orc.data}</td>
+                            <td class="p-4 font-bold text-slate-900">${orc.cliente}</td>
+                            <td class="p-4 text-slate-600 font-mono">${orc.telefone}</td>
+                            <td class="p-4 font-semibold text-indigo-600">${orc.especialidade}</td>
+                            <td class="p-4 text-slate-800">${orc.profissional}</td>
+                            <td class="p-4 text-slate-600 text-xs max-w-xs truncate">${orc.descricao}</td>
+                            <td class="p-4 text-center">
+                                ${orc.foto ? `<button onclick="abrirModalImagem('${orc.foto}')" class="p-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs">Ver</button>` : 'N/A'}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    theadRow.innerHTML = `
+                        <th class="p-4">Perfil</th>
+                        <th class="p-4">Nome</th>
+                        <th class="p-4">E-mail</th>
+                        <th class="p-4">Senha</th>
+                        <th class="p-4">Telefone</th>
+                        <th class="p-4">Criado em</th>
+                        <th class="p-4 text-center">Ações</th>
                     `;
-                    tbody.appendChild(tr);
-                });
+                    let filtrados = usuariosCadastrados.filter(u => filtroAdminAtual === 'todos' || u.perfil === filtroAdminAtual);
+                    document.getElementById('adminTotalRegistros').textContent = `Total na tabela Usuarios: ${filtrados.length}`;
+                    filtrados.forEach(u => {
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-slate-50 transition";
+                        tr.innerHTML = `
+                            <td class="p-4 font-semibold"><span class="px-2 py-1 rounded-lg text-xs bg-indigo-100 text-indigo-800">${u.perfil}</span></td>
+                            <td class="p-4 font-bold text-slate-900">${u.nome}</td>
+                            <td class="p-4 text-slate-600">${u.email}</td>
+                            <td class="p-4 font-mono text-indigo-600">${u.senha}</td>
+                            <td class="p-4 text-slate-600">${u.telefone || 'N/A'}</td>
+                            <td class="p-4 text-xs text-slate-400 font-mono">${u.created_at ? new Date(u.created_at).toLocaleString() : 'N/A'}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="deletarUsuarioSupabase('${u.id}')" class="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (error) {
+                console.error("[APP ERROR] Erro ao renderizar tabela do admin:", error);
+            }
+        }
+
+        async function deletarUsuarioSupabase(id) {
+            if (confirm("Tem certeza que deseja excluir este usuário da tabela Usuarios do Supabase?")) {
+                const sucesso = await excluirUsuario(id);
+                if (sucesso) {
+                    mostrarMensagem("Excluído", "Usuário removido da tabela Usuarios.", "fa-trash", "text-rose-600");
+                    renderizarTabelaAdmin();
+                    carregarProfissionaisCadastrados();
+                }
             }
         }
 
@@ -1073,6 +957,7 @@
             document.getElementById('toastTitulo').textContent = titulo;
             document.getElementById('toastTexto').textContent = texto;
             document.getElementById('toastIcon').className = `fa-solid ${icone} ${corIcone} text-xl`;
+            document.getElementById('toastIconContainer').className = `w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100`;
             toast.classList.remove('translate-y-32', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-32', 'opacity-0'); }, 3500);
         }
