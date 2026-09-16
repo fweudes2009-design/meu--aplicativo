@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIXO - Conectando Você aos Melhores Profissionais</title>
+    <title>Fixa - Conectando Você aos Melhores Profissionais</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para Ícones -->
@@ -26,7 +26,7 @@
                     <i class="fa-solid fa-hands-holding-child text-xl"></i>
                 </div>
                 <div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">FIXA</span>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Fixa</span>
                     <p class="text-xs text-slate-400 font-medium">Serviços Profissionais</p>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                     <span>Profissionais verificados e prontos para atender</span>
                 </div>
                 <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">
-                    Serviços Profissionais
+                    Encontre o profissional perfeito para o seu serviço
                 </h1>
                 <p class="text-lg text-indigo-200 mb-10 max-w-2xl mx-auto">
                     Busque por encanadores, marceneiros, pintores, eletricistas e muito mais em poucos cliques.
@@ -192,7 +192,7 @@
 
     <!-- RODAPÉ -->
     <footer class="bg-white border-t border-slate-200 py-8 text-center text-sm text-slate-500">
-        <p>&copy; 2026 Guiservece. Todos os direitos reservados.</p>
+        <p>&copy; 2026 Fixa. Todos os direitos reservados.</p>
     </footer>
 
     <!-- MODAL DE ESCOLHA DE TIPO DE USUÁRIO (CADASTRO) -->
@@ -356,6 +356,7 @@
                                 <th class="p-4">E-mail</th>
                                 <th class="p-4">Senha</th>
                                 <th class="p-4">Telefone</th>
+                                <th class="p-4">Especialidade</th>
                                 <th class="p-4">Criado em</th>
                                 <th class="p-4 text-center">Ações</th>
                             </tr>
@@ -400,7 +401,7 @@
         let orcamentosSolicitados = [];
         let usuarioLogado = null;
         try {
-            usuarioLogado = JSON.parse(localStorage.getItem('guiservece_logado_sup')) || null;
+            usuarioLogado = JSON.parse(localStorage.getItem('fixa_logado_sup')) || null;
         } catch(e) { usuarioLogado = null; }
 
         let filtroAdminAtual = 'todos';
@@ -568,7 +569,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            console.log("[GLOBAL] Inicializando aplicação Guiservece com Supabase...");
+            console.log("[GLOBAL] Inicializando aplicação Fixa com Supabase...");
             conectarSupabase();
             await carregarDadosIniciais();
             verificarEstadoSessao();
@@ -587,7 +588,8 @@
                         email: 'fweudes2009@gmail.com',
                         senha: 'Weudes#2026!',
                         telefone: '5511911815136',
-                        perfil: 'admin'
+                        perfil: 'admin',
+                        especialidade: 'Administração do Sistema'
                     };
                     await supabase.from('Usuarios').insert([adminPadrao]);
                     usuariosCadastrados = await listarUsuarios();
@@ -689,7 +691,8 @@
                 email: document.getElementById('cliEmail').value,
                 telefone: document.getElementById('cliTelefone').value,
                 senha: document.getElementById('cliSenha').value,
-                perfil: 'cliente'
+                perfil: 'cliente',
+                especialidade: 'Cliente'
             };
             fecharModalCadastroCliente();
 
@@ -697,7 +700,7 @@
             if (sucesso) {
                 await carregarDadosIniciais();
                 usuarioLogado = novo;
-                localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
+                localStorage.setItem('fixa_logado_sup', JSON.stringify(usuarioLogado));
                 verificarEstadoSessao();
             }
         }
@@ -706,11 +709,12 @@
             event.preventDefault();
             const espec = document.getElementById('prestEspecialidade').value;
             const novo = {
-                nome: document.getElementById('prestNome').value + ' (' + espec + ')',
+                nome: document.getElementById('prestNome').value,
                 email: document.getElementById('prestEmail').value,
                 telefone: document.getElementById('prestTelefone').value,
                 senha: document.getElementById('prestSenha').value,
-                perfil: 'prestador'
+                perfil: 'prestador',
+                especialidade: espec
             };
             fecharModalCadastroPrestador();
 
@@ -718,7 +722,7 @@
             if (sucesso) {
                 await carregarDadosIniciais();
                 usuarioLogado = novo;
-                localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
+                localStorage.setItem('fixa_logado_sup', JSON.stringify(usuarioLogado));
                 verificarEstadoSessao();
             }
         }
@@ -731,7 +735,7 @@
             const usuario = await loginUsuario(email, senha);
             if (usuario) {
                 usuarioLogado = usuario;
-                localStorage.setItem('guiservece_logado_sup', JSON.stringify(usuarioLogado));
+                localStorage.setItem('fixa_logado_sup', JSON.stringify(usuarioLogado));
                 fecharModalLogin();
                 verificarEstadoSessao();
                 
@@ -746,7 +750,7 @@
 
         function fazerLogout() {
             usuarioLogado = null;
-            localStorage.removeItem('guiservece_logado_sup');
+            localStorage.removeItem('fixa_logado_sup');
             verificarEstadoSessao();
             mostrarMensagem("Sessão Encerrada", "Você saiu da sua conta.", "fa-info", "text-indigo-600");
         }
@@ -773,6 +777,7 @@
                 if (usuarioLogado.perfil === 'admin') {
                     btnAdmin.classList.remove('hidden');
                     btnAdmin.classList.add('flex');
+                    if (secaoSol) secaoSol.classList.add('hidden');
                 } else {
                     btnAdmin.classList.add('hidden');
                 }
@@ -814,10 +819,10 @@
                 card.className = "bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-xs hover:border-indigo-400 transition";
                 card.innerHTML = `
                     <div>
-                        <h4 class="font-bold text-slate-800 text-sm">${p.nome}</h4>
+                        <h4 class="font-bold text-slate-800 text-sm">${p.nome} (${p.especialidade || 'Geral'})</h4>
                         <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i>${p.telefone || 'N/A'}</p>
                     </div>
-                    <button type="button" onclick="selecionarProfissional('${p.nome}')" class="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                    <button type="button" onclick="selecionarProfissional('${p.nome} (${p.especialidade || 'Geral'})')" class="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                         Selecionar
                     </button>
                 `;
@@ -940,6 +945,7 @@
                         <th class="p-4">E-mail</th>
                         <th class="p-4">Senha</th>
                         <th class="p-4">Telefone</th>
+                        <th class="p-4">Especialidade</th>
                         <th class="p-4">Criado em</th>
                         <th class="p-4 text-center">Ações</th>
                     `;
@@ -954,6 +960,7 @@
                             <td class="p-4 text-slate-600">${u.email}</td>
                             <td class="p-4 font-mono text-indigo-600">${u.senha}</td>
                             <td class="p-4 text-slate-600">${u.telefone || 'N/A'}</td>
+                            <td class="p-4 text-slate-800 font-medium">${u.especialidade || 'N/A'}</td>
                             <td class="p-4 text-xs text-slate-400 font-mono">${u.created_at ? new Date(u.created_at).toLocaleString() : 'N/A'}</td>
                             <td class="p-4 text-center">
                                 <button onclick="deletarUsuarioSupabase('${u.id}')" class="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition"><i class="fa-solid fa-trash"></i></button>
