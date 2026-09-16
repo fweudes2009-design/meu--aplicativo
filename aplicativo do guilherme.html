@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guiservece - Conectando Você aos Melhores Profissionais</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- CABEÇALHO -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                    <i class="fa-solid fa-hands-holding-child text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Guiservece</span>
+                    <p class="text-xs text-slate-400 font-medium">Serviços Profissionais</p>
+                </div>
+            </div>
+
+            <!-- BOTÕES DE ENTRADA / CADASTRO / ADMIN -->
+            <div class="flex items-center space-x-3">
+                <div id="userInfoHeader" class="hidden items-center space-x-3 mr-2 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200">
+                    <span id="headerUserName" class="text-sm font-semibold text-slate-700"></span>
+                    <button onclick="abrirPainelAdmin()" id="btnAdminHeader" class="hidden items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl text-sm font-bold transition shadow-md">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Painel Admin</span>
+                    </button>
+                    <button onclick="fazerLogout()" class="text-rose-600 hover:text-rose-700 text-sm font-medium px-2 py-1 transition">Sair</button>
+                </div>
+                
+                <div id="authButtonsHeader" class="flex items-center space-x-3">
+                    <button onclick="abrirModalLogin()" class="text-indigo-600 hover:text-indigo-700 font-semibold px-4 py-2 text-sm transition">
+                        Entrada
+                    </button>
+                    <button onclick="abrirModalTipoUsuario()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition shadow-md shadow-indigo-100 flex items-center space-x-2">
+                        <i class="fa-solid fa-user-plus text-xs"></i>
+                        <span>Cadastro</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-grow">
+        <!-- HERO SECTION COM PESQUISA -->
+        <section class="relative bg-gradient-to-b from-indigo-900 via-indigo-800 to-violet-900 text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden shadow-xl">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <div class="inline-flex items-center space-x-2 bg-indigo-800/80 border border-indigo-700 px-4 py-1.5 rounded-full text-xs font-medium mb-6 text-indigo-200 shadow-inner">
+                    <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                    <span>Profissionais verificados e prontos para atender</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">
+                    Encontre o profissional perfeito para o seu serviço
+                </h1>
+                <p class="text-lg text-indigo-200 mb-10 max-w-2xl mx-auto">
+                    Busque por encanadores, marceneiros, pintores, eletricistas e muito mais em poucos cliques.
+                </p>
+
+                <!-- BARRA DE PESQUISA -->
+                <div class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 max-w-2xl mx-auto">
+                    <div class="flex items-center pl-4 w-full sm:w-auto flex-grow text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass mr-3 text-lg text-indigo-600"></i>
+                        <input type="text" id="inputPesquisa" oninput="filtrarServicos()" placeholder="O que você precisa hoje? (Ex: Encanador, Pintor...)" class="w-full py-3 bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none text-base">
+                    </div>
+                    <button onclick="filtrarServicos()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition shadow-md">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- GRADE DE SERVIÇOS -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Nossos Serviços</h2>
+                    <p class="text-slate-500 mt-1">Conheça nossas categorias de atendimento</p>
+                </div>
+            </div>
+
+            <div id="gridServicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="clicarServicoCard('Encanador')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
+                        <i class="fa-solid fa-faucet text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">Encanador</h3>
+                    <p class="text-sm text-slate-500">Vazamentos, instalações hidráulicas e reparos rápidos</p>
+                </div>
+
+                <div onclick="clicarServicoCard('Marceneiro')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
+                        <i class="fa-solid fa-hammer text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">Marceneiro</h3>
+                    <p class="text-sm text-slate-500">Móveis planejados e reparos em madeira</p>
+                </div>
+
+                <div onclick="clicarServicoCard('Pintor')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
+                        <i class="fa-solid fa-paint-roller text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">Pintor</h3>
+                    <p class="text-sm text-slate-500">Pintura residencial, comercial e acabamentos finos</p>
+                </div>
+
+                <div onclick="clicarServicoCard('Eletricista')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
+                        <i class="fa-solid fa-bolt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">Eletricista</h3>
+                    <p class="text-sm text-slate-500">Instalações elétricas, quadros e manutenções preventivas</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO DE SOLICITAÇÃO DE ORÇAMENTO COM FOTO (EXCLUSIVA PARA CLIENTES LOGADOS) -->
+        <section id="secaoSolicitacao" class="bg-slate-100 py-16 border-t border-slate-200 hidden">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Solicitar Orçamento de Serviço</h2>
+                        <p class="text-slate-500 mt-2">Escolha o profissional, envie a foto do problema e clique em solicitar</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                            <i class="fa-solid fa-user-tie text-indigo-600 mr-2"></i> Profissionais Cadastrados na Plataforma
+                        </h3>
+                        <div id="gridProfissionaisCadastrados" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200">
+                            <!-- Preenchido via JavaScript -->
+                        </div>
+                    </div>
+
+                    <form onsubmit="enviarOrcamento(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Especialidade / Serviço</label>
+                                <input type="text" id="solicEspecialidade" required placeholder="Ex: Encanador" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Profissional Escolhido</label>
+                                <input type="text" id="solicProfissional" required placeholder="Selecione na lista acima" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Descrição do Problema / Serviço</label>
+                            <textarea id="solicDescricao" rows="3" required placeholder="Descreva detalhadamente o que precisa ser feito..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+
+                        <!-- Upload de Foto do Serviço -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Local ou Serviço Desejado</label>
+                            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-indigo-500 transition cursor-pointer relative bg-slate-50" onclick="document.getElementById('inputFotoServico').click()">
+                                <input type="file" id="inputFotoServico" accept="image/*" class="hidden" onchange="mostrarPreviewFoto(event)">
+                                <div id="containerPreviewFoto" class="flex flex-col items-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-600 mb-2"></i>
+                                    <p class="text-sm font-medium text-slate-700">Clique para carregar ou arraste a foto aqui</p>
+                                    <p class="text-xs text-slate-400 mt-1">PNG, JPG ou JPEG até 10MB</p>
+                                </div>
+                                <img id="imgPreview" class="hidden mx-auto h-40 object-cover rounded-xl shadow-md" alt="Pré-visualização">
+                            </div>
+                        </div>
+
+                        <!-- Botão Único de Solicitar Orçamento -->
+                        <div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 rounded-xl transition shadow-lg shadow-indigo-200 text-base flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
+                                <span>Solicitar um orçamento</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-white border-t border-slate-200 py-8 text-center text-sm text-slate-500">
+        <p>&copy; 2026 Guiservece. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- MODAL DE ESCOLHA DE TIPO DE USUÁRIO (CADASTRO) -->
+    <div id="modalTipoUsuario" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="modalContentTipo" class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button onclick="fecharModalTipoUsuario()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Como deseja se cadastrar?</h3>
+            <p class="text-slate-500 mb-6 text-sm">Selecione o seu perfil para continuar na plataforma</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onclick="selecionarPerfil('Cliente')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition">
+                        <i class="fa-solid fa-user text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-lg mb-1">Sou Cliente</h4>
+                    <p class="text-xs text-slate-500">Quero contratar profissionais para serviços</p>
+                </button>
+
+                <button onclick="selecionarPerfil('Prestador')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
+                    <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-600 group-hover:text-white transition">
+                        <i class="fa-solid fa-toolbox text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-lg mb-1">Sou Prestador</h4>
+                    <p class="text-xs text-slate-500">Quero oferecer meus serviços e conseguir clientes</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CADASTRO CLIENTE (SENHA POR ÚLTIMO) -->
+    <div id="modalCadastroCliente" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="modalContentCliente" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="fecharModalCadastroCliente()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Cadastro de Cliente</h3>
+            <p class="text-slate-500 mb-4 text-sm">Preencha seus dados para acessar a plataforma</p>
+
+            <form onsubmit="cadastrarCliente(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
+                    <input type="text" id="cliNome" required placeholder="Seu nome completo" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
+                    <input type="email" id="cliEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço</label>
+                    <input type="text" id="cliEndereco" required placeholder="Rua, número, bairro, cidade" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone / WhatsApp</label>
+                    <input type="text" id="cliTelefone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <!-- SENHA POR ÚLTIMO COM PADRÃO UNIVERSAL DE SEGURANÇA -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Senha de Acesso</label>
+                    <input type="password" id="cliSenha" required placeholder="Mín. 6 chars (Letras, números e símbolos)" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">Requer letras (A-Z), números (0-9) e caracteres especiais (!@#$%...).</p>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-indigo-200 mt-2">
+                    Concluir e Entrar no Site
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CADASTRO PRESTADOR (SENHA POR ÚLTIMO) -->
+    <div id="modalCadastroPrestador" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="modalContentPrestador" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="fecharModalCadastroPrestador()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Cadastro de Prestador</h3>
+            <p class="text-slate-500 mb-4 text-sm">Ofereça seus serviços na plataforma</p>
+
+            <form onsubmit="cadastrarPrestador(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
+                    <input type="text" id="prestNome" required placeholder="Seu nome profissional" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
+                    <input type="email" id="prestEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone / WhatsApp Profissional</label>
+                    <input type="text" id="prestTelefone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Especialidade</label>
+                    <select id="prestEspecialidade" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <option value="">Selecione a especialidade</option>
+                        <option value="Encanador">Encanador</option>
+                        <option value="Marceneiro">Marceneiro</option>
+                        <option value="Pintor">Pintor</option>
+                        <option value="Eletricista">Eletricista</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                <!-- SENHA POR ÚLTIMO COM PADRÃO UNIVERSAL DE SEGURANÇA -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Senha de Acesso</label>
+                    <input type="password" id="prestSenha" required placeholder="Mín. 6 chars (Letras, números e símbolos)" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">Requer letras (A-Z), números (0-9) e caracteres especiais (!@#$%...).</p>
+                </div>
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-violet-200 mt-2">
+                    Concluir e Entrar no Site
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE LOGIN (ENTRADA) -->
+    <div id="modalLogin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="modalContentLogin" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button onclick="fecharModalLogin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">Entrar na Conta</h3>
+            <p class="text-slate-500 mb-6 text-sm">Digite seu e-mail e senha para acessar</p>
+
+            <form onsubmit="realizarLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
+                    <input type="email" id="loginEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
+                    <input type="password" id="loginSenha" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-indigo-200 mt-2">
+                    Entrar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAINEL DO ADMINISTRADOR COMPLETO -->
+    <div id="modalAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="modalContentAdmin" class="bg-white rounded-3xl p-6 sm:p-8 max-w-6xl w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[92vh] flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-white shadow-md text-xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-900">Painel do Administrador (Controle Total)</h3>
+                        <p class="text-xs text-slate-500">Visualização exclusiva e gestão de cadastros e orçamentos</p>
+                    </div>
+                </div>
+                <button onclick="fecharPainelAdmin()" class="text-slate-400 hover:text-slate-600 text-2xl p-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- BOTÕES DE FILTRO NO TOPO -->
+            <div class="py-4 flex flex-wrap gap-2.5 items-center border-b border-slate-200 bg-slate-50 px-4 rounded-2xl my-3">
+                <button onclick="filtrarAdminAba('todos')" id="abaBtnTodos" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm">Todos os Registros (0)</button>
+                <button onclick="filtrarAdminAba('Cliente')" id="abaBtnCliente" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Clientes Cadastrados (0)</button>
+                <button onclick="filtrarAdminAba('Prestador')" id="abaBtnPrestador" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Profissionais Prestadores (0)</button>
+                <button onclick="filtrarAdminAba('Orcamentos')" id="abaBtnOrcamentos" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-file-invoice-dollar text-amber-600"></i>
+                    <span>Orçamentos Solicitados (0)</span>
+                </button>
+            </div>
+
+            <!-- TABELA DE REGISTROS / ORÇAMENTOS -->
+            <div class="flex-grow overflow-y-auto py-2">
+                <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr id="tabelaHeaderRow" class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Nome</th>
+                                <th class="p-4">E-mail</th>
+                                <th class="p-4">Senha</th>
+                                <th class="p-4">Contato / Endereço</th>
+                                <th class="p-4">Especialidade</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAdminBody" class="divide-y divide-slate-200 text-sm text-slate-700">
+                            <!-- Preenchido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200 flex justify-between items-center mt-4">
+                <span id="adminTotalRegistros" class="text-xs text-slate-500 font-bold">Total: 0</span>
+                <button onclick="limparTodosCadastros()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2 rounded-xl text-xs font-semibold transition border border-rose-200">
+                    <i class="fa-solid fa-trash-can mr-1.5"></i> Limpar Cadastros Gerais
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA VISUALIZAR IMAGEM EM TAMANHO REAL (ÍCONE DE OLHO) -->
+    <div id="modalVisualizarImagem" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300" onclick="fecharModalImagem()">
+        <div class="bg-white rounded-3xl p-6 max-w-2xl w-full mx-4 shadow-2xl relative text-center" onclick="event.stopPropagation()">
+            <button onclick="fecharModalImagem()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Foto do Serviço Enviada</h3>
+            <img id="imgModalExpandida" class="mx-auto max-h-[70vh] rounded-2xl shadow-lg object-contain" alt="Serviço">
+        </div>
+    </div>
+
+    <!-- MENSAGEM FLUTUANTE (TOAST) -->
+    <div id="toastMensagem" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 flex items-center space-x-3 max-w-sm">
+        <div id="toastIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i id="toastIcon" class="fa-solid text-lg"></i>
+        </div>
+        <div>
+            <h4 id="toastTitulo" class="font-bold text-slate-900 text-sm"></h4>
+            <p id="toastTexto" class="text-xs text-slate-500"></p>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE FUNCIONALIDADES -->
+    <script>
+        let usuariosCadastrados = JSON.parse(localStorage.getItem('guiservece_usuarios')) || [
+            { tipo: 'Admin', nome: 'Administrador Geral', email: 'fweudes2009@gmail.com', senha: 'Weudes#2026!', telefone: '5511911815136', especialidade: 'Administração do Sistema' },
+            { tipo: 'Prestador', nome: 'Carlos Encanador', email: 'carlos@encanador.com', senha: 'Carlos#123', telefone: '5511988881111', especialidade: 'Encanador' },
+            { tipo: 'Prestador', nome: 'Marcos Marceneiro', email: 'marcos@marceneiro.com', senha: 'Marcos#123', telefone: '5511988882222', especialidade: 'Marceneiro' }
+        ];
+
+        let orcamentosSolicitados = JSON.parse(localStorage.getItem('guiservece_orcamentos')) || [];
+        let usuarioLogado = JSON.parse(localStorage.getItem('guiservece_logado')) || null;
+        let filtroAdminAtual = 'todos';
+        let dadosImagemBase64 = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarEstadoSessao();
+            carregarProfissionaisCadastrados();
+            atualizarContadoresAbas();
+        });
+
+        function salvarDados() {
+            localStorage.setItem('guiservece_usuarios', JSON.stringify(usuariosCadastrados));
+            localStorage.setItem('guiservece_orcamentos', JSON.stringify(orcamentosSolicitados));
+            atualizarContadoresAbas();
+        }
+
+        function atualizarContadoresAbas() {
+            const totalRegs = usuariosCadastrados.length;
+            const totalCli = usuariosCadastrados.filter(u => u.tipo === 'Cliente').length;
+            const totalPres = usuariosCadastrados.filter(u => u.tipo === 'Prestador').length;
+            const totalOrc = orcamentosSolicitados.length;
+
+            document.getElementById('abaBtnTodos').textContent = `Todos os Registros (${totalRegs})`;
+            document.getElementById('abaBtnCliente').textContent = `Clientes Cadastrados (${totalCli})`;
+            document.getElementById('abaBtnPrestador').textContent = `Profissionais Prestadores (${totalPres})`;
+            document.getElementById('abaBtnOrcamentos').innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-amber-600 mr-1"></i> Orçamentos Solicitados (${totalOrc})`;
+        }
+
+        // Validação Universal de Senha (Letras, Números e Caracteres Especiais)
+        function validarSenhaSegura(senha) {
+            const temLetra = /[a-zA-Z]/.test(senha);
+            const temNumero = /[0-9]/.test(senha);
+            const temEspecial = /[^a-zA-Z0-9]/.test(senha);
+            const tamanhoMinimo = senha.length >= 6;
+
+            return tamanhoMinimo && temLetra && temNumero && temEspecial;
+        }
+
+        // Modais
+        function abrirModalTipoUsuario() {
+            const m = document.getElementById('modalTipoUsuario');
+            const c = document.getElementById('modalContentTipo');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
+        }
+        function fecharModalTipoUsuario() {
+            const m = document.getElementById('modalTipoUsuario');
+            const c = document.getElementById('modalContentTipo');
+            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden'); }, 300);
+        }
+
+        function selecionarPerfil(perfil) {
+            fecharModalTipoUsuario();
+            if (perfil === 'Cliente') abrirModalCadastroCliente();
+            else abrirModalCadastroPrestador();
+        }
+
+        function abrirModalCadastroCliente() {
+            const m = document.getElementById('modalCadastroCliente');
+            const c = document.getElementById('modalContentCliente');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
+        }
+        function fecharModalCadastroCliente() {
+            const m = document.getElementById('modalCadastroCliente');
+            const c = document.getElementById('modalContentCliente');
+            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden'); }, 300);
+        }
+
+        function abrirModalCadastroPrestador() {
+            const m = document.getElementById('modalCadastroPrestador');
+            const c = document.getElementById('modalContentPrestador');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
+        }
+        function fecharModalCadastroPrestador() {
+            const m = document.getElementById('modalCadastroPrestador');
+            const c = document.getElementById('modalContentPrestador');
+            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden'); }, 300);
+        }
+
+        function abrirModalLogin() {
+            const m = document.getElementById('modalLogin');
+            const c = document.getElementById('modalContentLogin');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
+        }
+        function fecharModalLogin() {
+            const m = document.getElementById('modalLogin');
+            const c = document.getElementById('modalContentLogin');
+            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden'); }, 300);
+        }
+
+        function cadastrarCliente(event) {
+            event.preventDefault();
+            const senha = document.getElementById('cliSenha').value;
+
+            if (!validarSenhaSegura(senha)) {
+                mostrarMensagem("Segurança de Senha", "A senha precisa ter no mínimo 6 caracteres, contendo letras, números e caracteres especiais (ex: @, #, $).", "fa-triangle-exclamation", "text-rose-600");
+                return;
+            }
+
+            const novo = {
+                tipo: 'Cliente',
+                nome: document.getElementById('cliNome').value,
+                email: document.getElementById('cliEmail').value,
+                endereco: document.getElementById('cliEndereco').value,
+                telefone: document.getElementById('cliTelefone').value,
+                senha: senha,
+                especialidade: 'N/A'
+            };
+            usuariosCadastrados.push(novo);
+            salvarDados();
+            fecharModalCadastroCliente();
+
+            // Login automático e entrada direta no site
+            usuarioLogado = novo;
+            localStorage.setItem('guiservece_logado', JSON.stringify(usuarioLogado));
+            verificarEstadoSessao();
+            mostrarMensagem("Cadastro Realizado!", `Bem-vindo(a) ${novo.nome}! Você já está conectado.`, "fa-circle-check", "text-emerald-600");
+        }
+
+        function cadastrarPrestador(event) {
+            event.preventDefault();
+            const senha = document.getElementById('prestSenha').value;
+
+            if (!validarSenhaSegura(senha)) {
+                mostrarMensagem("Segurança de Senha", "A senha precisa ter no mínimo 6 caracteres, contendo letras, números e caracteres especiais (ex: @, #, $).", "fa-triangle-exclamation", "text-rose-600");
+                return;
+            }
+
+            const novo = {
+                tipo: 'Prestador',
+                nome: document.getElementById('prestNome').value,
+                email: document.getElementById('prestEmail').value,
+                telefone: document.getElementById('prestTelefone').value,
+                especialidade: document.getElementById('prestEspecialidade').value,
+                senha: senha,
+                endereco: 'N/A'
+            };
+            usuariosCadastrados.push(novo);
+            salvarDados();
+            fecharModalCadastroPrestador();
+            carregarProfissionaisCadastrados();
+
+            // Login automático e entrada direta no site
+            usuarioLogado = novo;
+            localStorage.setItem('guiservece_logado', JSON.stringify(usuarioLogado));
+            verificarEstadoSessao();
+            mostrarMensagem("Cadastro Realizado!", `Parabéns ${novo.nome}! Você já está conectado como prestador.`, "fa-circle-check", "text-emerald-600");
+        }
+
+        function realizarLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+
+            const usuario = usuariosCadastrados.find(u => u.email === email && u.senha === senha);
+            if (usuario) {
+                usuarioLogado = usuario;
+                localStorage.setItem('guiservece_logado', JSON.stringify(usuarioLogado));
+                fecharModalLogin();
+                verificarEstadoSessao();
+
+                if (usuario.tipo === 'Admin') {
+                    mostrarMensagem("Acesso Admin", "Bem-vindo ao Painel do Administrador!", "fa-shield-halved", "text-amber-500");
+                    abrirPainelAdmin();
+                } else {
+                    mostrarMensagem("Login Bem-Sucedido!", `Bem-vindo de volta, ${usuario.nome}!`, "fa-circle-check", "text-emerald-600");
+                }
+            } else {
+                mostrarMensagem("Erro no Login", "E-mail ou senha incorretos. Verifique seus dados.", "fa-triangle-exclamation", "text-rose-600");
+            }
+        }
+
+        function fazerLogout() {
+            usuarioLogado = null;
+            localStorage.removeItem('guiservece_logado');
+            verificarEstadoSessao();
+            mostrarMensagem("Sessão Encerrada", "Você saiu da sua conta com sucesso.", "fa-info", "text-indigo-600");
+        }
+
+        function verificarEstadoSessao() {
+            const authBtns = document.getElementById('authButtonsHeader');
+            const userInfo = document.getElementById('userInfoHeader');
+            const userName = document.getElementById('headerUserName');
+            const btnAdmin = document.getElementById('btnAdminHeader');
+            const secaoSol = document.getElementById('secaoSolicitacao');
+
+            if (usuarioLogado) {
+                authBtns.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                userInfo.classList.add('flex');
+                userName.textContent = usuarioLogado.nome;
+
+                // Mostra formulário de orçamento somente para usuários logados
+                if (secaoSol) secaoSol.classList.remove('hidden');
+
+                if (usuarioLogado.tipo === 'Admin') {
+                    btnAdmin.classList.remove('hidden');
+                    btnAdmin.classList.add('flex');
+                } else {
+                    btnAdmin.classList.add('hidden');
+                }
+            } else {
+                authBtns.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+                userInfo.classList.remove('flex');
+                btnAdmin.classList.add('hidden');
+
+                // Oculta completamente o formulário de orçamento para visitantes
+                if (secaoSol) secaoSol.classList.add('hidden');
+            }
+        }
+
+        function clicarServicoCard(nomeServico) {
+            if (!usuarioLogado) {
+                abrirModalTipoUsuario();
+                mostrarMensagem("Acesso Restrito", "Faça seu cadastro ou entre para solicitar orçamentos.", "fa-lock", "text-amber-500");
+                return;
+            }
+            selecionarServico(nomeServico);
+        }
+
+        function selecionarServico(nomeServico) {
+            const select = document.getElementById('solicEspecialidade');
+            if (select) select.value = nomeServico;
+            const secao = document.getElementById('secaoSolicitacao');
+            if (secao) secao.scrollIntoView({ behavior: 'smooth' });
+            mostrarMensagem("Serviço Selecionado", `Categoria "${nomeServico}" selecionada para o seu orçamento.`, "fa-circle-check", "text-indigo-600");
+        }
+
+        function carregarProfissionaisCadastrados() {
+            const container = document.getElementById('gridProfissionaisCadastrados');
+            if (!container) return;
+            const prestadores = usuariosCadastrados.filter(u => u.tipo === 'Prestador');
+            container.innerHTML = '';
+            if (prestadores.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 p-2">Nenhum prestador cadastrado no momento.</p>`;
+                return;
+            }
+            prestadores.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-xs hover:border-indigo-400 transition";
+                card.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">${p.nome}</h4>
+                        <span class="text-xs px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full font-medium">${p.especialidade}</span>
+                        <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i>${p.telefone}</p>
+                    </div>
+                    <button type="button" onclick="selecionarProfissional('${p.nome}', '${p.especialidade}')" class="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                        Selecionar
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selecionarProfissional(nomeProf, especialidade) {
+            document.getElementById('solicProfissional').value = nomeProf;
+            document.getElementById('solicEspecialidade').value = especialidade;
+            mostrarMensagem("Profissional Selecionado", `${nomeProf} (${especialidade}) escolhido para o atendimento!`, "fa-circle-check", "text-indigo-600");
+        }
+
+        function mostrarPreviewFoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    dadosImagemBase64 = e.target.result;
+                    const img = document.getElementById('imgPreview');
+                    const container = document.getElementById('containerPreviewFoto');
+                    img.src = dadosImagemBase64;
+                    img.classList.remove('hidden');
+                    container.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function enviarOrcamento(event) {
+            event.preventDefault();
+            const especialidade = document.getElementById('solicEspecialidade').value;
+            const profissional = document.getElementById('solicProfissional').value || "Não especificado";
+            const descricao = document.getElementById('solicDescricao').value;
+            const clienteNome = usuarioLogado ? usuarioLogado.nome : "Cliente Visitante";
+            const clienteFone = usuarioLogado ? usuarioLogado.telefone : "Não informado";
+
+            const novoOrcamento = {
+                data: new Date().toLocaleString('pt-BR'),
+                cliente: clienteNome,
+                telefone: clienteFone,
+                especialidade: especialidade,
+                profissional: profissional,
+                descricao: descricao,
+                foto: dadosImagemBase64 || null
+            };
+            orcamentosSolicitados.push(novoOrcamento);
+            salvarDados();
+
+            // Limpar formulário
+            document.getElementById('solicEspecialidade').value = '';
+            document.getElementById('solicProfissional').value = '';
+            document.getElementById('solicDescricao').value = '';
+            document.getElementById('imgPreview').classList.add('hidden');
+            document.getElementById('containerPreviewFoto').classList.remove('hidden');
+            dadosImagemBase64 = '';
+
+            mostrarMensagem("Orçamento Solicitado!", "O pedido foi registrado com sucesso e já está disponível na Área do Administrador!", "fa-circle-check", "text-emerald-600");
+        }
+
+        // Funções do Painel do Administrador
+        function abrirPainelAdmin() {
+            if (!usuarioLogado || usuarioLogado.tipo !== 'Admin') {
+                mostrarMensagem("Acesso Negado", "Apenas o Administrador pode acessar esta área.", "fa-triangle-exclamation", "text-rose-600");
+                return;
+            }
+
+            const m = document.getElementById('modalAdmin');
+            const c = document.getElementById('modalContentAdmin');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
+            filtrarAdminAba(filtroAdminAtual);
+        }
+
+        function fecharPainelAdmin() {
+            const m = document.getElementById('modalAdmin');
+            const c = document.getElementById('modalContentAdmin');
+            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden'); }, 300);
+        }
+
+        function filtrarAdminAba(tipo) {
+            filtroAdminAtual = tipo;
+            
+            document.getElementById('abaBtnTodos').className = tipo === 'todos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
+            document.getElementById('abaBtnCliente').className = tipo === 'Cliente' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
+            document.getElementById('abaBtnPrestador').className = tipo === 'Prestador' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
+            document.getElementById('abaBtnOrcamentos').className = tipo === 'Orcamentos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5";
+
+            renderizarTabelaAdmin();
+        }
+
+        function renderizarTabelaAdmin() {
+            const tbody = document.getElementById('tabelaAdminBody');
+            const theadRow = document.getElementById('tabelaHeaderRow');
+            tbody.innerHTML = '';
+
+            if (filtroAdminAtual === 'Orcamentos') {
+                theadRow.innerHTML = `
+                    <th class="p-4">Data / Hora</th>
+                    <th class="p-4">Cliente Solicitante</th>
+                    <th class="p-4">Telefone</th>
+                    <th class="p-4">Serviço</th>
+                    <th class="p-4">Profissional</th>
+                    <th class="p-4">Descrição</th>
+                    <th class="p-4 text-center">Foto (Visualizar)</th>
+                `;
+
+                document.getElementById('adminTotalRegistros').textContent = `Total de orçamentos solicitados: ${orcamentosSolicitados.length}`;
+
+                if (orcamentosSolicitados.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum orçamento solicitado até o momento.</td></tr>`;
+                    return;
+                }
+
+                orcamentosSolicitados.forEach((orc) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-4 text-xs text-slate-500 font-mono">${orc.data}</td>
+                        <td class="p-4 font-bold text-slate-900">${orc.cliente}</td>
+                        <td class="p-4 text-slate-600 font-mono">${orc.telefone}</td>
+                        <td class="p-4 font-semibold text-indigo-600">${orc.especialidade}</td>
+                        <td class="p-4 text-slate-800 font-medium">${orc.profissional}</td>
+                        <td class="p-4 text-slate-600 text-xs max-w-xs truncate">${orc.descricao}</td>
+                        <td class="p-4 text-center">
+                            ${orc.foto ? `<button onclick="abrirModalImagem('${orc.foto}')" class="p-2.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white rounded-xl transition shadow-xs inline-flex items-center space-x-1.5" title="Visualizar Foto"><i class="fa-solid fa-eye text-base"></i><span class="text-xs font-bold">Ver Foto</span></button>` : `<span class="text-xs text-slate-400">Sem foto</span>`}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } else {
+                theadRow.innerHTML = `
+                    <th class="p-4">Tipo</th>
+                    <th class="p-4">Nome</th>
+                    <th class="p-4">E-mail</th>
+                    <th class="p-4">Senha</th>
+                    <th class="p-4">Contato / Endereço</th>
+                    <th class="p-4">Especialidade</th>
+                    <th class="p-4 text-center">Ações</th>
+                `;
+
+                let filtrados = usuariosCadastrados.filter(u => {
+                    return filtroAdminAtual === 'todos' || u.tipo === filtroAdminAtual;
+                });
+
+                document.getElementById('adminTotalRegistros').textContent = `Total de cadastros: ${filtrados.length}`;
+
+                if (filtrados.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum cadastro encontrado.</td></tr>`;
+                    return;
+                }
+
+                filtrados.forEach((u) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-4 font-semibold">
+                            <span class="px-2.5 py-1 rounded-lg text-xs ${u.tipo === 'Admin' ? 'bg-amber-100 text-amber-800' : u.tipo === 'Prestador' ? 'bg-violet-100 text-violet-800' : 'bg-indigo-100 text-indigo-800'}">
+                                ${u.tipo}
+                            </span>
+                        </td>
+                        <td class="p-4 font-bold text-slate-900">${u.nome}</td>
+                        <td class="p-4 text-slate-600">${u.email}</td>
+                        <td class="p-4 font-mono text-indigo-600 font-bold">${u.senha}</td>
+                        <td class="p-4 text-slate-600">${u.telefone} <br><span class="text-xs text-slate-400">${u.endereco || ''}</span></td>
+                        <td class="p-4 text-slate-600 font-medium">${u.especialidade}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="removerUsuario('${u.email}')" class="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition" title="Excluir cadastro">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function abrirModalImagem(urlBase64) {
+            const m = document.getElementById('modalVisualizarImagem');
+            const img = document.getElementById('imgModalExpandida');
+            img.src = urlBase64;
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); }, 10);
+        }
+
+        function fecharModalImagem() {
+            const m = document.getElementById('modalVisualizarImagem');
+            m.classList.add('opacity-0');
+            setTimeout(() => { m.classList.add('hidden'); }, 300);
+        }
+
+        function removerUsuario(email) {
+            if (email === 'fweudes2009@gmail.com') {
+                alert("O Administrador principal não pode ser removido.");
+                return;
+            }
+            if (confirm("Tem certeza que deseja excluir este cadastro?")) {
+                usuariosCadastrados = usuariosCadastrados.filter(u => u.email !== email);
+                salvarDados();
+                renderizarTabelaAdmin();
+                carregarProfissionaisCadastrados();
+                mostrarMensagem("Registro Removido", "O cadastro foi excluído com sucesso.", "fa-trash", "text-rose-600");
+            }
+        }
+
+        function limparTodosCadastros() {
+            if (confirm("ATENÇÃO: Deseja remover todos os cadastros e reiniciar a base?")) {
+                usuariosCadastrados = [
+                    { tipo: 'Admin', nome: 'Administrador Geral', email: 'fweudes2009@gmail.com', senha: 'Weudes#2026!', telefone: '5511911815136', especialidade: 'Administração do Sistema' }
+                ];
+                salvarDados();
+                renderizarTabelaAdmin();
+                carregarProfissionaisCadastrados();
+                mostrarMensagem("Base Limpa", "Cadastros gerais limpos com sucesso.", "fa-triangle-exclamation", "text-amber-500");
+            }
+        }
+
+        function filtrarServicos() {
+            const termo = document.getElementById('inputPesquisa').value.toLowerCase();
+            const cards = document.querySelectorAll('.card-servico');
+            cards.forEach(card => {
+                const texto = card.innerText.toLowerCase();
+                if (texto.includes(termo)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function mostrarMensagem(titulo, texto, icone, corIcone) {
+            const toast = document.getElementById('toastMensagem');
+            document.getElementById('toastTitulo').textContent = titulo;
+            document.getElementById('toastTexto').textContent = texto;
+            const icon = document.getElementById('toastIcon');
+            icon.className = `fa-solid ${icone} ${corIcone} text-xl`;
+            document.getElementById('toastIconContainer').className = `w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100`;
+
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
