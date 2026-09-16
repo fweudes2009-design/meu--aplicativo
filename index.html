@@ -143,7 +143,7 @@
                             <i class="fa-solid fa-user-tie text-indigo-600 mr-2"></i> Profissionais Cadastrados na Plataforma
                         </h3>
                         <div id="gridProfissionaisCadastrados" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200">
-                            <!-- Preenchido via JavaScript -->
+                            <!-- Preenchido via Supabase -->
                         </div>
                     </div>
 
@@ -395,8 +395,7 @@
 
     <!-- SCRIPT DE CONEXÃO E SUPABASE -->
     <script>
-        // Inicialização global segura do cliente Supabase com checagem de re-declaração
-        let supabaseClient = null;
+        let supabaseClientInstance = null;
         let usuariosCadastrados = [];
         let orcamentosSolicitados = [];
         let usuarioLogado = null;
@@ -407,17 +406,17 @@
         let filtroAdminAtual = 'todos';
         let dadosImagemBase64 = '';
 
-        // Função obrigatória 1: conectarSupabase
+        // Função obrigatória: conectarSupabase
         function conectarSupabase() {
             try {
-                if (supabaseClient) return supabaseClient;
+                if (supabaseClientInstance) return supabaseClientInstance;
                 if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    supabaseClient = window.supabase.createClient(
+                    supabaseClientInstance = window.supabase.createClient(
                         "https://xjckskjqddezpevfehhu.supabase.co",
                         "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot"
                     );
                     console.log("[SUPABASE] Conexão estabelecida com sucesso.");
-                    return supabaseClient;
+                    return supabaseClientInstance;
                 } else {
                     console.error("[SUPABASE ERROR] Biblioteca Supabase UMD não carregada.");
                     return null;
@@ -428,17 +427,17 @@
             }
         }
 
-        // Função obrigatória 6: listarUsuarios
+        // Função obrigatória: listarUsuarios
         async function listarUsuarios() {
             try {
-                const client = conectarSupabase();
-                if (!client) {
+                const supabase = conectarSupabase();
+                if (!supabase) {
                     console.warn("[SUPABASE WARN] Cliente Supabase indisponível. Usando array vazio.");
                     return [];
                 }
                 
                 console.log("[SUPABASE] Buscando registros na tabela Usuarios...");
-                const { data, error } = await client.from('Usuarios').select('*');
+                const { data, error } = await supabase.from('Usuarios').select('*');
                 if (error) {
                     console.error("[SUPABASE ERROR] Erro ao listar usuários:", error.message || error);
                     return [];
@@ -455,11 +454,11 @@
             return await listarUsuarios();
         }
 
-        // Função obrigatória 2: cadastrarUsuario
+        // Função obrigatória: cadastrarUsuario
         async function cadastrarUsuario(novoUsuario) {
             try {
-                const client = conectarSupabase();
-                if (!client) throw new Error("Cliente Supabase indisponível.");
+                const supabase = conectarSupabase();
+                if (!supabase) throw new Error("Cliente Supabase indisponível.");
 
                 if (!novoUsuario.email || !novoUsuario.senha || !novoUsuario.perfil) {
                     throw new Error("Email, senha e perfil são obrigatórios.");
@@ -474,7 +473,7 @@
                 }
 
                 console.log("[SUPABASE] Inserindo novo usuário na tabela Usuarios...", novoUsuario);
-                const { data, error } = await client.from('Usuarios').insert([novoUsuario]).select();
+                const { data, error } = await supabase.from('Usuarios').insert([novoUsuario]).select();
                 if (error) {
                     console.error("[SUPABASE ERROR] Erro ao inserir na tabela Usuarios:", error);
                     mostrarMensagem("Erro de Conexão", error.message || "Não foi possível concluir o cadastro.", "fa-triangle-exclamation", "text-rose-600");
@@ -491,11 +490,11 @@
             }
         }
 
-        // Função obrigatória 3: loginUsuario
+        // Função obrigatória: loginUsuario
         async function loginUsuario(email, senha) {
             try {
-                const client = conectarSupabase();
-                if (!client) throw new Error("Cliente Supabase indisponível.");
+                const supabase = conectarSupabase();
+                if (!supabase) throw new Error("Cliente Supabase indisponível.");
 
                 if (!email || !senha) {
                     mostrarMensagem("Campos Obrigatórios", "Informe o e-mail e a senha.", "fa-triangle-exclamation", "text-amber-500");
@@ -503,7 +502,7 @@
                 }
 
                 console.log("[SUPABASE] Consultando credenciais para:", email);
-                const { data, error } = await client.from('Usuarios').select('*').eq('email', email);
+                const { data, error } = await supabase.from('Usuarios').select('*').eq('email', email);
                 if (error) {
                     console.error("[SUPABASE ERROR] Erro ao consultar login:", error);
                     mostrarMensagem("Erro de Conexão", "Falha ao conectar com o banco de dados.", "fa-triangle-exclamation", "text-rose-600");
@@ -528,14 +527,14 @@
             }
         }
 
-        // Função obrigatória 4: atualizarUsuario
+        // Função obrigatória: atualizarUsuario
         async function atualizarUsuario(id, dadosAtualizados) {
             try {
-                const client = conectarSupabase();
-                if (!client) throw new Error("Cliente Supabase indisponível.");
+                const supabase = conectarSupabase();
+                if (!supabase) throw new Error("Cliente Supabase indisponível.");
 
                 console.log("[SUPABASE] Atualizando usuário ID:", id);
-                const { data, error } = await client.from('Usuarios').update(dadosAtualizados).eq('id', id).select();
+                const { data, error } = await supabase.from('Usuarios').update(dadosAtualizados).eq('id', id).select();
                 if (error) {
                     console.error("[SUPABASE ERROR] Erro ao atualizar usuário:", error);
                     return false;
@@ -548,14 +547,14 @@
             }
         }
 
-        // Função obrigatória 5: excluirUsuario
+        // Função obrigatória: excluirUsuario
         async function excluirUsuario(id) {
             try {
-                const client = conectarSupabase();
-                if (!client) throw new Error("Cliente Supabase indisponível.");
+                const supabase = conectarSupabase();
+                if (!supabase) throw new Error("Cliente Supabase indisponível.");
 
                 console.log("[SUPABASE] Excluindo usuário ID da tabela Usuarios:", id);
-                const { error } = await client.from('Usuarios').delete().eq('id', id);
+                const { error } = await supabase.from('Usuarios').delete().eq('id', id);
                 if (error) {
                     console.error("[SUPABASE ERROR] Erro ao excluir usuário:", error);
                     return false;
@@ -581,8 +580,8 @@
                 
                 // Garantir admin padrão se não houver na base
                 const adminExiste = usuariosCadastrados.some(u => u.email === 'fweudes2009@gmail.com');
-                const client = conectarSupabase();
-                if (!adminExiste && client) {
+                const supabase = conectarSupabase();
+                if (!adminExiste && supabase) {
                     const adminPadrao = {
                         nome: 'Administrador Geral',
                         email: 'fweudes2009@gmail.com',
@@ -590,13 +589,13 @@
                         telefone: '5511911815136',
                         perfil: 'admin'
                     };
-                    await client.from('Usuarios').insert([adminPadrao]);
+                    await supabase.from('Usuarios').insert([adminPadrao]);
                     usuariosCadastrados = await listarUsuarios();
                 }
 
                 try {
-                    if (client) {
-                        const { data: resOrc } = await client.from('orcamentos').select('*');
+                    if (supabase) {
+                        const { data: resOrc } = await supabase.from('orcamentos').select('*');
                         if (resOrc) orcamentosSolicitados = resOrc;
                     }
                 } catch(e) { orcamentosSolicitados = []; }
@@ -765,7 +764,6 @@
                 userInfo.classList.add('flex');
                 userName.textContent = usuarioLogado.nome;
                 
-                // Oculta a seção de orçamento para admin, exibe para cliente
                 if (usuarioLogado.perfil === 'cliente') {
                     if (secaoSol) secaoSol.classList.remove('hidden');
                 } else {
