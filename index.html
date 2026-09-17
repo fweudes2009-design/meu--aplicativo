@@ -3,1015 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fixou - Conectando Você aos Melhores Profissionais</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Fixou - Serviços Profissionais</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome para Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Supabase JS Client UMD -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- CABEÇALHO -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <!-- CABEÇALHO GLOBAL -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-200">
-                    <i class="fa-solid fa-hands-holding-child text-xl"></i>
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="mudarTela('inicio')">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                    <i class="fa-solid fa-screwdriver-wrench text-lg"></i>
                 </div>
                 <div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Fixa</span>
-                    <p class="text-xs text-slate-400 font-medium">Serviços Profissionais</p>
+                    <span class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Fixou</span>
+                    <p class="text-[11px] text-slate-400 font-semibold tracking-wide">Serviços Profissionais</p>
                 </div>
             </div>
 
-            <!-- BOTÕES DE ENTRADA / CADASTRO / ADMIN -->
+            <!-- BOTÕES DE AUTENTICAÇÃO E PERFIL -->
             <div class="flex items-center space-x-3">
-                <div id="userInfoHeader" class="hidden items-center space-x-3 mr-2 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200">
-                    <span id="headerUserName" class="text-sm font-semibold text-slate-700"></span>
-                    <button onclick="abrirPainelAdmin()" id="btnAdminHeader" class="hidden items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-2 rounded-xl text-sm font-bold transition shadow-md">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Painel Admin</span>
-                    </button>
-                    <button onclick="fazerLogout()" class="text-rose-600 hover:text-rose-700 text-sm font-medium px-2 py-1 transition">Sair</button>
+                <div id="areaUsuarioLogado" class="hidden items-center space-x-3">
+                    <span id="labelNomeUsuario" class="text-xs font-bold text-slate-700"></span>
+                    <button onclick="fazerLogout()" class="text-rose-600 hover:text-rose-700 text-xs font-semibold px-2 py-1">Sair</button>
                 </div>
-                
-                <div id="authButtonsHeader" class="flex items-center space-x-3">
-                    <button onclick="abrirModalLogin()" class="text-indigo-600 hover:text-indigo-700 font-semibold px-4 py-2 text-sm transition">
-                        Entrada
-                    </button>
-                    <button onclick="abrirModalTipoUsuario()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition shadow-md shadow-indigo-100 flex items-center space-x-2">
+
+                <div id="areaBotoesAuth" class="flex items-center space-x-2">
+                    <button onclick="mudarTela('login')" class="text-indigo-600 hover:text-indigo-700 px-4 py-2 text-sm font-semibold transition">Entrada</button>
+                    <button onclick="mudarTela('escolhaCadastro')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-indigo-100 flex items-center space-x-2">
                         <i class="fa-solid fa-user-plus text-xs"></i>
-                        <span>Cadastro</span>
+                        <span>Cadastrar</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="flex-grow">
-        <!-- HERO SECTION COM PESQUISA -->
-        <section class="relative bg-gradient-to-b from-indigo-900 via-indigo-800 to-violet-900 text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden shadow-xl">
-            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            <div class="max-w-4xl mx-auto text-center relative z-10">
-                <div class="inline-flex items-center space-x-2 bg-indigo-800/80 border border-indigo-700 px-4 py-1.5 rounded-full text-xs font-medium mb-6 text-indigo-200 shadow-inner">
-                    <i class="fa-solid fa-shield-check text-emerald-400"></i>
-                    <span>Profissionais verificados e prontos para atender</span>
-                </div>
-                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">
-                    Encontre o profissional perfeito para o seu serviço
-                </h1>
-                <p class="text-lg text-indigo-200 mb-10 max-w-2xl mx-auto">
-                    Busque por encanadores, marceneiros, pintores, eletricistas e muito mais em poucos cliques.
-                </p>
+    <!-- CONTEÚDO PRINCIPAL DINÂMICO -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-                <!-- BARRA DE PESQUISA -->
-                <div class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 max-w-2xl mx-auto">
-                    <div class="flex items-center pl-4 w-full sm:w-auto flex-grow text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass mr-3 text-lg text-indigo-600"></i>
-                        <input type="text" id="inputPesquisa" oninput="filtrarServicos()" placeholder="O que você precisa hoje? (Ex: Encanador, Pintor...)" class="w-full py-3 bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none text-base">
+        <!-- TELA 1 — INÍCIO DO CLIENTE (LIMPA DE BUSCA PREMATURA) -->
+        <div id="tela-inicio" class="espaco-tela space-y-8">
+            <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-violet-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="max-w-2xl relative z-10 space-y-4">
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight">Serviços Profissionais</h1>
+                    <p class="text-indigo-200 text-base">Conectamos você aos melhores profissionais qualificados do mercado.</p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                        <button onclick="mudarTela('escolhaCadastro')" class="bg-white text-indigo-900 hover:bg-indigo-50 font-extrabold px-8 py-4 rounded-2xl shadow-xl transition text-base">
+                            Cadastre-se para Começar
+                        </button>
                     </div>
-                    <button onclick="filtrarServicos()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition shadow-md">
-                        Buscar
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- GRADE DE SERVIÇOS -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Nossos Serviços</h2>
-                    <p class="text-slate-500 mt-1">Conheça nossas categorias de atendimento</p>
                 </div>
             </div>
 
-            <div id="gridServicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div onclick="clicarServicoCard('Encanador')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
-                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
-                        <i class="fa-solid fa-faucet text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-1">Encanador</h3>
-                    <p class="text-sm text-slate-500">Vazamentos, instalações hidráulicas e reparos rápidos</p>
-                </div>
-
-                <div onclick="clicarServicoCard('Marceneiro')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
-                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
-                        <i class="fa-solid fa-hammer text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-1">Marceneiro</h3>
-                    <p class="text-sm text-slate-500">Móveis planejados e reparos em madeira</p>
-                </div>
-
-                <div onclick="clicarServicoCard('Pintor')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
-                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
-                        <i class="fa-solid fa-paint-roller text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-1">Pintor</h3>
-                    <p class="text-sm text-slate-500">Pintura residencial, comercial e acabamentos finos</p>
-                </div>
-
-                <div onclick="clicarServicoCard('Eletricista')" class="card-servico bg-white p-6 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-xl transition cursor-pointer group">
-                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 flex items-center justify-center text-indigo-600 group-hover:text-white transition mb-4 shadow-sm">
-                        <i class="fa-solid fa-bolt text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-1">Eletricista</h3>
-                    <p class="text-sm text-slate-500">Instalações elétricas, quadros e manutenções preventivas</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO DE SOLICITAÇÃO DE ORÇAMENTO COM FOTO (OCULTA PARA ADMIN) -->
-        <section id="secaoSolicitacao" class="bg-slate-100 py-16 border-t border-slate-200 hidden">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Solicitar Orçamento de Serviço</h2>
-                        <p class="text-slate-500 mt-2">Escolha o profissional, envie a foto do problema e clique em solicitar</p>
-                    </div>
-
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                            <i class="fa-solid fa-user-tie text-indigo-600 mr-2"></i> Profissionais Cadastrados na Plataforma
-                        </h3>
-                        <div id="gridProfissionaisCadastrados" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-64 overflow-y-auto p-2 bg-slate-50 rounded-2xl border border-slate-200">
-                            <!-- Preenchido via Supabase -->
+            <!-- CATEGORIAS -->
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 mb-4">Categorias Populares</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-hammer"></i>
                         </div>
+                        <span class="font-bold text-sm text-slate-800">Reforma</span>
                     </div>
-
-                    <form onsubmit="enviarOrcamento(event)" class="space-y-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">Especialidade / Serviço</label>
-                                <input type="text" id="solicEspecialidade" required placeholder="Ex: Encanador" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">Profissional Escolhido</label>
-                                <input type="text" id="solicProfissional" required placeholder="Selecione na lista acima" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            </div>
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-paint-roller"></i>
                         </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Descrição do Problema / Serviço</label>
-                            <textarea id="solicDescricao" rows="3" required placeholder="Descreva detalhadamente o que precisa ser feito..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        <span class="font-bold text-sm text-slate-800">Pintura</span>
+                    </div>
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-bolt"></i>
                         </div>
-
-                        <!-- Upload de Foto do Serviço -->
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Local ou Serviço Desejado</label>
-                            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-indigo-500 transition cursor-pointer relative bg-slate-50" onclick="document.getElementById('inputFotoServico').click()">
-                                <input type="file" id="inputFotoServico" accept="image/*" class="hidden" onchange="mostrarPreviewFoto(event)">
-                                <div id="containerPreviewFoto" class="flex flex-col items-center">
-                                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-600 mb-2"></i>
-                                    <p class="text-sm font-medium text-slate-700">Clique para carregar ou arraste a foto aqui</p>
-                                    <p class="text-xs text-slate-400 mt-1">PNG, JPG ou JPEG até 10MB</p>
-                                </div>
-                                <img id="imgPreview" class="hidden mx-auto h-40 object-cover rounded-xl shadow-md" alt="Pré-visualização">
-                            </div>
+                        <span class="font-bold text-sm text-slate-800">Elétrica</span>
+                    </div>
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-faucet"></i>
                         </div>
-
-                        <div>
-                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 rounded-xl transition shadow-lg shadow-indigo-200 text-base flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
-                                <span>Solicitar um orçamento</span>
-                            </button>
+                        <span class="font-bold text-sm text-slate-800">Hidráulica</span>
+                    </div>
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-chair"></i>
                         </div>
-                    </form>
+                        <span class="font-bold text-sm text-slate-800">Marcenaria</span>
+                    </div>
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-toolbox"></i>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800">Manutenção</span>
+                    </div>
+                    <div onclick="tentarSolicitarServico()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer text-center group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center mx-auto mb-3 transition shadow-xs text-lg">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <span class="font-bold text-sm text-slate-800">Outros</span>
+                    </div>
                 </div>
             </div>
-        </section>
-    </main>
 
-    <!-- RODAPÉ -->
-    <footer class="bg-white border-t border-slate-200 py-8 text-center text-sm text-slate-500">
-        <p>&copy; 2026 Fixa. Todos os direitos reservados.</p>
-    </footer>
-
-    <!-- MODAL DE ESCOLHA DE TIPO DE USUÁRIO (CADASTRO) -->
-    <div id="modalTipoUsuario" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div id="modalContentTipo" class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative">
-            <button onclick="fecharModalTipoUsuario()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-2xl font-bold text-slate-900 mb-2">Como deseja se cadastrar?</h3>
-            <p class="text-slate-500 mb-6 text-sm">Selecione o seu perfil para continuar na plataforma</p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button onclick="selecionarPerfil('cliente')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition">
-                        <i class="fa-solid fa-user text-xl"></i>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-lg mb-1">Sou Cliente</h4>
-                    <p class="text-xs text-slate-500">Quero contratar profissionais para serviços</p>
-                </button>
-
-                <button onclick="selecionarPerfil('prestador')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-left transition group">
-                    <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-600 group-hover:text-white transition">
-                        <i class="fa-solid fa-toolbox text-xl"></i>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-lg mb-1">Sou Prestador</h4>
-                    <p class="text-xs text-slate-500">Quero oferecer meus serviços e conseguir clientes</p>
+            <div class="flex justify-center pt-4">
+                <button onclick="tentarSolicitarServico()" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-indigo-200 transition flex items-center space-x-3 text-lg">
+                    <i class="fa-solid fa-plus-circle text-xl"></i>
+                    <span>+ Solicitar Novo Serviço</span>
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- MODAL CADASTRO CLIENTE -->
-    <div id="modalCadastroCliente" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div id="modalContentCliente" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
-            <button onclick="fecharModalCadastroCliente()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-2xl font-bold text-slate-900 mb-2">Cadastro de Cliente</h3>
-            <p class="text-slate-500 mb-4 text-sm">Preencha seus dados para salvar na tabela Usuarios</p>
+        <!-- TELA DE ESCOLHA DO TIPO DE CADASTRO -->
+        <div id="tela-escolhaCadastro" class="espaco-tela hidden max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-black text-slate-900">Como deseja se cadastrar?</h2>
+                <button onclick="mudarTela('inicio')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onclick="mudarTela('cadastroCliente')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/40 text-left transition group">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition text-xl">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-1">Sou Cliente</h3>
+                    <p class="text-xs text-slate-500">Quero contratar serviços profissionais</p>
+                </button>
+                <button onclick="mudarTela('cadastroPrestadorCompleto')" class="p-6 rounded-2xl border-2 border-slate-200 hover:border-violet-600 hover:bg-violet-50/40 text-left transition group">
+                    <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 group-hover:bg-violet-600 group-hover:text-white transition text-xl">
+                        <i class="fa-solid fa-toolbox"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-1">Sou Prestador</h3>
+                    <p class="text-xs text-slate-500">Quero oferecer meus serviços e validar compliance</p>
+                </button>
+            </div>
+        </div>
 
-            <form onsubmit="cadastrarClienteForm(event)" class="space-y-4">
+        <!-- TELA DE CADASTRO DE CLIENTE (CEP PRIMEIRO, ENDEREÇO DEPOIS) -->
+        <div id="tela-cadastroCliente" class="espaco-tela hidden max-w-lg mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-black text-slate-900">Cadastro de Cliente</h2>
+                <button onclick="mudarTela('escolhaCadastro')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
+            </div>
+            <form onsubmit="executarCadastroCliente(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
-                    <input type="text" id="cliNome" required placeholder="Seu nome completo" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="text" required placeholder="Seu nome" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
-                    <input type="email" id="cliEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
+                        <input type="email" id="cliEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
+                        <input type="password" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone / WhatsApp</label>
-                    <input type="text" id="cliTelefone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
+                        <input type="text" id="cliCep" required placeholder="00000-000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço (Rua e Nº)</label>
+                        <input type="text" id="cliEndereco" required placeholder="Ex: Av. Paulista, 1000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Senha de Acesso</label>
-                    <input type="password" id="cliSenha" required placeholder="Mín. 6 chars" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-indigo-200 mt-2">
-                    Concluir e Salvar no Supabase
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
+                    CONCLUIR CADASTRO DE CLIENTE
                 </button>
             </form>
         </div>
-    </div>
 
-    <!-- MODAL CADASTRO PRESTADOR -->
-    <div id="modalCadastroPrestador" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div id="modalContentPrestador" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[90vh] overflow-y-auto">
-            <button onclick="fecharModalCadastroPrestador()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-2xl font-bold text-slate-900 mb-2">Cadastro de Prestador</h3>
-            <p class="text-slate-500 mb-4 text-sm">Ofereça seus serviços na tabela Usuarios</p>
+        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO (COM BUSCA DE CEP E RUA OBRIGATÓRIA PARA O CLIENTE LOGADO) -->
+        <div id="tela-solicitar" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Solicitar Orçamento & Buscar por CEP</h2>
+                    <p class="text-xs text-slate-500">Informe os dados do serviço e a localização exata para encontrar profissionais</p>
+                </div>
+                <button onclick="mudarTela('inicio')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
 
-            <form onsubmit="cadastrarPrestadorForm(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
-                    <input type="text" id="prestNome" required placeholder="Seu nome profissional" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <form onsubmit="realizarBuscaPorCepOrcamento(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">CEP para o Serviço</label>
+                        <input type="text" id="orcamentoCep" required placeholder="Ex: 05416-000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Rua / Logradouro</label>
+                        <input type="text" id="orcamentoRua" required placeholder="Ex: Rua dos Pinheiros" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
-                    <input type="email" id="prestEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">O que você precisa?</label>
+                    <input type="text" required placeholder="Ex: Pintura completa de apartamento" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
+                    BUSCAR PROFISSIONAIS NA REGIÃO
+                </button>
+            </form>
+        </div>
+
+        <!-- TELA DE RESULTADOS DA BUSCA -->
+        <div id="tela-resultadosBusca" class="espaco-tela hidden space-y-6 max-w-4xl mx-auto">
+            <div class="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone / WhatsApp Profissional</label>
-                    <input type="text" id="prestTelefone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <h2 class="text-xl font-black text-slate-900">Profissionais Encontrados</h2>
+                    <p id="labelTermoBusca" class="text-xs text-slate-500 mt-0.5">Exibindo resultados para sua região</p>
                 </div>
+                <button onclick="mudarTela('inicio')" class="bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold">Nova Busca</button>
+            </div>
+            <div id="gridResultadosProfissionais" class="bg-white p-8 rounded-3xl border border-slate-200 text-center space-y-3">
+                <i class="fa-solid fa-users-slash text-4xl text-slate-300"></i>
+                <h3 class="font-bold text-slate-700 text-lg">Nenhum profissional cadastrado para esta localização</h3>
+                <p class="text-xs text-slate-400">Tente buscar por outro CEP ou rua próxima.</p>
+            </div>
+        </div>
+
+        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR (COMPLIANCE) -->
+        <div id="tela-cadastroPrestadorCompleto" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Especialidade</label>
-                    <select id="prestEspecialidade" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        <option value="">Selecione a especialidade</option>
-                        <option value="Encanador">Encanador</option>
-                        <option value="Marceneiro">Marceneiro</option>
-                        <option value="Pintor">Pintor</option>
-                        <option value="Eletricista">Eletricista</option>
-                        <option value="Outros">Outros</option>
+                    <h2 class="text-2xl font-black text-slate-900">Cadastro Completo do Prestador</h2>
+                    <p class="text-xs text-slate-500">Validação obrigatória de compliance, documentos e dados profissionais</p>
+                </div>
+                <button onclick="mudarTela('escolhaCadastro')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
+            </div>
+
+            <form onsubmit="salvarCadastroPrestadorCompleto(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo / Razão Social</label>
+                        <input type="text" required placeholder="Nome do profissional" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail de Acesso</label>
+                        <input type="email" id="prestEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">CPF ou CNPJ / MEI</label>
+                        <input type="text" required placeholder="000.000.000-00 ou CNPJ" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Registro Profissional (CREA, CFT, etc.)</label>
+                        <input type="text" placeholder="Número do registro de classe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">CEP de Atendimento</label>
+                        <input type="text" required placeholder="00000-000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço Completo (Rua e Nº)</label>
+                        <input type="text" required placeholder="Rua, número, bairro" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Dados Bancários (Pix / Conta)</label>
+                        <input type="text" required placeholder="Chave Pix ou Ag/Conta" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Normas Regulamentadoras (NRs)</label>
+                        <input type="text" placeholder="Ex: NR-10, NR-35" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Possui Seguro de Responsabilidade?</label>
+                        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                            <option value="nao">Não</option>
+                            <option value="sim">Sim</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center bg-slate-50">
+                    <i class="fa-solid fa-file-shield text-3xl text-indigo-600 mb-2"></i>
+                    <p class="text-sm font-semibold text-slate-700">Anexar Documentos de Verificação (CNPJ, Certificados, Cursos, NRs)</p>
+                    <p class="text-xs text-slate-400 mt-1">PDF, PNG ou JPG até 15MB</p>
+                </div>
+
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-violet-200 text-sm">
+                    VALIDAR E SALVAR CADASTRO COMPLETO DO PRESTADOR
+                </button>
+            </form>
+        </div>
+
+        <!-- TELA DE ENTRADA / LOGIN -->
+        <div id="tela-login" class="espaco-tela hidden max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-black text-slate-900">Entrar na Fixou</h2>
+                <button onclick="mudarTela('inicio')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="executarLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Perfil de Acesso</label>
+                    <select id="loginPerfil" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-indigo-600 focus:outline-none">
+                        <option value="cliente">👤 Cliente</option>
+                        <option value="prestador">🛠️ Prestador de Serviço</option>
+                        <option value="admin">🛡️ Administrador</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Senha de Acesso</label>
-                    <input type="password" id="prestSenha" required placeholder="Mín. 6 chars" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-violet-200 mt-2">
-                    Concluir e Salvar no Supabase
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE LOGIN -->
-    <div id="modalLogin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div id="modalContentLogin" class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative">
-            <button onclick="fecharModalLogin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-2xl font-bold text-slate-900 mb-2">Entrar na Conta</h3>
-            <p class="text-slate-500 mb-6 text-sm">Autenticação direta no banco Supabase</p>
-
-            <form onsubmit="realizarLogin(event)" class="space-y-4">
-                <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail</label>
-                    <input type="email" id="loginEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="email" id="loginEmail" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
-                    <input type="password" id="loginSenha" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="password" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-indigo-200 mt-2">
-                    Entrar
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
+                    ENTRAR NO SISTEMA
                 </button>
             </form>
         </div>
-    </div>
 
-    <!-- PAINEL DO ADMINISTRADOR -->
-    <div id="modalAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div id="modalContentAdmin" class="bg-white rounded-3xl p-6 sm:p-8 max-w-6xl w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300 relative max-h-[92vh] flex flex-col">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-white shadow-md text-xl">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-slate-900">Painel do Administrador (Tabela Usuarios - Supabase)</h3>
-                        <p class="text-xs text-slate-500">Gerenciamento direto em nuvem</p>
-                    </div>
+        <!-- ÁREA DO PRESTADOR -->
+        <div id="tela-painelProfissional" class="espaco-tela hidden space-y-6">
+            <div class="bg-gradient-to-r from-violet-900 to-indigo-900 p-8 rounded-3xl text-white shadow-xl flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-black">Área do Prestador</h2>
+                    <p class="text-xs text-violet-200 mt-1">Gerenciamento exclusivo do seu registro profissional e conformidade.</p>
                 </div>
-                <button onclick="fecharPainelAdmin()" class="text-slate-400 hover:text-slate-600 text-2xl p-2"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="fazerLogout()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
             </div>
-
-            <!-- BOTÕES DE FILTRO -->
-            <div class="py-4 flex flex-wrap gap-2.5 items-center border-b border-slate-200 bg-slate-50 px-4 rounded-2xl my-3">
-                <button onclick="filtrarAdminAba('todos')" id="abaBtnTodos" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm">Todos os Registros (0)</button>
-                <button onclick="filtrarAdminAba('cliente')" id="abaBtnCliente" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Clientes (0)</button>
-                <button onclick="filtrarAdminAba('prestador')" id="abaBtnPrestador" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Prestadores (0)</button>
-                <button onclick="filtrarAdminAba('orcamentos')" id="abaBtnOrcamentos" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
-                    <i class="fa-solid fa-file-invoice-dollar text-amber-600"></i>
-                    <span>Orçamentos (0)</span>
-                </button>
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center space-y-3">
+                <i class="fa-solid fa-toolbox text-4xl text-indigo-600"></i>
+                <h3 class="font-bold text-slate-800 text-lg">Seu registro está validado e ativo</h3>
+                <p class="text-xs text-slate-500">Documentação e compliance verificados com sucesso.</p>
             </div>
+        </div>
 
-            <!-- TABELA DE DADOS -->
-            <div class="flex-grow overflow-y-auto py-2">
-                <div class="overflow-x-auto rounded-2xl border border-slate-200">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr id="tabelaHeaderRow" class="bg-slate-100 text-slate-700 text-xs uppercase font-bold tracking-wider">
-                                <th class="p-4">Perfil</th>
-                                <th class="p-4">Nome</th>
-                                <th class="p-4">E-mail</th>
-                                <th class="p-4">Senha</th>
-                                <th class="p-4">Telefone</th>
-                                <th class="p-4">Especialidade</th>
-                                <th class="p-4">Criado em</th>
-                                <th class="p-4 text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaAdminBody" class="divide-y divide-slate-200 text-sm text-slate-700">
-                            <!-- Preenchido via Supabase -->
-                        </tbody>
-                    </table>
+        <!-- PAINEL ADMINISTRATIVO -->
+        <div id="tela-painelAdmin" class="espaco-tela hidden space-y-6">
+            <div class="bg-slate-900 p-8 rounded-3xl text-white shadow-xl flex justify-between items-center">
+                <div>
+                    <span class="bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-black uppercase">Painel Restrito</span>
+                    <h2 class="text-3xl font-black mt-2">Governança & Administração Total</h2>
+                    <p class="text-xs text-slate-400 mt-1">Controle total de conformidade e auditoria de prestadores.</p>
                 </div>
+                <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
             </div>
-
-            <div class="pt-4 border-t border-slate-200 flex justify-between items-center mt-4">
-                <span id="adminTotalRegistros" class="text-xs text-slate-500 font-bold">Total na tabela Usuarios: 0</span>
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center space-y-3">
+                <i class="fa-solid fa-shield-halved text-4xl text-amber-500"></i>
+                <h3 class="font-bold text-slate-800 text-lg">Módulo Administrativo Ativo</h3>
+                <p class="text-xs text-slate-500">Pronto para auditar CPFs/CNPJs, NRs, seguros e dados bancários.</p>
             </div>
         </div>
-    </div>
 
-    <!-- MODAL DE VISUALIZAR IMAGEM -->
-    <div id="modalVisualizarImagem" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300" onclick="fecharModalImagem()">
-        <div class="bg-white rounded-3xl p-6 max-w-2xl w-full mx-4 shadow-2xl relative text-center" onclick="event.stopPropagation()">
-            <button onclick="fecharModalImagem()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-lg font-bold text-slate-900 mb-4">Foto do Serviço Enviada</h3>
-            <img id="imgModalExpandida" class="mx-auto max-h-[70vh] rounded-2xl shadow-lg object-contain" alt="Serviço">
-        </div>
-    </div>
+    </main>
 
-    <!-- TOAST DE MENSAGEM -->
-    <div id="toastMensagem" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 flex items-center space-x-3 max-w-sm">
-        <div id="toastIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <i id="toastIcon" class="fa-solid text-lg"></i>
-        </div>
-        <div>
-            <h4 id="toastTitulo" class="font-bold text-slate-900 text-sm"></h4>
-            <p id="toastTexto" class="text-xs text-slate-500"></p>
-        </div>
-    </div>
+    <!-- RODAPÉ -->
+    <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Fixou. Todos os direitos reservados. Serviços Profissionais.</p>
+    </footer>
 
-    <!-- SCRIPT DE CONEXÃO E SUPABASE -->
+    <!-- SCRIPT DE CONTROLE -->
     <script>
-        let supabaseClientInstance = null;
-        let usuariosCadastrados = [];
-        let orcamentosSolicitados = [];
-        let usuarioLogado = null;
-        try {
-            usuarioLogado = JSON.parse(localStorage.getItem('fixa_logado_sup')) || null;
-        } catch(e) { usuarioLogado = null; }
+        let usuarioSessao = null;
 
-        let filtroAdminAtual = 'todos';
-        let dadosImagemBase64 = '';
-
-        // Função obrigatória: conectarSupabase
-        function conectarSupabase() {
-            try {
-                if (supabaseClientInstance) return supabaseClientInstance;
-                if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    supabaseClientInstance = window.supabase.createClient(
-                        "https://xjckskjqddezpevfehhu.supabase.co",
-                        "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot"
-                    );
-                    console.log("[SUPABASE] Conexão estabelecida com sucesso.");
-                    return supabaseClientInstance;
-                } else {
-                    console.error("[SUPABASE ERROR] Biblioteca Supabase UMD não carregada.");
-                    return null;
-                }
-            } catch (error) {
-                console.error("[SUPABASE EXCEPTION] Erro ao conectar Supabase:", error);
-                return null;
+        function mudarTela(idTela) {
+            document.querySelectorAll('.espaco-tela').forEach(t => t.classList.add('hidden'));
+            const alvo = document.getElementById('tela-' + idTela);
+            if (alvo) {
+                alvo.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        // Função obrigatória: listarUsuarios
-        async function listarUsuarios() {
-            try {
-                const supabase = conectarSupabase();
-                if (!supabase) {
-                    console.warn("[SUPABASE WARN] Cliente Supabase indisponível. Usando array vazio.");
-                    return [];
-                }
-                
-                console.log("[SUPABASE] Buscando registros na tabela Usuarios...");
-                const { data, error } = await supabase.from('Usuarios').select('*');
-                if (error) {
-                    console.error("[SUPABASE ERROR] Erro ao listar usuários:", error.message || error);
-                    return [];
-                }
-                console.log("[SUPABASE] Usuários listados com sucesso:", data);
-                return data || [];
-            } catch (error) {
-                console.error("[SUPABASE EXCEPTION] Falha em listarUsuarios:", error);
-                return [];
+        function tentarSolicitarServico() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') {
+                alert("Atenção: É necessário estar cadastrado como Cliente para solicitar um orçamento.");
+                mudarTela('escolhaCadastro');
+                return;
             }
+            mudarTela('solicitar');
         }
 
-        async function buscarUsuarios() {
-            return await listarUsuarios();
-        }
-
-        // Função obrigatória: cadastrarUsuario
-        async function cadastrarUsuario(novoUsuario) {
-            try {
-                const supabase = conectarSupabase();
-                if (!supabase) throw new Error("Cliente Supabase indisponível.");
-
-                if (!novoUsuario.email || !novoUsuario.senha || !novoUsuario.perfil) {
-                    throw new Error("Email, senha e perfil são obrigatórios.");
-                }
-
-                console.log("[SUPABASE] Verificando existência de e-mail:", novoUsuario.email);
-                const usuariosAtuais = await listarUsuarios();
-                const existente = usuariosAtuais.find(u => u.email === novoUsuario.email);
-                if (existente) {
-                    mostrarMensagem("Usuário Existente", "Este e-mail já está cadastrado no sistema.", "fa-triangle-exclamation", "text-amber-500");
-                    return false;
-                }
-
-                console.log("[SUPABASE] Inserindo novo usuário na tabela Usuarios...", novoUsuario);
-                const { data, error } = await supabase.from('Usuarios').insert([novoUsuario]).select();
-                if (error) {
-                    console.error("[SUPABASE ERROR] Erro ao inserir na tabela Usuarios:", error);
-                    mostrarMensagem("Erro de Conexão", error.message || "Não foi possível concluir o cadastro.", "fa-triangle-exclamation", "text-rose-600");
-                    return false;
-                }
-
-                console.log("[SUPABASE] Inserção concluída com sucesso:", data);
-                mostrarMensagem("Cadastro Realizado!", "Seu cadastro foi salvo com sucesso no banco de dados!", "fa-circle-check", "text-emerald-600");
-                return true;
-            } catch (error) {
-                console.error("[SUPABASE EXCEPTION] Erro em cadastrarUsuario:", error);
-                mostrarMensagem("Erro", error.message || "Erro ao realizar cadastro.", "fa-triangle-exclamation", "text-rose-600");
-                return false;
-            }
-        }
-
-        // Função obrigatória: loginUsuario
-        async function loginUsuario(email, senha) {
-            try {
-                const supabase = conectarSupabase();
-                if (!supabase) throw new Error("Cliente Supabase indisponível.");
-
-                if (!email || !senha) {
-                    mostrarMensagem("Campos Obrigatórios", "Informe o e-mail e a senha.", "fa-triangle-exclamation", "text-amber-500");
-                    return null;
-                }
-
-                console.log("[SUPABASE] Consultando credenciais para:", email);
-                const { data, error } = await supabase.from('Usuarios').select('*').eq('email', email);
-                if (error) {
-                    console.error("[SUPABASE ERROR] Erro ao consultar login:", error);
-                    mostrarMensagem("Erro de Conexão", "Falha ao conectar com o banco de dados.", "fa-triangle-exclamation", "text-rose-600");
-                    return null;
-                }
-
-                if (data && data.length > 0) {
-                    const usuario = data[0];
-                    if (usuario.senha === senha) {
-                        console.log("[SUPABASE] Login validado com sucesso:", usuario);
-                        return usuario;
-                    }
-                }
-
-                console.error("[SUPABASE ERROR] Login inválido para:", email);
-                mostrarMensagem("Login Inválido", "E-mail ou senha incorretos.", "fa-triangle-exclamation", "text-rose-600");
-                return null;
-            } catch (error) {
-                console.error("[SUPABASE EXCEPTION] Erro em loginUsuario:", error);
-                mostrarMensagem("Erro de Conexão", "Falha ao conectar com o banco de dados.", "fa-triangle-exclamation", "text-rose-600");
-                return null;
-            }
-        }
-
-        // Função obrigatória: atualizarUsuario
-        async function atualizarUsuario(id, dadosAtualizados) {
-            try {
-                const supabase = conectarSupabase();
-                if (!supabase) throw new Error("Cliente Supabase indisponível.");
-
-                console.log("[SUPABASE] Atualizando usuário ID:", id);
-                const { data, error } = await supabase.from('Usuarios').update(dadosAtualizados).eq('id', id).select();
-                if (error) {
-                    console.error("[SUPABASE ERROR] Erro ao atualizar usuário:", error);
-                    return false;
-                }
-                console.log("[SUPABASE] Usuário atualizado com sucesso:", data);
-                return true;
-            } catch (error) {
-                console.error("[SUPABASE EXCEPTION] Erro em atualizarUsuario:", error);
-                return false;
-            }
-        }
-
-        // Função obrigatória: excluirUsuario
-        async function excluirUsuario(id) {
-            try {
-                const supabase = conectarSupabase();
-                if (!supabase) throw new Error("Cliente Supabase indisponível.");
-
-                console.log("[SUPABASE] Excluindo usuário ID da tabela Usuarios:", id);
-                const { error } = await supabase.from('Usuarios').delete().eq('id', id);
-                if (error) {
-                    console.error("[SUPABASE ERROR] Erro ao excluir usuário:", error);
-                    return false;
-                }
-                console.log("[SUPABASE] Usuário excluído com sucesso.");
-                return true;
-            } catch (error) {
-                console.error("[SUPABASE EXCEPTION] Erro em excluirUsuario:", error);
-                return false;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log("[GLOBAL] Inicializando aplicação Fixa com Supabase...");
-            conectarSupabase();
-            await carregarDadosIniciais();
-            verificarEstadoSessao();
-        });
-
-        async function carregarDadosIniciais() {
-            try {
-                usuariosCadastrados = await listarUsuarios();
-                
-                const adminExiste = usuariosCadastrados.some(u => u.email === 'fweudes2009@gmail.com');
-                const supabase = conectarSupabase();
-                if (!adminExiste && supabase) {
-                    const adminPadrao = {
-                        nome: 'Administrador Geral',
-                        email: 'fweudes2009@gmail.com',
-                        senha: 'Weudes#2026!',
-                        telefone: '5511911815136',
-                        perfil: 'admin',
-                        especialidade: 'Administração do Sistema'
-                    };
-                    await supabase.from('Usuarios').insert([adminPadrao]);
-                    usuariosCadastrados = await listarUsuarios();
-                }
-
-                try {
-                    if (supabase) {
-                        const { data: resOrc } = await supabase.from('orcamentos').select('*');
-                        if (resOrc) orcamentosSolicitados = resOrc;
-                    }
-                } catch(e) { orcamentosSolicitados = []; }
-
-                atualizarContadoresAbas();
-                carregarProfissionaisCadastrados();
-            } catch (error) {
-                console.error("[APP EXCEPTION] Erro ao carregar dados do Supabase:", error);
-            }
-        }
-
-        function atualizarContadoresAbas() {
-            const totalRegs = usuariosCadastrados.length;
-            const totalCli = usuariosCadastrados.filter(u => u.perfil === 'cliente').length;
-            const totalPres = usuariosCadastrados.filter(u => u.perfil === 'prestador').length;
-            const totalOrc = orcamentosSolicitados.length;
-
-            const btnTodos = document.getElementById('abaBtnTodos');
-            const btnCliente = document.getElementById('abaBtnCliente');
-            const btnPrestador = document.getElementById('abaBtnPrestador');
-            const btnOrcamentos = document.getElementById('abaBtnOrcamentos');
-
-            if (btnTodos) btnTodos.textContent = `Todos os Registros (${totalRegs})`;
-            if (btnCliente) btnCliente.textContent = `Clientes (${totalCli})`;
-            if (btnPrestador) btnPrestador.textContent = `Prestadores (${totalPres})`;
-            if (btnOrcamentos) btnOrcamentos.innerHTML = `<i class="fa-solid fa-file-invoice-dollar text-amber-600 mr-1"></i> Orçamentos (${totalOrc})`;
-        }
-
-        function abrirModalTipoUsuario() {
-            const m = document.getElementById('modalTipoUsuario');
-            const c = document.getElementById('modalContentTipo');
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
-        }
-        function fecharModalTipoUsuario() {
-            const m = document.getElementById('modalTipoUsuario');
-            const c = document.getElementById('modalContentTipo');
-            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        function selecionarPerfil(perfil) {
-            fecharModalTipoUsuario();
-            if (perfil === 'cliente') abrirModalCadastroCliente();
-            else abrirModalCadastroPrestador();
-        }
-
-        function abrirModalCadastroCliente() {
-            const m = document.getElementById('modalCadastroCliente');
-            const c = document.getElementById('modalContentCliente');
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
-        }
-        function fecharModalCadastroCliente() {
-            const m = document.getElementById('modalCadastroCliente');
-            const c = document.getElementById('modalContentCliente');
-            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        function abrirModalCadastroPrestador() {
-            const m = document.getElementById('modalCadastroPrestador');
-            const c = document.getElementById('modalContentPrestador');
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
-        }
-        function fecharModalCadastroPrestador() {
-            const m = document.getElementById('modalCadastroPrestador');
-            const c = document.getElementById('modalContentPrestador');
-            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        function abrirModalLogin() {
-            const m = document.getElementById('modalLogin');
-            const c = document.getElementById('modalContentLogin');
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
-        }
-        function fecharModalLogin() {
-            const m = document.getElementById('modalLogin');
-            const c = document.getElementById('modalContentLogin');
-            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        async function cadastrarClienteForm(event) {
+        function realizarBuscaPorCepOrcamento(event) {
             event.preventDefault();
-            const novo = {
-                nome: document.getElementById('cliNome').value,
-                email: document.getElementById('cliEmail').value,
-                telefone: document.getElementById('cliTelefone').value,
-                senha: document.getElementById('cliSenha').value,
-                perfil: 'cliente',
-                especialidade: 'Cliente'
-            };
-            fecharModalCadastroCliente();
-
-            const sucesso = await cadastrarUsuario(novo);
-            if (sucesso) {
-                await carregarDadosIniciais();
-                usuarioLogado = novo;
-                localStorage.setItem('fixa_logado_sup', JSON.stringify(usuarioLogado));
-                verificarEstadoSessao();
-            }
+            const cep = document.getElementById('orcamentoCep').value;
+            const rua = document.getElementById('orcamentoRua').value;
+            document.getElementById('labelTermoBusca').textContent = `Resultados para CEP: ${cep} (${rua})`;
+            mudarTela('resultadosBusca');
         }
 
-        async function cadastrarPrestadorForm(event) {
+        function executarCadastroCliente(event) {
             event.preventDefault();
-            const espec = document.getElementById('prestEspecialidade').value;
-            const novo = {
-                nome: document.getElementById('prestNome').value,
-                email: document.getElementById('prestEmail').value,
-                telefone: document.getElementById('prestTelefone').value,
-                senha: document.getElementById('prestSenha').value,
-                perfil: 'prestador',
-                especialidade: espec
-            };
-            fecharModalCadastroPrestador();
+            const email = document.getElementById('cliEmail').value;
+            const cep = document.getElementById('cliCep').value;
+            const endereco = document.getElementById('cliEndereco').value;
 
-            const sucesso = await cadastrarUsuario(novo);
-            if (sucesso) {
-                await carregarDadosIniciais();
-                usuarioLogado = novo;
-                localStorage.setItem('fixa_logado_sup', JSON.stringify(usuarioLogado));
-                verificarEstadoSessao();
-            }
+            usuarioSessao = { perfil: 'cliente', email, cep, endereco };
+            
+            document.getElementById('areaUsuarioLogado').classList.remove('hidden');
+            document.getElementById('areaUsuarioLogado').classList.add('flex');
+            document.getElementById('labelNomeUsuario').textContent = email + " (CLIENTE)";
+            document.getElementById('areaBotoesAuth').classList.add('hidden');
+
+            alert(`Cadastro realizado com sucesso! CEP: ${cep}, Endereço: ${endereco}`);
+            mudarTela('inicio');
         }
 
-        async function realizarLogin(event) {
+        function salvarCadastroPrestadorCompleto(event) {
             event.preventDefault();
+            const email = document.getElementById('prestEmail').value;
+            usuarioSessao = { perfil: 'prestador', email };
+            
+            document.getElementById('areaUsuarioLogado').classList.remove('hidden');
+            document.getElementById('areaUsuarioLogado').classList.add('flex');
+            document.getElementById('labelNomeUsuario').textContent = email + " (PRESTADOR)";
+            document.getElementById('areaBotoesAuth').classList.add('hidden');
+
+            alert("Cadastro profissional e documentos de compliance salvos com sucesso!");
+            mudarTela('painelProfissional');
+        }
+
+        function executarLogin(event) {
+            event.preventDefault();
+            const perfil = document.getElementById('loginPerfil').value;
             const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginSenha').value;
+            
+            usuarioSessao = { perfil, email };
+            
+            document.getElementById('areaUsuarioLogado').classList.remove('hidden');
+            document.getElementById('areaUsuarioLogado').classList.add('flex');
+            document.getElementById('labelNomeUsuario').textContent = email + ` (${perfil.toUpperCase()})`;
+            document.getElementById('areaBotoesAuth').classList.add('hidden');
 
-            const usuario = await loginUsuario(email, senha);
-            if (usuario) {
-                usuarioLogado = usuario;
-                localStorage.setItem('fixa_logado_sup', JSON.stringify(usuarioLogado));
-                fecharModalLogin();
-                verificarEstadoSessao();
-                
-                if (usuario.perfil === 'admin') {
-                    abrirPainelAdmin();
-                    mostrarMensagem("Acesso Admin", "Painel do Administrador carregado.", "fa-shield-halved", "text-amber-500");
-                } else {
-                    mostrarMensagem("Login Efetuado", `Bem-vindo de volta, ${usuario.nome}!`, "fa-circle-check", "text-emerald-600");
-                }
+            alert(`Login efetuado com sucesso como ${perfil.toUpperCase()}!`);
+
+            if (perfil === 'prestador') {
+                mudarTela('painelProfissional');
+            } else if (perfil === 'admin') {
+                mudarTela('painelAdmin');
+            } else {
+                mudarTela('inicio');
             }
         }
 
         function fazerLogout() {
-            usuarioLogado = null;
-            localStorage.removeItem('fixa_logado_sup');
-            verificarEstadoSessao();
-            mostrarMensagem("Sessão Encerrada", "Você saiu da sua conta.", "fa-info", "text-indigo-600");
-        }
-
-        function verificarEstadoSessao() {
-            const authBtns = document.getElementById('authButtonsHeader');
-            const userInfo = document.getElementById('userInfoHeader');
-            const userName = document.getElementById('headerUserName');
-            const btnAdmin = document.getElementById('btnAdminHeader');
-            const secaoSol = document.getElementById('secaoSolicitacao');
-
-            if (usuarioLogado) {
-                authBtns.classList.add('hidden');
-                userInfo.classList.remove('hidden');
-                userInfo.classList.add('flex');
-                userName.textContent = usuarioLogado.nome;
-                
-                if (usuarioLogado.perfil === 'cliente') {
-                    if (secaoSol) secaoSol.classList.remove('hidden');
-                } else {
-                    if (secaoSol) secaoSol.classList.add('hidden');
-                }
-
-                if (usuarioLogado.perfil === 'admin') {
-                    btnAdmin.classList.remove('hidden');
-                    btnAdmin.classList.add('flex');
-                    if (secaoSol) secaoSol.classList.add('hidden');
-                } else {
-                    btnAdmin.classList.add('hidden');
-                }
-            } else {
-                authBtns.classList.remove('hidden');
-                userInfo.classList.add('hidden');
-                userInfo.classList.remove('flex');
-                btnAdmin.classList.add('hidden');
-                if (secaoSol) secaoSol.classList.add('hidden');
-            }
-        }
-
-        function clicarServicoCard(nomeServico) {
-            if (!usuarioLogado) {
-                abrirModalTipoUsuario();
-                mostrarMensagem("Acesso Restrito", "Faça login para solicitar orçamentos.", "fa-lock", "text-amber-500");
-                return;
-            }
-            selecionarServico(nomeServico);
-        }
-
-        function selecionarServico(nomeServico) {
-            document.getElementById('solicEspecialidade').value = nomeServico;
-            document.getElementById('secaoSolicitacao').scrollIntoView({ behavior: 'smooth' });
-            mostrarMensagem("Selecionado", `Categoria "${nomeServico}" selecionada.`, "fa-circle-check", "text-indigo-600");
-        }
-
-        function carregarProfissionaisCadastrados() {
-            const container = document.getElementById('gridProfissionaisCadastrados');
-            if (!container) return;
-            const prestadores = usuariosCadastrados.filter(u => u.perfil === 'prestador');
-            container.innerHTML = '';
-            if (prestadores.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 p-2">Nenhum prestador cadastrado.</p>`;
-                return;
-            }
-            prestadores.forEach(p => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-xs hover:border-indigo-400 transition";
-                card.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm">${p.nome} (${p.especialidade || 'Geral'})</h4>
-                        <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i>${p.telefone || 'N/A'}</p>
-                    </div>
-                    <button type="button" onclick="selecionarProfissional('${p.nome} (${p.especialidade || 'Geral'})')" class="bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                        Selecionar
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function selecionarProfissional(nomeProf) {
-            document.getElementById('solicProfissional').value = nomeProf;
-            mostrarMensagem("Profissional Escolhido", `${nomeProf}`, "fa-circle-check", "text-indigo-600");
-        }
-
-        function mostrarPreviewFoto(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    dadosImagemBase64 = e.target.result;
-                    const img = document.getElementById('imgPreview');
-                    const container = document.getElementById('containerPreviewFoto');
-                    img.src = dadosImagemBase64;
-                    img.classList.remove('hidden');
-                    container.classList.add('hidden');
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function enviarOrcamento(event) {
-            event.preventDefault();
-            const novoOrcamento = {
-                data: new Date().toLocaleString('pt-BR'),
-                cliente: usuarioLogado ? usuarioLogado.nome : "Visitante",
-                telefone: usuarioLogado ? usuarioLogado.telefone : "Não informado",
-                especialidade: document.getElementById('solicEspecialidade').value,
-                profissional: document.getElementById('solicProfissional').value || "Não especificado",
-                descricao: document.getElementById('solicDescricao').value,
-                foto: dadosImagemBase64 || null
-            };
-
-            orcamentosSolicitados.push(novoOrcamento);
-            atualizarContadoresAbas();
-
-            document.getElementById('solicEspecialidade').value = '';
-            document.getElementById('solicProfissional').value = '';
-            document.getElementById('solicDescricao').value = '';
-            document.getElementById('imgPreview').classList.add('hidden');
-            document.getElementById('containerPreviewFoto').classList.remove('hidden');
-            dadosImagemBase64 = '';
-
-            mostrarMensagem("Orçamento Enviado", "Solicitação enviada com sucesso!", "fa-circle-check", "text-emerald-600");
-        }
-
-        function abrirPainelAdmin() {
-            if (!usuarioLogado || usuarioLogado.perfil !== 'admin') {
-                mostrarMensagem("Acesso Negado", "Apenas o Administrador.", "fa-triangle-exclamation", "text-rose-600");
-                return;
-            }
-            const m = document.getElementById('modalAdmin');
-            const c = document.getElementById('modalContentAdmin');
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); }, 10);
-            filtrarAdminAba(filtroAdminAtual);
-        }
-
-        function fecharPainelAdmin() {
-            const m = document.getElementById('modalAdmin');
-            const c = document.getElementById('modalContentAdmin');
-            m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        function filtrarAdminAba(tipo) {
-            filtroAdminAtual = tipo;
-            document.getElementById('abaBtnTodos').className = tipo === 'todos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-            document.getElementById('abaBtnCliente').className = tipo === 'cliente' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-            document.getElementById('abaBtnPrestador').className = tipo === 'prestador' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition";
-            document.getElementById('abaBtnOrcamentos').className = tipo === 'orcamentos' ? "px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5" : "px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5";
-            renderizarTabelaAdmin();
-        }
-
-        async function renderizarTabelaAdmin() {
-            try {
-                usuariosCadastrados = await listarUsuarios();
-                const tbody = document.getElementById('tabelaAdminBody');
-                const theadRow = document.getElementById('tabelaHeaderRow');
-                tbody.innerHTML = '';
-
-                if (filtroAdminAtual === 'orcamentos') {
-                    theadRow.innerHTML = `
-                        <th class="p-4">Data / Hora</th>
-                        <th class="p-4">Cliente</th>
-                        <th class="p-4">Telefone</th>
-                        <th class="p-4">Serviço</th>
-                        <th class="p-4">Profissional</th>
-                        <th class="p-4">Descrição</th>
-                        <th class="p-4 text-center">Foto</th>
-                    `;
-                    document.getElementById('adminTotalRegistros').textContent = `Total de orçamentos: ${orcamentosSolicitados.length}`;
-                    orcamentosSolicitados.forEach(orc => {
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-slate-50 transition";
-                        tr.innerHTML = `
-                            <td class="p-4 text-xs text-slate-500 font-mono">${orc.data}</td>
-                            <td class="p-4 font-bold text-slate-900">${orc.cliente}</td>
-                            <td class="p-4 text-slate-600 font-mono">${orc.telefone}</td>
-                            <td class="p-4 font-semibold text-indigo-600">${orc.especialidade}</td>
-                            <td class="p-4 text-slate-800">${orc.profissional}</td>
-                            <td class="p-4 text-slate-600 text-xs max-w-xs truncate">${orc.descricao}</td>
-                            <td class="p-4 text-center">
-                                ${orc.foto ? `<button onclick="abrirModalImagem('${orc.foto}')" class="p-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs">Ver</button>` : 'N/A'}
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                } else {
-                    theadRow.innerHTML = `
-                        <th class="p-4">Perfil</th>
-                        <th class="p-4">Nome</th>
-                        <th class="p-4">E-mail</th>
-                        <th class="p-4">Senha</th>
-                        <th class="p-4">Telefone</th>
-                        <th class="p-4">Especialidade</th>
-                        <th class="p-4">Criado em</th>
-                        <th class="p-4 text-center">Ações</th>
-                    `;
-                    let filtrados = usuariosCadastrados.filter(u => filtroAdminAtual === 'todos' || u.perfil === filtroAdminAtual);
-                    document.getElementById('adminTotalRegistros').textContent = `Total na tabela Usuarios: ${filtrados.length}`;
-                    filtrados.forEach(u => {
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-slate-50 transition";
-                        tr.innerHTML = `
-                            <td class="p-4 font-semibold"><span class="px-2 py-1 rounded-lg text-xs bg-indigo-100 text-indigo-800">${u.perfil}</span></td>
-                            <td class="p-4 font-bold text-slate-900">${u.nome}</td>
-                            <td class="p-4 text-slate-600">${u.email}</td>
-                            <td class="p-4 font-mono text-indigo-600">${u.senha}</td>
-                            <td class="p-4 text-slate-600">${u.telefone || 'N/A'}</td>
-                            <td class="p-4 text-slate-800 font-medium">${u.especialidade || 'N/A'}</td>
-                            <td class="p-4 text-xs text-slate-400 font-mono">${u.created_at ? new Date(u.created_at).toLocaleString() : 'N/A'}</td>
-                            <td class="p-4 text-center">
-                                <button onclick="deletarUsuarioSupabase('${u.id}')" class="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
-            } catch (error) {
-                console.error("[APP ERROR] Erro ao renderizar tabela do admin:", error);
-            }
-        }
-
-        async function deletarUsuarioSupabase(id) {
-            if (confirm("Tem certeza que deseja excluir este usuário da tabela Usuarios do Supabase?")) {
-                const sucesso = await excluirUsuario(id);
-                if (sucesso) {
-                    mostrarMensagem("Excluído", "Usuário removido da tabela Usuarios.", "fa-trash", "text-rose-600");
-                    renderizarTabelaAdmin();
-                    carregarProfissionaisCadastrados();
-                }
-            }
-        }
-
-        function abrirModalImagem(urlBase64) {
-            document.getElementById('imgModalExpandida').src = urlBase64;
-            const m = document.getElementById('modalVisualizarImagem');
-            m.classList.remove('hidden');
-            setTimeout(() => { m.classList.remove('opacity-0'); }, 10);
-        }
-
-        function fecharModalImagem() {
-            const m = document.getElementById('modalVisualizarImagem');
-            m.classList.add('opacity-0');
-            setTimeout(() => { m.classList.add('hidden'); }, 300);
-        }
-
-        function filtrarServicos() {
-            const termo = document.getElementById('inputPesquisa').value.toLowerCase();
-            document.querySelectorAll('.card-servico').forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(termo) ? 'block' : 'none';
-            });
-        }
-
-        function mostrarMensagem(titulo, texto, icone, corIcone) {
-            const toast = document.getElementById('toastMensagem');
-            document.getElementById('toastTitulo').textContent = titulo;
-            document.getElementById('toastTexto').textContent = texto;
-            document.getElementById('toastIcon').className = `fa-solid ${icone} ${corIcone} text-xl`;
-            document.getElementById('toastIconContainer').className = `w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100`;
-            toast.classList.remove('translate-y-32', 'opacity-0');
-            setTimeout(() => { toast.classList.add('translate-y-32', 'opacity-0'); }, 3500);
+            usuarioSessao = null;
+            document.getElementById('areaUsuarioLogado').classList.add('hidden');
+            document.getElementById('areaBotoesAuth').classList.remove('hidden');
+            mudarTela('inicio');
+            alert("Sessão encerrada.");
         }
     </script>
 </body>
