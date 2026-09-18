@@ -143,7 +143,7 @@
             </div>
         </div>
 
-        <!-- TELA DE CADASTRO DE CLIENTE (CEP PRIMEIRO, ENDEREÇO DEPOIS) -->
+        <!-- TELA DE CADASTRO DE CLIENTE -->
         <div id="tela-cadastroCliente" class="espaco-tela hidden max-w-lg mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <h2 class="text-2xl font-black text-slate-900">Cadastro de Cliente</h2>
@@ -164,7 +164,6 @@
                         <input type="password" id="cliSenha" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
-                <!-- ORDEM EXIGIDA: CEP PRIMEIRO, ENDEREÇO DEPOIS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
@@ -181,7 +180,7 @@
             </form>
         </div>
 
-        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO (COM BUSCA DE CEP EXCLUSIVA PARA LOGADOS) -->
+        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO -->
         <div id="tela-solicitar" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
@@ -212,7 +211,7 @@
             </form>
         </div>
 
-        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR -->
+        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR (ATUALIZADA COM OS CAMPOS PEDIDOS) -->
         <div id="tela-cadastroPrestadorCompleto" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <div>
@@ -223,6 +222,18 @@
             </div>
 
             <form onsubmit="cadastrarPrestadorSupabase(event)" class="space-y-4">
+                <!-- FOTO DE PERFIL -->
+                <div class="text-center mb-2">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Perfil (Opcional)</label>
+                    <div class="flex items-center justify-center space-x-4">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative">
+                            <img id="previewFotoPrestador" class="hidden w-full h-full object-cover" alt="Foto">
+                            <i id="iconePlaceholderFoto" class="fa-solid fa-camera text-slate-400 text-xl"></i>
+                        </div>
+                        <input type="file" id="prestFotoInput" accept="image/*" onchange="carregarFotoPrestador(event)" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 cursor-pointer">
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo / Razão Social</label>
@@ -256,8 +267,31 @@
                     </div>
                 </div>
 
+                <!-- NOVOS CAMPOS SOLICITADOS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
+                        <input type="text" id="prestCep" required placeholder="00000-000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço (Rua e Nº)</label>
+                        <input type="text" id="prestEndereco" required placeholder="Ex: Rua das Flores, 123" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Registro Profissional <span class="text-xs text-slate-400 font-normal">(Não obrigatório)</span></label>
+                        <input type="text" id="prestRegistro" placeholder="Ex: CREA / CFT / CRM" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Dados Bancários (Pix / Conta)</label>
+                        <input type="text" id="prestBancario" required placeholder="Chave Pix ou Ag/Conta" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
                 <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-violet-200 text-sm">
-                    SALVAR PRESTADOR NO SUPABASE
+                    SALVAR PRESTADOR
                 </button>
             </form>
         </div>
@@ -312,6 +346,7 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let usuarioSessao = null;
+        let fotoPerfilBase64 = "";
 
         function mudarTela(idTela) {
             document.querySelectorAll('.espaco-tela').forEach(t => t.classList.add('hidden'));
@@ -330,6 +365,22 @@
                 return;
             }
             mudarTela('solicitar');
+        }
+
+        function carregarFotoPrestador(event) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    fotoPerfilBase64 = e.target.result;
+                    const preview = document.getElementById('previewFotoPrestador');
+                    const icone = document.getElementById('iconePlaceholderFoto');
+                    preview.src = fotoPerfilBase64;
+                    preview.classList.remove('hidden');
+                    icone.classList.add('hidden');
+                };
+                leitor.readAsDataURL(arquivo);
+            }
         }
 
         async function cadastrarClienteSupabase(event) {
@@ -363,9 +414,13 @@
             const especialidade = document.getElementById('prestEspecialidade').value;
             const telefone = document.getElementById('prestTelefone').value;
             const cpf_cnpj = document.getElementById('prestCpfCnpj').value;
+            const cep = document.getElementById('prestCep').value;
+            const endereco = document.getElementById('prestEndereco').value;
+            const registro_profissional = document.getElementById('prestRegistro').value || null;
+            const dados_bancarios = document.getElementById('prestBancario').value;
 
             const { data, error } = await supabaseClient.from('usuarios').insert([{
-                nome, email, senha, especialidade, telefone, cpf_cnpj, perfil: 'prestador'
+                nome, email, senha, especialidade, telefone, cpf_cnpj, cep, endereco, registro_profissional, dados_bancarios, foto_perfil: fotoPerfilBase64 || null, perfil: 'prestador'
             }]).select();
 
             if (error) {
@@ -430,9 +485,9 @@
                 return;
             }
 
-            let html = `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Nome</th><th class="p-2">E-mail</th><th class="p-2">Perfil</th><th class="p-2">CEP</th></tr>`;
+            let html = `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Nome</th><th class="p-2">E-mail</th><th class="p-2">Perfil</th><th class="p-2">CEP</th><th class="p-2">Endereço</th></tr>`;
             data.forEach(u => {
-                html += `<tr class="border-b"><td class="p-2 font-bold">${u.nome}</td><td class="p-2">${u.email}</td><td class="p-2 uppercase font-semibold text-indigo-600">${u.perfil}</td><td class="p-2">${u.cep || 'N/A'}</td></tr>`;
+                html += `<tr class="border-b"><td class="p-2 font-bold">${u.nome}</td><td class="p-2">${u.email}</td><td class="p-2 uppercase font-semibold text-indigo-600">${u.perfil}</td><td class="p-2">${u.cep || 'N/A'}</td><td class="p-2">${u.endereco || 'N/A'}</td></tr>`;
             });
             html += `</table>`;
             container.innerHTML = html;
