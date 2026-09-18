@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fixou - Serviços Profissionais</title>
+    <title>Fixou - Conectando Você aos Melhores Profissionais</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client UMD -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
+    <!-- CABEÇALHO -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="mudarTela('inicio')">
@@ -22,14 +27,18 @@
                 </div>
                 <div>
                     <span class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Fixou</span>
-                    <p class="text-[11px] text-slate-400 font-semibold tracking-wide">Serviços Profissionais</p>
+                    <p class="text-[11px] text-slate-400 font-semibold tracking-wide">Serviços Profissionais em Nuvem</p>
                 </div>
             </div>
 
             <!-- BOTÕES DE AUTENTICAÇÃO E PERFIL -->
             <div class="flex items-center space-x-3">
-                <div id="areaUsuarioLogado" class="hidden items-center space-x-3">
+                <div id="areaUsuarioLogado" class="hidden items-center space-x-3 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200">
                     <span id="labelNomeUsuario" class="text-xs font-bold text-slate-700"></span>
+                    <button onclick="abrirPainelAdmin()" id="btnAdminHeader" class="hidden items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Painel Admin</span>
+                    </button>
                     <button onclick="fazerLogout()" class="text-rose-600 hover:text-rose-700 text-xs font-semibold px-2 py-1">Sair</button>
                 </div>
 
@@ -46,13 +55,13 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- TELA 1 — INÍCIO DO CLIENTE -->
+        <!-- TELA 1 — INÍCIO DO CLIENTE / VISITANTE -->
         <div id="tela-inicio" class="espaco-tela space-y-8">
             <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-violet-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
                 <div class="max-w-2xl relative z-10 space-y-4">
-                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight">Serviços Profissionais</h1>
-                    <p class="text-indigo-200 text-base">Conectamos você aos melhores profissionais qualificados do mercado.</p>
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight">Serviços Profissionais em Nuvem</h1>
+                    <p class="text-indigo-200 text-base">Conectamos você aos melhores profissionais qualificados do mercado via Supabase.</p>
                     
                     <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
                         <button onclick="mudarTela('escolhaCadastro')" class="bg-white text-indigo-900 hover:bg-indigo-50 font-extrabold px-8 py-4 rounded-2xl shadow-xl transition text-base">
@@ -111,7 +120,7 @@
                 </div>
             </div>
 
-            <div class="flex justify-center pt-4">
+            <div id="botaoSolicitarContainer" class="flex justify-center pt-4">
                 <button onclick="tentarSolicitarServico()" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-indigo-200 transition flex items-center space-x-3 text-lg">
                     <i class="fa-solid fa-plus-circle text-xl"></i>
                     <span>+ Solicitar Novo Serviço</span>
@@ -138,7 +147,7 @@
                         <i class="fa-solid fa-toolbox"></i>
                     </div>
                     <h3 class="font-bold text-slate-900 text-lg mb-1">Sou Prestador</h3>
-                    <p class="text-xs text-slate-500">Quero oferecer meus serviços</p>
+                    <p class="text-xs text-slate-500">Quero oferecer meus serviços e validar compliance</p>
                 </button>
             </div>
         </div>
@@ -180,12 +189,12 @@
             </form>
         </div>
 
-        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO -->
+        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO (COM FOTO DO PROBLEMA E FOTO DO SERVIÇO FEITO) -->
         <div id="tela-solicitar" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                     <h2 class="text-2xl font-black text-slate-900">Solicitar Orçamento & Buscar por CEP</h2>
-                    <p class="text-xs text-slate-500">Informe os dados do serviço e a localização exata</p>
+                    <p class="text-xs text-slate-500">Informe os dados do serviço e anexe as fotos correspondentes no Supabase</p>
                 </div>
                 <button onclick="mudarTela('inicio')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -205,26 +214,51 @@
                     <label class="block text-sm font-semibold text-slate-700 mb-1">O que você precisa?</label>
                     <textarea id="orcamentoDescricao" rows="3" required placeholder="Descreva detalhadamente o serviço..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
                 </div>
+
+                <!-- CAMPO 1: FOTO DO ORÇAMENTO / PROBLEMA -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">Foto do Orçamento / Problema Inicial</label>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative shadow-xs">
+                            <img id="previewFotoOrcamento" class="hidden w-full h-full object-cover" alt="Foto Orçamento">
+                            <i id="iconePlaceholderOrcamento" class="fa-solid fa-camera text-slate-400 text-lg"></i>
+                        </div>
+                        <input type="file" id="inputFotoOrcamento" accept="image/*" onchange="carregarFotoOrcamento(event)" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- CAMPO 2: FOTO DO SERVIÇO FEITO (PÓS-SERVIÇO) -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700">Foto do Serviço Feito <span class="text-xs text-slate-400 font-normal">(Anexe após conclusão)</span></label>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative shadow-xs">
+                            <img id="previewFotoConcluido" class="hidden w-full h-full object-cover" alt="Foto Concluído">
+                            <i id="iconePlaceholderConcluido" class="fa-solid fa-check-double text-slate-400 text-lg"></i>
+                        </div>
+                        <input type="file" id="inputFotoConcluido" accept="image/*" onchange="carregarFotoConcluido(event)" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                    </div>
+                </div>
+
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
                     ENVIAR ORÇAMENTO PARA O SUPABASE
                 </button>
             </form>
         </div>
 
-        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR (ATUALIZADA COM OS CAMPOS PEDIDOS) -->
+        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR -->
         <div id="tela-cadastroPrestadorCompleto" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <div>
                     <h2 class="text-2xl font-black text-slate-900">Cadastro Completo do Prestador</h2>
-                    <p class="text-xs text-slate-500">Validação obrigatória</p>
+                    <p class="text-xs text-slate-500">Validação obrigatória de compliance e registro em nuvem</p>
                 </div>
                 <button onclick="mudarTela('escolhaCadastro')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
             </div>
 
             <form onsubmit="cadastrarPrestadorSupabase(event)" class="space-y-4">
-                <!-- FOTO DE PERFIL -->
+                <!-- FOTO DE PERFIL DO PRESTADOR -->
                 <div class="text-center mb-2">
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Perfil (Opcional)</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Perfil</label>
                     <div class="flex items-center justify-center space-x-4">
                         <div class="w-20 h-20 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative">
                             <img id="previewFotoPrestador" class="hidden w-full h-full object-cover" alt="Foto">
@@ -267,7 +301,7 @@
                     </div>
                 </div>
 
-                <!-- NOVOS CAMPOS SOLICITADOS -->
+                <!-- CAMPOS SOLICITADOS: CEP, ENDEREÇO, REGISTRO PROFISSIONAL, DADOS BANCÁRIOS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
@@ -291,7 +325,7 @@
                 </div>
 
                 <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-violet-200 text-sm">
-                    SALVAR PRESTADOR
+                    SALVAR PRESTADOR NO SUPABASE
                 </button>
             </form>
         </div>
@@ -317,11 +351,11 @@
             </form>
         </div>
 
-        <!-- PAINEL ADMINISTRATIVO -->
+        <!-- PAINEL ADMINISTRATIVO (EXCLUSIVO PARA ADMIN) -->
         <div id="tela-painelAdmin" class="espaco-tela hidden space-y-6">
             <div class="bg-slate-900 p-8 rounded-3xl text-white shadow-xl flex justify-between items-center">
                 <div>
-                    <span class="bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-black uppercase">Painel Restrito</span>
+                    <span class="bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-black uppercase">Painel Restrito Supabase</span>
                     <h2 class="text-3xl font-black mt-2">Governança & Administração Total</h2>
                 </div>
                 <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
@@ -329,7 +363,7 @@
             <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
                 <h3 class="font-bold text-slate-800 text-lg">Usuários Cadastrados no Banco de Dados</h3>
                 <div id="listaUsuariosAdmin" class="overflow-x-auto">
-                    <p class="text-xs text-slate-400">Carregando dados do Supab...</p>
+                    <p class="text-xs text-slate-400">Carregando dados do Supabase...</p>
                 </div>
             </div>
         </div>
@@ -337,9 +371,10 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
-        <p>&copy; 2026 Fixou. Conectado com Sucesso.</p>
+        <p>&copy; 2026 Fixou. Conectado ao Supabase com Sucesso.</p>
     </footer>
 
+    <!-- SCRIPT DE INTEGRAÇÃO COM O SUPABASE -->
     <script>
         const SUPABASE_URL = "https://xjckskjqddezpevfehhu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot";
@@ -347,6 +382,8 @@
 
         let usuarioSessao = null;
         let fotoPerfilBase64 = "";
+        let fotoOrcamentoBase64 = "";
+        let fotoConcluidoBase64 = "";
 
         function mudarTela(idTela) {
             document.querySelectorAll('.espaco-tela').forEach(t => t.classList.add('hidden'));
@@ -376,6 +413,38 @@
                     const preview = document.getElementById('previewFotoPrestador');
                     const icone = document.getElementById('iconePlaceholderFoto');
                     preview.src = fotoPerfilBase64;
+                    preview.classList.remove('hidden');
+                    icone.classList.add('hidden');
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        function carregarFotoOrcamento(event) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    fotoOrcamentoBase64 = e.target.result;
+                    const preview = document.getElementById('previewFotoOrcamento');
+                    const icone = document.getElementById('iconePlaceholderOrcamento');
+                    preview.src = fotoOrcamentoBase64;
+                    preview.classList.remove('hidden');
+                    icone.classList.add('hidden');
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        function carregarFotoConcluido(event) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    fotoConcluidoBase64 = e.target.result;
+                    const preview = document.getElementById('previewFotoConcluido');
+                    const icone = document.getElementById('iconePlaceholderConcluido');
+                    preview.src = fotoConcluidoBase64;
                     preview.classList.remove('hidden');
                     icone.classList.add('hidden');
                 };
@@ -442,7 +511,13 @@
             const cliente_email = usuarioSessao ? usuarioSessao.email : "anonimo@fixou.com";
 
             const { error } = await supabaseClient.from('orcamentos').insert([{
-                cliente_email, cep_servico, rua_servico, descricao_servico, status: 'pendente'
+                cliente_email, 
+                cep_servico, 
+                rua_servico, 
+                descricao_servico, 
+                foto_orcamento: fotoOrcamentoBase64 || null,
+                foto_concluido: fotoConcluidoBase64 || null,
+                status: 'pendente'
             }]);
 
             if (error) {
@@ -450,7 +525,7 @@
                 return;
             }
 
-            alert("Orçamento enviado e salvo no Supabase com sucesso!");
+            alert("Orçamento e fotos enviados para o Supabase com sucesso!");
             mudarTela('inicio');
         }
 
@@ -481,13 +556,13 @@
             const { data, error } = await supabaseClient.from('usuarios').select('*');
             const container = document.getElementById('listaUsuariosAdmin');
             if (error) {
-                container.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar dados.</p>`;
+                container.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar dados do Supabase.</p>`;
                 return;
             }
 
-            let html = `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Nome</th><th class="p-2">E-mail</th><th class="p-2">Perfil</th><th class="p-2">CEP</th><th class="p-2">Endereço</th></tr>`;
+            let html = `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Nome</th><th class="p-2">E-mail</th><th class="p-2">Perfil</th><th class="p-2">Especialidade</th><th class="p-2">CEP</th><th class="p-2">Endereço</th><th class="p-2">CPF/CNPJ</th><th class="p-2">Registro Prof.</th><th class="p-2">Banco</th></tr>`;
             data.forEach(u => {
-                html += `<tr class="border-b"><td class="p-2 font-bold">${u.nome}</td><td class="p-2">${u.email}</td><td class="p-2 uppercase font-semibold text-indigo-600">${u.perfil}</td><td class="p-2">${u.cep || 'N/A'}</td><td class="p-2">${u.endereco || 'N/A'}</td></tr>`;
+                html += `<tr class="border-b"><td class="p-2 font-bold">${u.nome}</td><td class="p-2">${u.email}</td><td class="p-2 uppercase font-semibold text-indigo-600">${u.perfil}</td><td class="p-2">${u.especialidade || 'N/A'}</td><td class="p-2">${u.cep || 'N/A'}</td><td class="p-2">${u.endereco || 'N/A'}</td><td class="p-2">${u.cpf_cnpj || 'N/A'}</td><td class="p-2">${u.registro_profissional || 'N/A'}</td><td class="p-2">${u.dados_bancarios || 'N/A'}</td></tr>`;
             });
             html += `</table>`;
             container.innerHTML = html;
@@ -499,6 +574,18 @@
                 document.getElementById('areaUsuarioLogado').classList.add('flex');
                 document.getElementById('labelNomeUsuario').textContent = `${usuarioSessao.nome} (${usuarioSessao.perfil.toUpperCase()})`;
                 document.getElementById('areaBotoesAuth').classList.add('hidden');
+
+                const btnAdmin = document.getElementById('btnAdminHeader');
+                const botaoSolicitarContainer = document.getElementById('botaoSolicitarContainer');
+
+                if (usuarioSessao.perfil === 'admin') {
+                    if (btnAdmin) btnAdmin.classList.remove('hidden');
+                    if (btnAdmin) btnAdmin.classList.add('flex');
+                    if (botaoSolicitarContainer) botaoSolicitarContainer.classList.add('hidden');
+                } else {
+                    if (btnAdmin) btnAdmin.classList.add('hidden');
+                    if (botaoSolicitarContainer) botaoSolicitarContainer.classList.remove('hidden');
+                }
             }
         }
 
@@ -506,6 +593,10 @@
             usuarioSessao = null;
             document.getElementById('areaUsuarioLogado').classList.add('hidden');
             document.getElementById('areaBotoesAuth').classList.remove('hidden');
+            const btnAdmin = document.getElementById('btnAdminHeader');
+            if (btnAdmin) btnAdmin.classList.add('hidden');
+            const botaoSolicitarContainer = document.getElementById('botaoSolicitarContainer');
+            if (botaoSolicitarContainer) botaoSolicitarContainer.classList.remove('hidden');
             mudarTela('inicio');
             alert("Sessão encerrada.");
         }
