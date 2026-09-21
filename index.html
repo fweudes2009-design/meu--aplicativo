@@ -39,6 +39,14 @@
                         <i class="fa-solid fa-shield-halved"></i>
                         <span>Painel Admin</span>
                     </button>
+                    <button onclick="abrirPerfilPrestador()" id="btnPrestadorHeader" class="hidden items-center space-x-1.5 bg-violet-600 hover:bg-violet-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <span>Meu Perfil</span>
+                    </button>
+                    <button onclick="abrirPainelCliente()" id="btnClienteHeader" class="hidden items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Área do Cliente</span>
+                    </button>
                     <button onclick="fazerLogout()" class="text-rose-600 hover:text-rose-700 text-xs font-semibold px-2 py-1">Sair</button>
                 </div>
 
@@ -61,7 +69,7 @@
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
                 <div class="max-w-2xl relative z-10 space-y-4">
                     <h1 class="text-3xl sm:text-5xl font-black tracking-tight">Serviços Profissionais</h1>
-                    <p class="text-indigo-200 text-base">Conectamos você aos melhores profissionais qualificados do mercado.</p>
+                    <p class="text-indigo-200 text-base">Conectamos você aos melhores profissionais qualificados do mercado via Supabase.</p>
                     
                     <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
                         <button onclick="mudarTela('escolhaCadastro')" class="bg-white text-indigo-900 hover:bg-indigo-50 font-extrabold px-8 py-4 rounded-2xl shadow-xl transition text-base">
@@ -147,7 +155,7 @@
                         <i class="fa-solid fa-toolbox"></i>
                     </div>
                     <h3 class="font-bold text-slate-900 text-lg mb-1">Sou Prestador</h3>
-                    <p class="text-xs text-slate-500">Quero oferecer meus serviços</p>
+                    <p class="text-xs text-slate-500">Quero oferecer meus serviços e validar compliance</p>
                 </button>
             </div>
         </div>
@@ -184,19 +192,19 @@
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
-                    SALVAR CADASTRO NO SUPABASE
+                    SALVAR CADASTRO
                 </button>
             </form>
         </div>
 
-        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO (COM FOTO DO PROBLEMA E FOTO DO SERVIÇO FEITO) -->
+        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO -->
         <div id="tela-solicitar" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                     <h2 class="text-2xl font-black text-slate-900">Solicitar Orçamento & Buscar por CEP</h2>
                     <p class="text-xs text-slate-500">Informe os dados do serviço e anexe as fotos correspondentes</p>
                 </div>
-                <button onclick="mudarTela('inicio')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="mudarTela('painelCliente')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <form onsubmit="salvarOrcamentoSupabase(event)" class="space-y-4">
@@ -215,9 +223,8 @@
                     <textarea id="orcamentoDescricao" rows="3" required placeholder="Descreva detalhadamente o serviço..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
                 </div>
 
-                <!-- CAMPO 1: FOTO DO ORÇAMENTO / PROBLEMA -->
                 <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                    <label class="block text-sm font-semibold text-slate-700">Foto do Orçamento / Problema Inicial</label>
+                    <label class="block text-sm font-semibold text-slate-700">Foto do Orçamento / Problema Inicial (ANTES)</label>
                     <div class="flex items-center space-x-4">
                         <div class="w-16 h-16 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative shadow-xs">
                             <img id="previewFotoOrcamento" class="hidden w-full h-full object-cover" alt="Foto Orçamento">
@@ -227,20 +234,8 @@
                     </div>
                 </div>
 
-                <!-- CAMPO 2: FOTO DO SERVIÇO FEITO (PÓS-SERVIÇO) -->
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                    <label class="block text-sm font-semibold text-slate-700">Foto do Serviço Feito <span class="text-xs text-slate-400 font-normal">(Anexe após conclusão)</span></label>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative shadow-xs">
-                            <img id="previewFotoConcluido" class="hidden w-full h-full object-cover" alt="Foto Concluído">
-                            <i id="iconePlaceholderConcluido" class="fa-solid fa-check-double text-slate-400 text-lg"></i>
-                        </div>
-                        <input type="file" id="inputFotoConcluido" accept="image/*" onchange="carregarFotoConcluido(event)" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
-                    </div>
-                </div>
-
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
-                    ENVIAR ORÇAMENTO PARA O SUPABASE
+                    ENVIAR ORÇAMENTO
                 </button>
             </form>
         </div>
@@ -256,7 +251,6 @@
             </div>
 
             <form onsubmit="cadastrarPrestadorSupabase(event)" class="space-y-4">
-                <!-- FOTO DE PERFIL DO PRESTADOR -->
                 <div class="text-center mb-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Perfil</label>
                     <div class="flex items-center justify-center space-x-4">
@@ -301,7 +295,6 @@
                     </div>
                 </div>
 
-                <!-- CAMPOS SOLICITADOS: CEP, ENDEREÇO, REGISTRO PROFISSIONAL, DADOS BANCÁRIOS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
@@ -351,17 +344,159 @@
             </form>
         </div>
 
-        <!-- PAINEL ADMINISTRATIVO (EXCLUSIVO PARA ADMIN) -->
+        <!-- PAINEL DO CLIENTE (ÁREA EXCLUSIVA COM ORÇAMENTOS E EXIBIÇÃO DO PROFISSIONAL DESIGNADO) -->
+        <div id="tela-painelCliente" class="espaco-tela hidden space-y-6">
+            <div class="bg-indigo-900 p-8 rounded-3xl text-white shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center overflow-hidden text-2xl font-bold">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <span class="bg-indigo-500 text-white px-3 py-1 rounded-full text-xs font-black uppercase">Área do Cliente</span>
+                        <h2 id="clienteNomeHeader" class="text-2xl font-black mt-1">Bem-vindo(a)</h2>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="mudarTela('solicitar')" class="bg-white text-indigo-900 hover:bg-indigo-50 px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-xs flex items-center space-x-1.5">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>Solicitar Orçamento</span>
+                    </button>
+                    <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
+                </div>
+            </div>
+
+            <!-- MÓDULO DO CLIENTE: AVALIAR PRESTADOR COM IDENTIFICAÇÃO DO RESPONSÁVEL -->
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-xl">Avaliar Prestador</h3>
+                    <p class="text-xs text-slate-400">Serviços concluídos e elegíveis para avaliação do profissional responsável.</p>
+                </div>
+                <div id="listaMeusOrcamentos" class="space-y-4">
+                    <p class="text-xs text-slate-400">Carregando serviços...</p>
+                </div>
+            </div>
+
+            <!-- GALERIA DE TRABALHOS DOS PRESTADORES -->
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-800 text-lg">Galeria de Trabalhos dos Prestadores</h3>
+                <p class="text-xs text-slate-400">Visualize trabalhos realizados pelos profissionais da plataforma.</p>
+                <div id="galeriaTrabalhosPrestadores" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <p class="text-xs text-slate-400">Carregando trabalhos...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAINEL DO PRESTADOR (PERFIL, SOBRE MEU TRABALHO, FOTOS E MURAL DE AVALIAÇÕES) -->
+        <div id="tela-painelPrestador" class="espaco-tela hidden space-y-6">
+            <div class="bg-violet-900 p-8 rounded-3xl text-white shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-4">
+                    <div id="prestadorAvatarContainer" class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center overflow-hidden text-2xl font-bold">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <span class="bg-violet-500 text-white px-3 py-1 rounded-full text-xs font-black uppercase">Meu Perfil Profissional</span>
+                        <h2 id="prestadorNomeHeader" class="text-2xl font-black mt-1">Bem-vindo(a)</h2>
+                    </div>
+                </div>
+                <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
+            </div>
+
+            <!-- SEÇÃO SOBRE MEU TRABALHO -->
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-800 text-lg">Sobre Meu Trabalho</h3>
+                <p class="text-xs text-slate-400">Escreva e edite sua descrição profissional para detalhar sua experiência e serviços prestados.</p>
+                <div class="space-y-3">
+                    <textarea id="prestadorDescricaoTrabalho" rows="3" placeholder="Ex: Atuo há 8 anos na área de manutenção residencial..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
+                    <button onclick="salvarDescricaoTrabalhoSupabase()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-md text-xs">
+                        Salvar Descrição
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEÇÃO MINHAS AVALIAÇÕES -->
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg">Minhas Avaliações</h3>
+                    <p class="text-xs text-slate-400">Veja o feedback, notas de 1 a 5 estrelas e comentários deixados pelos clientes sobre os seus serviços concluídos.</p>
+                </div>
+                <div id="muralNotasPrestador" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-xs text-slate-400">Carregando avaliações...</p>
+                </div>
+            </div>
+
+            <!-- SEÇÃO DE INSERIR ATÉ 4 FOTOS DE TRABALHO -->
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg">Portfólio de Trabalhos (Máximo de 4 Fotos)</h3>
+                    <p class="text-xs text-slate-400">Insira até 4 fotos dos serviços que você realizou para que o Administrador possa verificar.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
+                        <div class="h-28 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative">
+                            <img id="previewTrabalho1" class="hidden w-full h-full object-cover" alt="Trabalho 1">
+                            <i id="iconeTrabalho1" class="fa-solid fa-camera text-slate-400 text-xl"></i>
+                        </div>
+                        <input type="file" id="inputTrabalho1" accept="image/*" onchange="carregarFotoTrabalho(event, 1)" class="text-[10px] text-slate-500 file:w-full file:py-1.5 file:px-2 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 cursor-pointer">
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
+                        <div class="h-28 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative">
+                            <img id="previewTrabalho2" class="hidden w-full h-full object-cover" alt="Trabalho 2">
+                            <i id="iconeTrabalho2" class="fa-solid fa-camera text-slate-400 text-xl"></i>
+                        </div>
+                        <input type="file" id="inputTrabalho2" accept="image/*" onchange="carregarFotoTrabalho(event, 2)" class="text-[10px] text-slate-500 file:w-full file:py-1.5 file:px-2 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 cursor-pointer">
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
+                        <div class="h-28 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative">
+                            <img id="previewTrabalho3" class="hidden w-full h-full object-cover" alt="Trabalho 3">
+                            <i id="iconeTrabalho3" class="fa-solid fa-camera text-slate-400 text-xl"></i>
+                        </div>
+                        <input type="file" id="inputTrabalho3" accept="image/*" onchange="carregarFotoTrabalho(event, 3)" class="text-[10px] text-slate-500 file:w-full file:py-1.5 file:px-2 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 cursor-pointer">
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
+                        <div class="h-28 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative">
+                            <img id="previewTrabalho4" class="hidden w-full h-full object-cover" alt="Trabalho 4">
+                            <i id="iconeTrabalho4" class="fa-solid fa-camera text-slate-400 text-xl"></i>
+                        </div>
+                        <input type="file" id="inputTrabalho4" accept="image/*" onchange="carregarFotoTrabalho(event, 4)" class="text-[10px] text-slate-500 file:w-full file:py-1.5 file:px-2 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 cursor-pointer">
+                    </div>
+                </div>
+
+                <button onclick="salvarFotosTrabalhoSupabase()" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">
+                    SALVAR PORTFÓLIO DE FOTOS NO SUPABASE
+                </button>
+            </div>
+        </div>
+
+        <!-- PAINEL ADMINISTRATIVO (COM O MÓDULO DE ORÇAMENTOS SOLICITADOS E ÍCONE PARA INDICAR PROFISSIONAL) -->
         <div id="tela-painelAdmin" class="espaco-tela hidden space-y-6">
             <div class="bg-slate-900 p-8 rounded-3xl text-white shadow-xl flex justify-between items-center">
                 <div>
                     <span class="bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-black uppercase">Painel Restrito</span>
-                    <h2 class="text-3xl font-black mt-2">Governança & Administração</h2>
+                    <h2 class="text-3xl font-black mt-2">Governança & Administração Total</h2>
                 </div>
                 <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
             </div>
+
+            <!-- MÓDULO: ORÇAMENTOS SOLICITADOS COM ÍCONE DE INDICAR PROFISSIONAL -->
             <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
-                <h3 class="font-bold text-slate-800 text-lg">Usuários Cadastrados no Banco de Dados</h3>
+                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-xl">Orçamentos Solicitados</h3>
+                        <p class="text-xs text-slate-400">Listagem oficial de solicitações de orçamento enviadas pelos clientes.</p>
+                    </div>
+                    <button onclick="carregarDadosAdmin()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                        <i class="fa-solid fa-rotate mr-1"></i> Atualizar Lista
+                    </button>
+                </div>
+                <div id="listaOrcamentosAdmin" class="space-y-3">
+                    <p class="text-xs text-slate-400">Carregando solicitações de orçamento...</p>
+                </div>
+            </div>
+
+            <!-- DADOS ADMINISTRATIVOS (PRESTADORES E AVALIAÇÕES) -->
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-800 text-lg">Prestadores de Serviços, Notas e Avaliações</h3>
                 <div id="listaUsuariosAdmin" class="overflow-x-auto">
                     <p class="text-xs text-slate-400">Carregando dados...</p>
                 </div>
@@ -374,6 +509,86 @@
         <p>&copy; 2026 Fixou. Conectado com Sucesso.</p>
     </footer>
 
+    <!-- MODAL DE SELECIONAR / INDICAR PROFISSIONAL (ADMIN) -->
+    <div id="modalIndicarProfissional" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-4">
+            <button onclick="fecharModalIndicarProfissional()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-black text-slate-900">Selecionar profissional</h3>
+            <p class="text-xs text-slate-500">Escolha um prestador cadastrado para vincular a esta solicitação de orçamento.</p>
+            <input type="hidden" id="indicarOrcamentoId">
+            <div id="listaProfissionaisSelecao" class="space-y-3 max-h-64 overflow-y-auto pr-1">
+                <p class="text-xs text-slate-400">Carregando prestadores...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AVALIAÇÃO DE PRESTADOR -->
+    <div id="modalAvaliacao" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4">
+            <button onclick="fecharModalAvaliacao()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-black text-slate-900">Avaliar Prestador</h3>
+            <p class="text-xs text-slate-500">Selecione uma nota de 1 a 5 estrelas e adicione um comentário opcional sobre o serviço realizado.</p>
+            <form onsubmit="salvarAvaliacaoSupabase(event)" class="space-y-4">
+                <input type="hidden" id="avalOrcamentoId">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Avaliação: <span class="text-amber-500 text-base">★★★★★</span> <span class="text-rose-500">*</span></label>
+                    <select id="avalNota" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-amber-600 focus:outline-none">
+                        <option value="5">⭐⭐⭐⭐⭐ (5 - Excelente)</option>
+                        <option value="4">⭐⭐⭐⭐ (4 - Muito Bom)</option>
+                        <option value="3">⭐⭐⭐ (3 - Bom)</option>
+                        <option value="2">⭐⭐ (2 - Regular)</option>
+                        <option value="1">⭐ (1 - Ruim)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Comentário sobre o serviço <span class="text-xs text-slate-400 font-normal">(Opcional)</span></label>
+                    <textarea id="avalComentario" rows="3" placeholder="Ex: O serviço foi realizado conforme combinado." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
+                    ENVIAR AVALIAÇÃO
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE ADICIONAR FOTO DEPOIS / CONCLUSÃO (CLIENTE) -->
+    <div id="modalFotoConcluido" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4">
+            <button onclick="fecharModalFotoConcluido()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-black text-slate-900">Adicionar Foto do Resultado (DEPOIS)</h3>
+            <p class="text-xs text-slate-500">Envie a foto mostrando o serviço concluído.</p>
+            <form onsubmit="salvarFotoConcluidoSupabase(event)" class="space-y-4">
+                <input type="hidden" id="concluidoOrcamentoId">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
+                    <div class="h-32 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative">
+                        <img id="previewModalConcluido" class="hidden w-full h-full object-cover" alt="Resultado">
+                        <i id="iconeModalConcluido" class="fa-solid fa-camera text-slate-400 text-xl"></i>
+                    </div>
+                    <input type="file" id="inputModalConcluido" accept="image/*" onchange="carregarFotoModalConcluido(event)" required class="text-xs text-slate-500 file:w-full file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
+                    SALVAR FOTO DE CONCLUSÃO
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALHES DA SOLICITAÇÃO (ADMIN) -->
+    <div id="modalAdminDetalhesOrcamento" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
+            <button onclick="fecharModalAdminDetalhesOrcamento()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="conteudoAdminDetalhesOrcamento" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE VISUALIZAÇÃO DE PERFIL COMPLETO PARA O ADMIN -->
+    <div id="modalAdminPerfil" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
+            <button onclick="fecharModalAdminPerfil()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="conteudoAdminPerfil" class="space-y-4"></div>
+        </div>
+    </div>
+
     <!-- SCRIPT DE INTEGRAÇÃO COM O SUPABASE -->
     <script>
         const SUPABASE_URL = "https://xjckskjqddezpevfehhu.supabase.co";
@@ -383,7 +598,18 @@
         let usuarioSessao = null;
         let fotoPerfilBase64 = "";
         let fotoOrcamentoBase64 = "";
-        let fotoConcluidoBase64 = "";
+        let fotoModalConcluidoBase64 = "";
+        let fotosTrabalhoPrestador = ["", "", "", ""];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = localStorage.getItem('fixou_sessao_atual');
+                if (saved) {
+                    usuarioSessao = JSON.parse(saved);
+                    atualizarHeaderSessao();
+                }
+            } catch(e) {}
+        });
 
         function mudarTela(idTela) {
             document.querySelectorAll('.espaco-tela').forEach(t => t.classList.add('hidden'));
@@ -392,6 +618,7 @@
                 alvo.classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 if (idTela === 'painelAdmin') carregarDadosAdmin();
+                if (idTela === 'painelCliente') carregarPainelClienteDados();
             }
         }
 
@@ -404,6 +631,64 @@
             mudarTela('solicitar');
         }
 
+        function abrirModalAvaliacao(orcamentoId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') {
+                alert("Apenas clientes autenticados podem avaliar serviços concluídos.");
+                return;
+            }
+            document.getElementById('avalOrcamentoId').value = orcamentoId;
+            document.getElementById('avalComentario').value = "";
+            document.getElementById('avalNota').value = "5";
+            document.getElementById('modalAvaliacao').classList.remove('hidden');
+        }
+
+        function fecharModalAvaliacao() {
+            document.getElementById('modalAvaliacao').classList.add('hidden');
+        }
+
+        function abrirModalFotoConcluido(orcamentoId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') return;
+            document.getElementById('concluidoOrcamentoId').value = orcamentoId;
+            fotoModalConcluidoBase64 = "";
+            document.getElementById('previewModalConcluido').classList.add('hidden');
+            document.getElementById('iconeModalConcluido').classList.remove('hidden');
+            document.getElementById('inputModalConcluido').value = "";
+            document.getElementById('modalFotoConcluido').classList.remove('hidden');
+        }
+
+        function fecharModalFotoConcluido() {
+            document.getElementById('modalFotoConcluido').classList.add('hidden');
+        }
+
+        function carregarFotoModalConcluido(event) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    fotoModalConcluidoBase64 = e.target.result;
+                    const preview = document.getElementById('previewModalConcluido');
+                    const icone = document.getElementById('iconeModalConcluido');
+                    preview.src = fotoModalConcluidoBase64;
+                    preview.classList.remove('hidden');
+                    icone.classList.add('hidden');
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        function abrirPerfilPrestador() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
+            carregarPainelPrestador();
+            mudarTela('painelPrestador');
+        }
+
+        function abrirPainelCliente() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') return;
+            document.getElementById('clienteNomeHeader').textContent = usuarioSessao.nome;
+            carregarPainelClienteDados();
+            mudarTela('painelCliente');
+        }
+
         function carregarFotoPrestador(event) {
             const arquivo = event.target.files[0];
             if (arquivo) {
@@ -413,6 +698,22 @@
                     const preview = document.getElementById('previewFotoPrestador');
                     const icone = document.getElementById('iconePlaceholderFoto');
                     preview.src = fotoPerfilBase64;
+                    preview.classList.remove('hidden');
+                    icone.classList.add('hidden');
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        function carregarFotoTrabalho(event, indice) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    fotosTrabalhoPrestador[indice - 1] = e.target.result;
+                    const preview = document.getElementById(`previewTrabalho${indice}`);
+                    const icone = document.getElementById(`iconeTrabalho${indice}`);
+                    preview.src = e.target.result;
                     preview.classList.remove('hidden');
                     icone.classList.add('hidden');
                 };
@@ -436,22 +737,6 @@
             }
         }
 
-        function carregarFotoConcluido(event) {
-            const arquivo = event.target.files[0];
-            if (arquivo) {
-                const leitor = new FileReader();
-                leitor.onload = function(e) {
-                    fotoConcluidoBase64 = e.target.result;
-                    const preview = document.getElementById('previewFotoConcluido');
-                    const icone = document.getElementById('iconePlaceholderConcluido');
-                    preview.src = fotoConcluidoBase64;
-                    preview.classList.remove('hidden');
-                    icone.classList.add('hidden');
-                };
-                leitor.readAsDataURL(arquivo);
-            }
-        }
-
         async function cadastrarClienteSupabase(event) {
             event.preventDefault();
             const nome = document.getElementById('cliNome').value;
@@ -460,9 +745,9 @@
             const cep = document.getElementById('cliCep').value;
             const endereco = document.getElementById('cliEndereco').value;
 
-            const { data, error } = await supabaseClient.from('usuarios').insert([{
+            const { error } = await supabaseClient.from('usuarios').insert([{
                 nome, email, senha, cep, endereco, perfil: 'cliente'
-            }]).select();
+            }]);
 
             if (error) {
                 alert("Erro ao cadastrar: " + error.message);
@@ -470,9 +755,10 @@
             }
 
             usuarioSessao = { perfil: 'cliente', email, nome };
+            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
             atualizarHeaderSessao();
             alert("Cliente cadastrado com sucesso no Supabase!");
-            mudarTela('inicio');
+            abrirPainelCliente();
         }
 
         async function cadastrarPrestadorSupabase(event) {
@@ -488,36 +774,85 @@
             const registro_profissional = document.getElementById('prestRegistro').value || null;
             const dados_bancarios = document.getElementById('prestBancario').value;
 
-            const { data, error } = await supabaseClient.from('usuarios').insert([{
+            const { error } = await supabaseClient.from('usuarios').insert([{
                 nome, email, senha, especialidade, telefone, cpf_cnpj, cep, endereco, registro_profissional, dados_bancarios, foto_perfil: fotoPerfilBase64 || null, perfil: 'prestador'
-            }]).select();
+            }]);
 
             if (error) {
                 alert("Erro ao cadastrar prestador: " + error.message);
                 return;
             }
 
-            usuarioSessao = { perfil: 'prestador', email, nome };
+            usuarioSessao = { perfil: 'prestador', email, nome, foto_perfil: fotoPerfilBase64 };
+            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
             atualizarHeaderSessao();
             alert("Prestador cadastrado com sucesso no Supabase!");
-            mudarTela('inicio');
+            carregarPainelPrestador();
+            mudarTela('painelPrestador');
+        }
+
+        async function salvarFotosTrabalhoSupabase() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
+
+            const fotosJson = JSON.stringify(fotosTrabalhoPrestador.filter(f => f !== ""));
+            const { error } = await supabaseClient.from('usuarios').update({
+                fotos_trabalho: fotosJson
+            }).eq('email', usuarioSessao.email);
+
+            if (error) {
+                alert("Erro ao salvar fotos de trabalho: " + error.message);
+                return;
+            }
+
+            alert("Portfólio de fotos de trabalho salvo com sucesso na coluna fotos_trabalho!");
+        }
+
+        async function salvarDescricaoTrabalhoSupabase() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
+            const descricaoTexto = document.getElementById('prestadorDescricaoTrabalho').value;
+
+            let { error } = await supabaseClient.from('usuarios').update({
+                descrição: descricaoTexto
+            }).eq('email', usuarioSessao.email);
+
+            if (error) {
+                let resAlt = await supabaseClient.from('usuarios').update({
+                    descricao: descricaoTexto
+                }).eq('email', usuarioSessao.email);
+
+                if (resAlt.error) {
+                    let resFinal = await supabaseClient.from('usuarios').update({
+                        descricao_trabalho: descricaoTexto
+                    }).eq('email', usuarioSessao.email);
+
+                    if (resFinal.error) {
+                        alert("Erro ao salvar descrição: " + error.message);
+                        return;
+                    }
+                }
+            }
+
+            usuarioSessao.descrição = descricaoTexto;
+            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+            alert("Descrição salva com sucesso na coluna descrição!");
         }
 
         async function salvarOrcamentoSupabase(event) {
             event.preventDefault();
             const cep_servico = document.getElementById('orcamentoCep').value;
             const rua_servico = document.getElementById('orcamentoRua').value;
-            const descricao_servico = document.getElementById('orcamentoDescricao').value;
+            const descricao_servic = document.getElementById('orcamentoDescricao').value;
             const cliente_email = usuarioSessao ? usuarioSessao.email : "anonimo@fixou.com";
 
             const { error } = await supabaseClient.from('orcamentos').insert([{
                 cliente_email, 
                 cep_servico, 
                 rua_servico, 
-                descricao_servico, 
+                descricao_servic, 
                 foto_orcamento: fotoOrcamentoBase64 || null,
-                foto_concluido: fotoConcluidoBase64 || null,
-                status: 'pendente'
+                status: 'pendente',
+                avaliado: false,
+                prestador_responsavel: null
             }]);
 
             if (error) {
@@ -525,8 +860,193 @@
                 return;
             }
 
-            alert("Orçamento e fotos enviados para o Supabase com sucesso!");
-            mudarTela('inicio');
+            alert("Orçamento e foto enviados para o Supabase com sucesso!");
+            document.getElementById('orcamentoCep').value = "";
+            document.getElementById('orcamentoRua').value = "";
+            document.getElementById('orcamentoDescricao').value = "";
+            fotoOrcamentoBase64 = "";
+            document.getElementById('previewFotoOrcamento').classList.add('hidden');
+            document.getElementById('iconePlaceholderOrcamento').classList.remove('hidden');
+            document.getElementById('inputFotoOrcamento').value = "";
+            abrirPainelCliente();
+        }
+
+        async function salvarFotoConcluidoSupabase(event) {
+            event.preventDefault();
+            const orcamentoId = document.getElementById('concluidoOrcamentoId').value;
+            if (!orcamentoId || !fotoModalConcluidoBase64) return;
+
+            const { error } = await supabaseClient.from('orcamentos').update({
+                foto_concluido: fotoModalConcluidoBase64,
+                status: 'concluido'
+            }).eq('id', orcamentoId);
+
+            if (error) {
+                alert("Erro ao salvar foto de conclusão: " + error.message);
+                return;
+            }
+
+            fecharModalFotoConcluido();
+            alert("Serviço marcado como concluído com sucesso!");
+            carregarPainelClienteDados();
+        }
+
+        // ABRIR MODAL PARA INDICAR PROFISSIONAL (ADMIN)
+        async function abrirModalIndicarProfissional(orcamentoId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
+            document.getElementById('indicarOrcamentoId').value = orcamentoId;
+            const container = document.getElementById('listaProfissionaisSelecao');
+            container.innerHTML = `<p class="text-xs text-slate-400">Carregando prestadores reais...</p>`;
+            document.getElementById('modalIndicarProfissional').classList.remove('hidden');
+
+            const { data: prestadores, error } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+            if (error || !prestadores || prestadores.length === 0) {
+                container.innerHTML = `<p class="text-xs text-rose-500">Nenhum prestador cadastrado no sistema.</p>`;
+                return;
+            }
+
+            let html = '';
+            prestadores.forEach(p => {
+                html += `
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            ${p.foto_perfil ? `<img src="${p.foto_perfil}" class="w-10 h-10 rounded-full object-cover">` : '<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-user"></i></div>'}
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">${p.nome}</h4>
+                                <p class="text-[10px] text-slate-500">${p.especialidade || 'Prestador'} | ID: ${p.id.substring(0,8)}...</p>
+                            </div>
+                        </div>
+                        <button onclick="confirmarIndicarProfissional('${p.nome}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+                            Confirmar profissional
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function fecharModalIndicarProfissional() {
+            document.getElementById('modalIndicarProfissional').classList.add('hidden');
+        }
+
+        async function confirmarIndicarProfissional(nomeProfissional) {
+            const orcamentoId = document.getElementById('indicarOrcamentoId').value;
+            if (!orcamentoId) return;
+
+            const { error } = await supabaseClient.from('orcamentos').update({
+                prestador_responsavel: nomeProfissional
+            }).eq('id', orcamentoId);
+
+            if (error) {
+                alert("Erro ao vincular profissional: " + error.message);
+                return;
+            }
+
+            fecharModalIndicarProfissional();
+            alert(`Profissional "${nomeProfissional}" indicado e vinculado ao serviço com sucesso!`);
+            carregarDadosAdmin();
+        }
+
+        // SALVAR AVALIAÇÃO VINCULADA AO PROFISSIONAL CORRETO
+        async function salvarAvaliacaoSupabase(event) {
+            event.preventDefault();
+            const orcamentoId = document.getElementById('avalOrcamentoId').value;
+            const nota = parseInt(document.getElementById('avalNota').value);
+            const comentario = document.getElementById('avalComentario').value;
+
+            const { error } = await supabaseClient.from('orcamentos').update({
+                nota_avaliacao: nota,
+                comentario_avaliacao: comentario,
+                avaliado: true
+            }).eq('id', orcamentoId);
+
+            if (error) {
+                alert("Erro ao salvar avaliação: " + error.message);
+                return;
+            }
+
+            fecharModalAvaliacao();
+            alert("Avaliação enviada com sucesso e vinculada ao profissional responsável!");
+            carregarPainelClienteDados();
+        }
+
+        async function carregarPainelClienteDados() {
+            const containerOrcamentos = document.getElementById('listaMeusOrcamentos');
+            const containerGaleria = document.getElementById('galeriaTrabalhosPrestadores');
+            if (!containerOrcamentos || !containerGaleria || !usuarioSessao) return;
+
+            const { data: orcData, error: orcErr } = await supabaseClient.from('orcamentos').select('*').eq('cliente_email', usuarioSessao.email);
+            if (orcErr || !orcData || orcData.length === 0) {
+                containerOrcamentos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço ou orçamento registrado ainda.</p>`;
+            } else {
+                let htmlOrc = '';
+                orcData.forEach(o => {
+                    const statusVal = o.status || 'pendente';
+                    const isConcluido = statusVal.toLowerCase() === 'concluido';
+                    const statusBadge = isConcluido ? '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg text-[10px] font-bold">Concluído</span>' : '<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-lg text-[10px] font-bold">Pendente</span>';
+                    const jaAvaliado = o.avaliado === true;
+                    const prestadorDesignado = o.prestador_responsavel ? `<p class="text-xs font-semibold text-indigo-700 mt-1"><i class="fa-solid fa-user-check mr-1"></i> Profissional Designado: ${o.prestador_responsavel}</p>` : `<p class="text-xs text-slate-400 mt-1">Aguardando indicação de profissional pelo administrador...</p>`;
+
+                    htmlOrc += `
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-slate-900 text-xs">CEP: ${o.cep_servico} - ${o.rua_servico}</span>
+                                ${statusBadge}
+                            </div>
+                            <p class="text-xs text-slate-600">${o.descricao_servic || ''}</p>
+                            ${prestadorDesignado}
+                            <div class="flex flex-wrap gap-4 pt-2">
+                                ${o.foto_orcamento ? `<div><p class="text-[10px] font-semibold text-slate-500 mb-1">Foto ANTES:</p><img src="${o.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
+                                ${o.foto_concluido ? `<div><p class="text-[10px] font-semibold text-emerald-600 mb-1">Foto DEPOIS:</p><img src="${o.foto_concluido}" class="w-20 h-20 rounded-xl object-cover border border-emerald-300"></div>` : ''}
+                                ${jaAvaliado ? `<div><p class="text-[10px] font-semibold text-amber-600 mb-1">Sua Avaliação:</p><span class="text-xs font-bold text-amber-500">${'⭐'.repeat(o.nota_avaliacao)}</span><p class="text-[11px] text-slate-600">${o.comentario_avaliacao || 'Sem comentário.'}</p></div>` : ''}
+                            </div>
+                            <div class="flex items-center space-x-2 pt-2 border-t border-slate-200">
+                                ${!o.foto_concluido ? `<button onclick="abrirModalFotoConcluido('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Adicionar Foto (DEPOIS)</button>` : ''}
+                                ${isConcluido && !jaAvaliado && o.prestador_responsavel ? `<button onclick="abrirModalAvaliacao('${o.id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-star mr-1"></i> AVALIAR PRESTADOR</button>` : ''}
+                                ${jaAvaliado ? `<span class="text-xs text-emerald-600 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Serviço Já Avaliado</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                containerOrcamentos.innerHTML = htmlOrc;
+            }
+
+            // Galeria de trabalhos
+            const { data: prestData, error: prestErr } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+            if (prestErr || !prestData || prestData.length === 0) {
+                containerGaleria.innerHTML = `<p class="text-xs text-slate-400">Nenhum trabalho disponível no momento.</p>`;
+            } else {
+                let htmlGaleria = '';
+                let encontrouFotos = false;
+                prestData.forEach(p => {
+                    if (p.fotos_trabalho) {
+                        try {
+                            let arr = [];
+                            if (typeof p.fotos_trabalho === 'string') {
+                                arr = JSON.parse(p.fotos_trabalho);
+                            } else if (Array.isArray(p.fotos_trabalho)) {
+                                arr = p.fotos_trabalho;
+                            }
+                            arr.forEach(foto => {
+                                if (foto) {
+                                    encontrouFotos = true;
+                                    htmlGaleria += `
+                                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-2">
+                                            <img src="${foto}" class="w-full h-32 rounded-xl object-cover border border-slate-200">
+                                            <p class="text-[11px] font-bold text-slate-700 truncate">${p.especialidade || 'Serviço Profissional'}</p>
+                                        </div>
+                                    `;
+                                }
+                            });
+                        } catch(e) {}
+                    }
+                });
+                if (!encontrouFotos) {
+                    containerGaleria.innerHTML = `<p class="text-xs text-slate-400 col-span-full">Nenhuma foto de trabalho cadastrada pelos prestadores.</p>`;
+                } else {
+                    containerGaleria.innerHTML = htmlGaleria;
+                }
+            }
         }
 
         async function executarLoginSupabase(event) {
@@ -542,30 +1062,270 @@
             }
 
             usuarioSessao = data[0];
+            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
             atualizarHeaderSessao();
             alert(`Bem-vindo(a), ${usuarioSessao.nome}!`);
 
             if (usuarioSessao.perfil === 'admin') {
                 mudarTela('painelAdmin');
+            } else if (usuarioSessao.perfil === 'prestador') {
+                carregarPainelPrestador();
+                mudarTela('painelPrestador');
             } else {
-                mudarTela('inicio');
+                abrirPainelCliente();
+            }
+        }
+
+        async function carregarPainelPrestador() {
+            if (!usuarioSessao) return;
+
+            const { data } = await supabaseClient.from('usuarios').select('*').eq('email', usuarioSessao.email);
+            if (data && data.length > 0) {
+                usuarioSessao = data[0];
+            }
+
+            document.getElementById('prestadorNomeHeader').textContent = usuarioSessao.nome;
+            if (usuarioSessao.foto_perfil) {
+                document.getElementById('prestadorAvatarContainer').innerHTML = `<img src="${usuarioSessao.foto_perfil}" class="w-full h-full object-cover rounded-full">`;
+            }
+
+            const descSalva = usuarioSessao.descrição || usuarioSessao.descricao || usuarioSessao.descricao_trabalho || "";
+            document.getElementById('prestadorDescricaoTrabalho').value = descSalva;
+
+            if (usuarioSessao.fotos_trabalho) {
+                try {
+                    let arr = [];
+                    if (typeof usuarioSessao.fotos_trabalho === 'string') {
+                        arr = JSON.parse(usuarioSessao.fotos_trabalho);
+                    } else if (Array.isArray(usuarioSessao.fotos_trabalho)) {
+                        arr = usuarioSessao.fotos_trabalho;
+                    }
+                    arr.forEach((foto, i) => {
+                        if (foto && i < 4) {
+                            fotosTrabalhoPrestador[i] = foto;
+                            const prev = document.getElementById(`previewTrabalho${i+1}`);
+                            const ico = document.getElementById(`iconeTrabalho${i+1}`);
+                            if (prev && ico) {
+                                prev.src = foto;
+                                prev.classList.remove('hidden');
+                                ico.classList.add('hidden');
+                            }
+                        }
+                    });
+                } catch(e) {}
+            }
+
+            const containerNotas = document.getElementById('muralNotasPrestador');
+            if (containerNotas) {
+                // Filtra os orçamentos onde este prestador foi indicado e que já foram avaliados
+                const { data: orcList } = await supabaseClient.from('orcamentos').select('*').eq('status', 'concluido').eq('avaliado', true).eq('prestador_responsavel', usuarioSessao.nome);
+                if (!orcList || orcList.length === 0) {
+                    containerNotas.innerHTML = `<p class="text-xs text-slate-400">Nenhuma avaliação registrada para você ainda.</p>`;
+                } else {
+                    let htmlNotas = '';
+                    let somaNotas = 0;
+                    orcList.forEach(o => {
+                        somaNotas += o.nota_avaliacao;
+                        const estrelas = '⭐'.repeat(o.nota_avaliacao);
+                        htmlNotas += `
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-slate-900 text-xs">${o.cliente_email}</span>
+                                    <span class="text-amber-500 text-xs">${estrelas}</span>
+                                </div>
+                                <p class="text-xs text-slate-600">${o.comentario_avaliacao || 'Sem comentário.'}</p>
+                            </div>
+                        `;
+                    });
+                    const media = (somaNotas / orcList.length).toFixed(1);
+                    containerNotas.innerHTML = `<div class="col-span-full mb-2"><span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-xl text-xs font-bold">Média Geral: ⭐ ${media} (${orcList.length} avaliações)</span></div>` + htmlNotas;
+                }
             }
         }
 
         async function carregarDadosAdmin() {
-            const { data, error } = await supabaseClient.from('usuarios').select('*');
-            const container = document.getElementById('listaUsuariosAdmin');
-            if (error) {
-                container.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar dados do Supabase.</p>`;
+            if (!usuarioSessao || usuarioSessao.perfil !== 'admin') {
+                alert("Acesso restrito ao Administrador.");
                 return;
             }
 
-            let html = `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Nome</th><th class="p-2">E-mail</th><th class="p-2">Perfil</th><th class="p-2">Especialidade</th><th class="p-2">CEP</th><th class="p-2">Endereço</th><th class="p-2">CPF/CNPJ</th><th class="p-2">Registro Prof.</th><th class="p-2">Banco</th></tr>`;
-            data.forEach(u => {
-                html += `<tr class="border-b"><td class="p-2 font-bold">${u.nome}</td><td class="p-2">${u.email}</td><td class="p-2 uppercase font-semibold text-indigo-600">${u.perfil}</td><td class="p-2">${u.especialidade || 'N/A'}</td><td class="p-2">${u.cep || 'N/A'}</td><td class="p-2">${u.endereco || 'N/A'}</td><td class="p-2">${u.cpf_cnpj || 'N/A'}</td><td class="p-2">${u.registro_profissional || 'N/A'}</td><td class="p-2">${u.dados_bancarios || 'N/A'}</td></tr>`;
+            const containerOrcamentosAdmin = document.getElementById('listaOrcamentosAdmin');
+            const containerUsuariosAdmin = document.getElementById('listaUsuariosAdmin');
+
+            const { data: orcData, error: orcErr } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+            if (orcErr) {
+                containerOrcamentosAdmin.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar orçamentos solicitados.</p>`;
+            } else if (!orcData || orcData.length === 0) {
+                containerOrcamentosAdmin.innerHTML = `<p class="text-xs text-slate-400">Nenhuma solicitação de orçamento registrada no momento.</p>`;
+            } else {
+                let htmlOrc = `<div class="grid grid-cols-1 gap-3">`;
+                orcData.forEach(o => {
+                    const statusVal = o.status || 'pendente';
+                    const prestadorTexto = o.prestador_responsavel ? `<strong class="text-indigo-600">Profissional indicado: ${o.prestador_responsavel}</strong>` : `<strong class="text-amber-600">Aguardando indicação de profissional</strong>`;
+                    htmlOrc += `
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div class="space-y-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-slate-900 text-xs">Cliente: ${o.cliente_email}</span>
+                                    <span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${statusVal}</span>
+                                </div>
+                                <p class="text-xs text-slate-500"><strong>Data:</strong> ${new Date(o.created_at).toLocaleString('pt-BR')} | <strong>CEP:</strong> ${o.cep_servico}</p>
+                                <p class="text-xs text-slate-600">${prestadorTexto}</p>
+                            </div>
+                            <div class="flex items-center space-x-2 flex-shrink-0">
+                                <button onclick="abrirModalIndicarProfissional('${o.id}')" title="Indicar profissional" class="bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-xl text-xs font-bold transition shadow-xs flex items-center justify-center">
+                                    <i class="fa-solid fa-user-check text-sm"></i>
+                                </button>
+                                <button onclick='abrirDetalhesOrcamentoAdmin(${JSON.stringify(o)})' class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Ver Solicitação</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                htmlOrc += `</div>`;
+                containerOrcamentosAdmin.innerHTML = htmlOrc;
+            }
+
+            const { data, error } = await supabaseClient.from('usuarios').select('*');
+            const { data: avalList } = await supabaseClient.from('orcamentos').select('*').eq('status', 'concluido').eq('avaliado', true);
+            
+            if (error) {
+                containerUsuariosAdmin.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar usuários do Supabase.</p>`;
+                return;
+            }
+
+            let html = `<h4 class="font-bold text-slate-800 text-sm mb-2">Prestadores de Serviços, Perfis e Portfólios</h4>`;
+            html += `<table class="w-full text-left text-xs mb-6"><tr class="border-b"><th class="p-2">Foto</th><th class="p-2">Nome</th><th class="p-2">Especialidade</th><th class="p-2">E-mail</th><th class="p-2">Ação</th></tr>`;
+            
+            data.filter(u => u.perfil === 'prestador').forEach(u => {
+                html += `<tr class="border-b">
+                    <td class="p-2">${u.foto_perfil ? `<img src="${u.foto_perfil}" class="w-10 h-10 rounded-full object-cover">` : 'N/A'}</td>
+                    <td class="p-2 font-bold">${u.nome}</td>
+                    <td class="p-2">${u.especialidade || 'N/A'}</td>
+                    <td class="p-2">${u.email}</td>
+                    <td class="p-2"><button onclick='abrirPerfilAdminPrestador(${JSON.stringify(u)})' class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold">Ver Perfil</button></td>
+                </tr>`;
             });
             html += `</table>`;
-            container.innerHTML = html;
+
+            html += `<h4 class="font-bold text-slate-800 text-sm mb-2">Notas e Avaliações Registradas</h4>`;
+            html += `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Cliente</th><th class="p-2">Profissional Responsável</th><th class="p-2">Nota</th><th class="p-2">Comentário</th></tr>`;
+            if (avalList && avalList.length > 0) {
+                avalList.forEach(a => {
+                    html += `<tr class="border-b"><td class="p-2 font-bold">${a.cliente_email}</td><td class="p-2">${a.prestador_responsavel || 'N/A'}</td><td class="p-2 text-amber-500 font-bold">${'⭐'.repeat(a.nota_avaliacao)}</td><td class="p-2">${a.comentario_avaliacao || 'Sem comentário.'}</td></tr>`;
+                });
+            } else {
+                html += `<tr><td colspan="4" class="p-2 text-slate-400">Nenhuma avaliação cadastrada.</td></tr>`;
+            }
+            html += `</table>`;
+
+            containerUsuariosAdmin.innerHTML = html;
+        }
+
+        function abrirDetalhesOrcamentoAdmin(o) {
+            const container = document.getElementById('conteudoAdminDetalhesOrcamento');
+            container.innerHTML = `
+                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                    <h3 class="text-xl font-black text-slate-900">Detalhes da Solicitação</h3>
+                    <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold uppercase">${o.status || 'pendente'}</span>
+                </div>
+                <div class="space-y-3 text-xs text-slate-700">
+                    <p><strong>Identificação (ID):</strong> ${o.id}</p>
+                    <p><strong>Cliente Relacionado:</strong> ${o.cliente_email}</p>
+                    <p><strong>Profissional Indicado:</strong> ${o.prestador_responsavel || 'Nenhum'}</p>
+                    <p><strong>Data da Solicitação:</strong> ${new Date(o.created_at).toLocaleString('pt-BR')}</p>
+                    <p><strong>CEP / Endereço:</strong> ${o.cep_servico} - ${o.rua_servico || 'N/A'}</p>
+                    <div>
+                        <p class="font-bold mb-1">Descrição Completa do Serviço:</p>
+                        <p class="bg-slate-50 p-3 rounded-xl border border-slate-200">${o.descricao_servic || 'Sem descrição.'}</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        ${o.foto_orcamento ? `<div><p class="font-semibold text-slate-500 mb-1">Foto Inicial (ANTES):</p><img src="${o.foto_orcamento}" class="w-full h-40 rounded-xl object-cover border"></div>` : '<p class="text-slate-400">Sem foto inicial anexada.</p>'}
+                        ${o.foto_concluido ? `<div><p class="font-semibold text-emerald-600 mb-1">Foto Final (DEPOIS):</p><img src="${o.foto_concluido}" class="w-full h-40 rounded-xl object-cover border border-emerald-300"></div>` : ''}
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalAdminDetalhesOrcamento').classList.remove('hidden');
+        }
+
+        function fecharModalAdminDetalhesOrcamento() {
+            document.getElementById('modalAdminDetalhesOrcamento').classList.add('hidden');
+        }
+
+        async function abrirPerfilAdminPrestador(u) {
+            const container = document.getElementById('conteudoAdminPerfil');
+            let fotosHtml = '<p class="text-xs text-slate-400">Nenhuma foto de trabalho enviada na coluna fotos_trabalho.</p>';
+            try {
+                let arr = [];
+                if (typeof u.fotos_trabalho === 'string') {
+                    arr = JSON.parse(u.fotos_trabalho);
+                } else if (Array.isArray(u.fotos_trabalho)) {
+                    arr = u.fotos_trabalho;
+                }
+                if (arr.length > 0) {
+                    fotosHtml = '<div class="grid grid-cols-2 gap-2">';
+                    arr.forEach(f => {
+                        fotosHtml += `<img src="${f}" class="w-full h-32 rounded-xl object-cover border border-slate-200">`;
+                    });
+                    fotosHtml += '</div>';
+                }
+            } catch(e){}
+
+            const { data: orcList } = await supabaseClient.from('orcamentos').select('*').eq('status', 'concluido').eq('avaliado', true).eq('prestador_responsavel', u.nome);
+            let somaNotas = 0;
+            if (orcList && orcList.length > 0) {
+                orcList.forEach(o => somaNotas += o.nota_avaliacao);
+            }
+            const media = (orcList && orcList.length > 0) ? (somaNotas / orcList.length).toFixed(1) : "Sem avaliações";
+
+            let avalHtml = '';
+            if (!orcList || orcList.length === 0) {
+                avalHtml = `<p class="text-xs text-slate-400">Ainda não há avaliações registradas para este profissional.</p>`;
+            } else {
+                orcList.forEach(a => {
+                    avalHtml += `<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
+                        <div class="flex justify-between font-bold"><span>${a.cliente_email}</span><span class="text-amber-500">${'⭐'.repeat(a.nota_avaliacao)}</span></div>
+                        <p class="text-slate-600">${a.comentario_avaliacao || 'Sem comentário.'}</p>
+                    </div>`;
+                });
+            }
+
+            const descricaoExibicao = u.descrição || u.descricao || u.descricao_trabalho || 'Nenhuma descrição informada.';
+
+            container.innerHTML = `
+                <div class="flex items-center space-x-4 border-b border-slate-200 pb-4">
+                    ${u.foto_perfil ? `<img src="${u.foto_perfil}" class="w-20 h-20 rounded-full object-cover border-2 border-indigo-600">` : `<div class="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-user"></i></div>`}
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-900">${u.nome}</h3>
+                        <p class="text-xs font-semibold text-indigo-600">${u.especialidade || 'Prestador'}</p>
+                        <p class="text-xs text-slate-500">Média de Avaliações: <strong class="text-amber-600">${media}</strong></p>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Sobre Meu Trabalho</h4>
+                    <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl">${descricaoExibicao}</p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Informações & Contato</h4>
+                    <p class="text-xs text-slate-600"><strong>E-mail:</strong> ${u.email} | <strong>Telefone:</strong> ${u.telefone || 'N/A'}</p>
+                    <p class="text-xs text-slate-600"><strong>CEP / Endereço:</strong> ${u.cep || 'N/A'} - ${u.endereco || 'N/A'}</p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Portfólio de Trabalhos</h4>
+                    ${fotosHtml}
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Avaliações Recebidas</h4>
+                    <div class="space-y-2 max-h-48 overflow-y-auto">${avalHtml}</div>
+                </div>
+            `;
+            document.getElementById('modalAdminPerfil').classList.remove('hidden');
+        }
+
+        function fecharModalAdminPerfil() {
+            document.getElementById('modalAdminPerfil').classList.add('hidden');
         }
 
         function atualizarHeaderSessao() {
@@ -576,14 +1336,24 @@
                 document.getElementById('areaBotoesAuth').classList.add('hidden');
 
                 const btnAdmin = document.getElementById('btnAdminHeader');
+                const btnPrestador = document.getElementById('btnPrestadorHeader');
+                const btnCliente = document.getElementById('btnClienteHeader');
                 const botaoSolicitarContainer = document.getElementById('botaoSolicitarContainer');
 
                 if (usuarioSessao.perfil === 'admin') {
-                    if (btnAdmin) btnAdmin.classList.remove('hidden');
-                    if (btnAdmin) btnAdmin.classList.add('flex');
+                    if (btnAdmin) { btnAdmin.classList.remove('hidden'); btnAdmin.classList.add('flex'); }
+                    if (btnPrestador) btnPrestador.classList.add('hidden');
+                    if (btnCliente) btnCliente.classList.add('hidden');
+                    if (botaoSolicitarContainer) botaoSolicitarContainer.classList.add('hidden');
+                } else if (usuarioSessao.perfil === 'prestador') {
+                    if (btnAdmin) btnAdmin.classList.add('hidden');
+                    if (btnPrestador) { btnPrestador.classList.remove('hidden'); btnPrestador.classList.add('flex'); }
+                    if (btnCliente) btnCliente.classList.add('hidden');
                     if (botaoSolicitarContainer) botaoSolicitarContainer.classList.add('hidden');
                 } else {
                     if (btnAdmin) btnAdmin.classList.add('hidden');
+                    if (btnPrestador) btnPrestador.classList.add('hidden');
+                    if (btnCliente) { btnCliente.classList.remove('hidden'); btnCliente.classList.add('flex'); }
                     if (botaoSolicitarContainer) botaoSolicitarContainer.classList.remove('hidden');
                 }
             }
@@ -591,10 +1361,15 @@
 
         function fazerLogout() {
             usuarioSessao = null;
+            localStorage.removeItem('fixou_sessao_atual');
             document.getElementById('areaUsuarioLogado').classList.add('hidden');
             document.getElementById('areaBotoesAuth').classList.remove('hidden');
             const btnAdmin = document.getElementById('btnAdminHeader');
             if (btnAdmin) btnAdmin.classList.add('hidden');
+            const btnPrestador = document.getElementById('btnPrestadorHeader');
+            if (btnPrestador) btnPrestador.classList.add('hidden');
+            const btnCliente = document.getElementById('btnClienteHeader');
+            if (btnCliente) btnCliente.classList.add('hidden');
             const botaoSolicitarContainer = document.getElementById('botaoSolicitarContainer');
             if (botaoSolicitarContainer) botaoSolicitarContainer.classList.remove('hidden');
             mudarTela('inicio');
