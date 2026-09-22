@@ -63,7 +63,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- TELA 1 — INÍCIO DO CLIENTE / VISITANTE (NOVA IDENTIDADE VISUAL LARANJA, PRETO E AZUL) -->
+        <!-- TELA 1 — INÍCIO DO CLIENTE / VISITANTE -->
         <div id="tela-inicio" class="espaco-tela space-y-8">
             <div class="bg-gradient-to-r from-orange-600 via-slate-900 to-blue-700 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fed7aa_1px,transparent_1px)] [background-size:16px_16px]"></div>
@@ -164,7 +164,7 @@
             </div>
         </div>
 
-        <!-- TELA DE CADASTRO DE CLIENTE -->
+        <!-- TELA DE CADASTRO DE CLIENTE (COM CAMPO TELEFONE E BUSCA AUTOMÁTICA DE CEP) -->
         <div id="tela-cadastroCliente" class="espaco-tela hidden max-w-lg mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <h2 class="text-2xl font-black text-slate-900">Cadastro de Cliente</h2>
@@ -185,14 +185,42 @@
                         <input type="password" id="cliSenha" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone</label>
+                    <input type="text" id="cliTelefone" required placeholder="(11) 99999-9999" oninput="aplicarMascaraTelefone(this)" maxlength="15" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
-                        <input type="text" id="cliCep" required placeholder="00000-000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <input type="text" id="cliCep" required placeholder="00000-000" oninput="aplicarMascaraCep(this); consultarCepAutomatico(this, 'cliente')" maxlength="9" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço (Rua e Nº)</label>
-                        <input type="text" id="cliEndereco" required placeholder="Ex: Av. Paulista, 1000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço (Logradouro)</label>
+                        <input type="text" id="cliEndereco" required placeholder="Ex: Av. Paulista" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Número</label>
+                        <input type="text" id="cliNumero" required placeholder="Nº" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Complemento <span class="text-slate-400 font-normal">(Opcional)</span></label>
+                        <input type="text" id="cliComplemento" placeholder="Apto, Bloco..." class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Bairro</label>
+                        <input type="text" id="cliBairro" required placeholder="Bairro" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Município / Cidade</label>
+                        <input type="text" id="cliCidade" required placeholder="Cidade" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">UF</label>
+                        <input type="text" id="cliUf" required placeholder="UF" maxlength="2" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
@@ -201,7 +229,7 @@
             </form>
         </div>
 
-        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO (MÓDULO VERDE) -->
+        <!-- TELA DE SOLICITAÇÃO DE ORÇAMENTO -->
         <div id="tela-solicitar" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
@@ -245,7 +273,7 @@
             </form>
         </div>
 
-        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR (MÓDULO ROXO / VIOLETA) -->
+        <!-- TELA DE CADASTRO COMPLETO DO PRESTADOR (COM TELEFONE E BUSCA AUTOMÁTICA DE CEP) -->
         <div id="tela-cadastroPrestadorCompleto" class="espaco-tela hidden max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <div>
@@ -279,7 +307,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Senha de Acesso</label>
                         <input type="password" id="prestSenha" required placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
@@ -288,39 +316,63 @@
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Especialidade</label>
                         <input type="text" id="prestEspecialidade" required placeholder="Ex: Encanador" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone</label>
+                        <input type="text" id="prestTelefone" required placeholder="(11) 99999-9999" oninput="aplicarMascaraTelefone(this)" maxlength="15" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Telefone / WhatsApp</label>
-                        <input type="text" id="prestTelefone" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
-                    </div>
-                    <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CPF / CNPJ</label>
                         <input type="text" id="prestCpfCnpj" required placeholder="000.000.000-00" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Dados Bancários (Pix / Conta)</label>
+                        <input type="text" id="prestBancario" required placeholder="Chave Pix ou Ag/Conta" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CEP</label>
-                        <input type="text" id="prestCep" required placeholder="00000-000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <input type="text" id="prestCep" required placeholder="00000-000" oninput="aplicarMascaraCep(this); consultarCepAutomatico(this, 'prestador')" maxlength="9" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço (Rua e Nº)</label>
-                        <input type="text" id="prestEndereco" required placeholder="Ex: Rua das Flores, 123" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Endereço (Logradouro)</label>
+                        <input type="text" id="prestEndereco" required placeholder="Ex: Rua das Flores" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Registro Profissional <span class="text-xs text-slate-400 font-normal">(Não obrigatório)</span></label>
-                        <input type="text" id="prestRegistro" placeholder="Ex: CREA / CFT / CRM" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Número</label>
+                        <input type="text" id="prestNumero" required placeholder="Nº" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Complemento <span class="text-slate-400 font-normal">(Opcional)</span></label>
+                        <input type="text" id="prestComplemento" placeholder="Apto, Bloco..." class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Bairro</label>
+                        <input type="text" id="prestBairro" required placeholder="Bairro" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Dados Bancários (Pix / Conta)</label>
-                        <input type="text" id="prestBancario" required placeholder="Chave Pix ou Ag/Conta" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Município / Cidade</label>
+                        <input type="text" id="prestCidade" required placeholder="Cidade" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">UF</label>
+                        <input type="text" id="prestUf" required placeholder="UF" maxlength="2" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Registro Profissional <span class="text-xs text-slate-400 font-normal">(Não obrigatório)</span></label>
+                    <input type="text" id="prestRegistro" placeholder="Ex: CREA / CFT / CRM" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
 
                 <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-purple-200 text-sm">
@@ -329,7 +381,7 @@
             </form>
         </div>
 
-        <!-- TELA DE ENTRADA / LOGIN (CAMPOS VAZIOS APÓS LOGOUT) -->
+        <!-- TELA DE ENTRADA / LOGIN (COM A OPÇÃO "ESQUECI MINHA SENHA") -->
         <div id="tela-login" class="espaco-tela hidden max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                 <div>
@@ -344,7 +396,10 @@
                     <input type="email" id="loginEmail" name="fixou_login_email_clean" required autocomplete="off" placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-sm font-semibold text-slate-700">Senha</label>
+                        <button type="button" onclick="abrirModalEsqueciSenha()" class="text-xs font-bold text-orange-600 hover:text-orange-700 transition">Esqueci minha senha</button>
+                    </div>
                     <input type="password" id="loginSenha" name="fixou_login_senha_clean" required autocomplete="new-password" placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
                 <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
@@ -353,7 +408,7 @@
             </form>
         </div>
 
-        <!-- PAINEL DO CLIENTE (MÓDULO AZUL CLARO) -->
+        <!-- PAINEL DO CLIENTE -->
         <div id="tela-painelCliente" class="espaco-tela hidden space-y-6">
             <div class="bg-sky-600 p-8 rounded-3xl text-white shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-4">
@@ -395,7 +450,7 @@
             </div>
         </div>
 
-        <!-- PAINEL DO PRESTADOR (MÓDULO LARANJA) -->
+        <!-- PAINEL DO PRESTADOR -->
         <div id="tela-painelPrestador" class="espaco-tela hidden space-y-6">
             <div class="bg-orange-600 p-8 rounded-3xl text-white shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-4">
@@ -410,7 +465,7 @@
                 <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
             </div>
 
-            <!-- SEÇÃO ALTERAR FOTO DE PERFIL (SOLICITAÇÃO 1) -->
+            <!-- SEÇÃO ALTERAR FOTO DE PERFIL -->
             <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
                 <h3 class="font-bold text-slate-800 text-lg">Foto do Perfil</h3>
                 <p class="text-xs text-slate-400">Altere ou atualize sua foto de perfil abaixo.</p>
@@ -442,7 +497,7 @@
                 </div>
             </div>
 
-            <!-- SEÇÃO MINHAS AVALIAÇÕES (MÓDULO AVALIAÇÕES - AMARELO/DOURADO) -->
+            <!-- SEÇÃO MINHAS AVALIAÇÕES -->
             <div class="bg-white p-8 rounded-3xl border border-amber-200 space-y-4 shadow-sm">
                 <div class="flex items-center justify-between border-b border-amber-100 pb-3">
                     <div>
@@ -500,7 +555,7 @@
             </div>
         </div>
 
-        <!-- PAINEL ADMINISTRATIVO (MÓDULO AZUL ESCURO / AZUL INSTITUCIONAL) -->
+        <!-- PAINEL ADMINISTRATIVO (COM NAVEGAÇÃO ESQUERDA: CLIENTES CADASTRADOS, PRESTADORES DE SERVIÇOS, NOTAS E AVALIAÇÕES) -->
         <div id="tela-painelAdmin" class="espaco-tela hidden space-y-6">
             <div class="bg-blue-950 p-8 rounded-3xl text-white shadow-xl flex justify-between items-center border border-blue-900">
                 <div>
@@ -510,28 +565,93 @@
                 <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
             </div>
 
-            <!-- MÓDULO: ORÇAMENTOS SOLICITADOS COM ÍCONE DE INDICAR PROFISSIONAL -->
-            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
-                    <div>
-                        <h3 class="font-extrabold text-slate-900 text-xl">Orçamentos Solicitados</h3>
-                        <p class="text-xs text-slate-400">Listagem oficial de solicitações de orçamento enviadas pelos clientes.</p>
-                    </div>
-                    <button onclick="carregarDadosAdmin()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-rotate mr-1"></i> Atualizar Lista
+            <!-- ESTRUTURA ADMINISTRATIVA COM MENU À ESQUERDA E CONTEÚDO À DIREITA -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+                
+                <!-- MENU LATERAL ESQUERDO DO ADMINISTRADOR -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-2 lg:sticky lg:top-28">
+                    <h3 class="text-xs font-black uppercase text-slate-400 tracking-wider mb-3 px-2">Administração</h3>
+                    <button onclick="mudarAbaAdmin('clientes')" id="menuAdminClientes" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition bg-blue-900 text-white shadow-sm">
+                        <i class="fa-solid fa-users text-sm"></i>
+                        <span>Clientes Cadastrados</span>
+                    </button>
+                    <button onclick="mudarAbaAdmin('prestadores')" id="menuAdminPrestadores" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
+                        <i class="fa-solid fa-toolbox text-sm"></i>
+                        <span>Prestadores de Serviços</span>
+                    </button>
+                    <button onclick="mudarAbaAdmin('avaliacoes')" id="menuAdminAvaliacoes" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
+                        <i class="fa-solid fa-star text-sm"></i>
+                        <span>Notas e Avaliações</span>
+                    </button>
+                    <button onclick="mudarAbaAdmin('orcamentos')" id="menuAdminOrcamentos" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
+                        <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
+                        <span>Orçamentos Solicitados</span>
                     </button>
                 </div>
-                <div id="listaOrcamentosAdmin" class="space-y-3">
-                    <p class="text-xs text-slate-400">Carregando solicitações de orçamento...</p>
-                </div>
-            </div>
 
-            <!-- DADOS ADMINISTRATIVOS (PRESTADORES E AVALIAÇÕES) -->
-            <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
-                <h3 class="font-bold text-slate-800 text-lg">Prestadores de Serviços, Notas e Avaliações</h3>
-                <div id="listaUsuariosAdmin" class="overflow-x-auto">
-                    <p class="text-xs text-slate-400">Carregando dados...</p>
+                <!-- CONTEÚDO PRINCIPAL DO PAINEL ADMINISTRATIVO -->
+                <div class="lg:col-span-3 space-y-6">
+
+                    <!-- SEÇÃO 1: CLIENTES CADASTRADOS -->
+                    <div id="secaoAdminClientes" class="secao-admin-painel bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                            <div>
+                                <span class="bg-blue-100 text-blue-900 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Exclusivo Admin</span>
+                                <h3 class="font-extrabold text-slate-900 text-xl mt-1">Clientes Cadastrados</h3>
+                                <p class="text-xs text-slate-400">Visualização e pesquisa de todos os clientes cadastrados no sistema.</p>
+                            </div>
+                            <div class="w-full sm:w-72">
+                                <input type="text" id="inputPesquisaClienteAdmin" oninput="filtrarClientesAdmin()" placeholder="Pesquisar cliente por nome..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none">
+                            </div>
+                        </div>
+                        <div id="listaClientesCadastradosAdmin" class="overflow-x-auto">
+                            <p class="text-xs text-slate-400">Carregando clientes...</p>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO 2: PRESTADORES DE SERVIÇOS -->
+                    <div id="secaoAdminPrestadores" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                        <div class="border-b border-slate-200 pb-4">
+                            <span class="bg-orange-100 text-orange-900 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Exclusivo Admin</span>
+                            <h3 class="font-extrabold text-slate-900 text-xl mt-1">Prestadores de Serviços</h3>
+                            <p class="text-xs text-slate-400">Profissionais reais cadastrados, status, especialidades e notas médias reais.</p>
+                        </div>
+                        <div id="listaPrestadoresAdmin" class="overflow-x-auto">
+                            <p class="text-xs text-slate-400">Carregando prestadores...</p>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO 3: NOTAS E AVALIAÇÕES -->
+                    <div id="secaoAdminAvaliacoes" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                        <div class="border-b border-slate-200 pb-4">
+                            <span class="bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Exclusivo Admin</span>
+                            <h3 class="font-extrabold text-slate-900 text-xl mt-1">Notas e Avaliações</h3>
+                            <p class="text-xs text-slate-400">Consulta de avaliações reais e notas médias calculadas por prestador.</p>
+                        </div>
+                        <div id="listaNotasAvaliacoesAdmin" class="space-y-4">
+                            <p class="text-xs text-slate-400">Carregando avaliações...</p>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO 4: ORÇAMENTOS SOLICITADOS -->
+                    <div id="secaoAdminOrcamentos" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                            <div>
+                                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Orçamentos</span>
+                                <h3 class="font-extrabold text-slate-900 text-xl mt-1">Orçamentos Solicitados</h3>
+                                <p class="text-xs text-slate-400">Listagem oficial de solicitações de orçamento com identificação do cliente responsável.</p>
+                            </div>
+                            <button onclick="carregarDadosAdmin()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-rotate mr-1"></i> Atualizar Lista
+                            </button>
+                        </div>
+                        <div id="listaOrcamentosAdmin" class="space-y-3">
+                            <p class="text-xs text-slate-400">Carregando solicitações de orçamento...</p>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
         </div>
 
@@ -554,7 +674,23 @@
         </div>
     </div>
 
-    <!-- MODAL DE AVALIAÇÃO DE PRESTADOR (MÓDULO AVALIAÇÕES) -->
+    <!-- MODAL DE DETALHES DO CLIENTE (ADMIN) -->
+    <div id="modalDetalhesClienteAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
+            <button onclick="fecharModalDetalhesClienteAdmin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="conteudoDetalhesClienteAdmin" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALHES DO PRESTADOR (ADMIN) -->
+    <div id="modalDetalhesPrestadorAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
+            <button onclick="fecharModalDetalhesPrestadorAdmin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="conteudoDetalhesPrestadorAdmin" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AVALIAÇÃO DE PRESTADOR -->
     <div id="modalAvaliacao" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4 border border-amber-200">
             <button onclick="fecharModalAvaliacao()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
@@ -608,7 +744,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE DETALHES DA SOLICITAÇÃO (ADMIN) -->
+    <!-- MODAL DE DETALHES DA SOLICITAÇÃO (ADMIN COM NOME COMPLETO DO CLIENTE VINCULADO) -->
     <div id="modalAdminDetalhesOrcamento" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
         <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
             <button onclick="fecharModalAdminDetalhesOrcamento()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
@@ -616,11 +752,46 @@
         </div>
     </div>
 
-    <!-- MODAL DE VISUALIZAÇÃO DE PERFIL COMPLETO PARA O ADMIN -->
-    <div id="modalAdminPerfil" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
-        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
-            <button onclick="fecharModalAdminPerfil()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <div id="conteudoAdminPerfil" class="space-y-4"></div>
+    <!-- MODAL "ESQUECI MINHA SENHA" (RECUPERAÇÃO SEGURA E POPUP DE ALTERAÇÃO) -->
+    <div id="modalEsqueciSenha" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-5 border border-orange-200">
+            <button onclick="fecharModalEsqueciSenha()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-orange-100 text-orange-800 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Recuperação Segura</span>
+                <h3 id="tituloModalSenha" class="text-xl font-black text-slate-900 mt-1">Esqueci minha senha</h3>
+            </div>
+            
+            <!-- ETAPA 1: VALIDAR E-MAIL CADASTRADO -->
+            <div id="etapaValidarEmail" class="space-y-4">
+                <p class="text-xs text-slate-500">Informe o e-mail cadastrado na sua conta para iniciar o processo seguro de recuperação.</p>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail da Conta</label>
+                    <input type="email" id="recupEmail" placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                </div>
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="fecharModalEsqueciSenha()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
+                    <button type="button" onclick="validarEmailRecuperacao()" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Continuar</button>
+                </div>
+            </div>
+
+            <!-- ETAPA 2: POPUP ALTERAR SENHA (NOVA SENHA E CONFIRMAR) -->
+            <div id="etapaAlterarSenha" class="hidden space-y-4">
+                <p class="text-xs text-slate-500">Conta validada com sucesso! Defina sua nova senha abaixo.</p>
+                <form onsubmit="salvarNovaSenhaRecuperacao(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Nova senha</label>
+                        <input type="password" id="novaSenhaInput" required placeholder="Nova senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Confirmar nova senha</label>
+                        <input type="password" id="confirmaSenhaInput" required placeholder="Confirme a nova senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div class="flex space-x-3 pt-2">
+                        <button type="button" onclick="fecharModalEsqueciSenha()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
+                        <button type="submit" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Alterar senha</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -636,6 +807,10 @@
         let fotoModalConcluidoBase64 = "";
         let fotoPerfilEdicaoBase64 = "";
         let fotosTrabalhoPrestador = ["", "", "", ""];
+        let cacheClientesGeral = [];
+        let cachePrestadoresGeral = [];
+        let cacheOrcamentosGeral = [];
+        let emailUsuarioRecuperacao = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             try {
@@ -645,6 +820,8 @@
                     atualizarHeaderSessao();
                 }
             } catch(e) {}
+            // Mantém a inicialização sempre na tela inicial padrão (início), ignorando sessões ativas anteriores na abertura
+            mudarTela('inicio');
         });
 
         function mudarTela(idTela) {
@@ -654,7 +831,6 @@
                 alvo.classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 if (idTela === 'login') {
-                    // Limpa explicitamente os campos de login para impedir persistência de dados do usuário anterior
                     const frm = document.getElementById('formLoginApp');
                     if (frm) frm.reset();
                     const elEmail = document.getElementById('loginEmail');
@@ -664,6 +840,61 @@
                 }
                 if (idTela === 'painelAdmin') carregarDadosAdmin();
                 if (idTela === 'painelCliente') carregarPainelClienteDados();
+            }
+        }
+
+        // MÁSCARA E FORMATAÇÃO DE TELEFONE (11) 99999-9999
+        function aplicarMascaraTelefone(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length > 6) {
+                v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (v.length > 2) {
+                v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+            } else if (v.length > 0) {
+                v = v.replace(/^(\d*)/, '($1');
+            }
+            input.value = v;
+        }
+
+        // MÁSCARA DE CEP 00000-000
+        function aplicarMascaraCep(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 8) v = v.substring(0, 8);
+            if (v.length > 5) {
+                v = v.replace(/^(\d{5})(\d{1,3}).*/, '$1-$2');
+            }
+            input.value = v;
+        }
+
+        // BUSCA AUTOMÁTICA DE CEP (VIA VIACEP)
+        async function consultarCepAutomatico(input, tipo) {
+            const cepLimpo = input.value.replace(/\D/g, '');
+            if (cepLimpo.length !== 8) return;
+
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                const data = await response.json();
+                if (data.erro) {
+                    alert("Não foi possível localizar o endereço para este CEP. Por favor, confira os dados.");
+                    return;
+                }
+
+                if (tipo === 'cliente') {
+                    document.getElementById('cliEndereco').value = data.logradouro || '';
+                    document.getElementById('cliBairro').value = data.bairro || '';
+                    document.getElementById('cliCidade').value = data.localidade || '';
+                    document.getElementById('cliUf').value = data.uf || '';
+                    document.getElementById('cliNumero').focus();
+                } else if (tipo === 'prestador') {
+                    document.getElementById('prestEndereco').value = data.logradouro || '';
+                    document.getElementById('prestBairro').value = data.bairro || '';
+                    document.getElementById('prestCidade').value = data.localidade || '';
+                    document.getElementById('prestUf').value = data.uf || '';
+                    document.getElementById('prestNumero').focus();
+                }
+            } catch(e) {
+                alert("Erro ao consultar o CEP. Verifique sua conexão.");
             }
         }
 
@@ -750,7 +981,6 @@
             }
         }
 
-        // Funções para alteração da foto de perfil do prestador já logado (Solicitação 1)
         function selecionarNovaFotoPerfil(event) {
             const arquivo = event.target.files[0];
             if (arquivo) {
@@ -825,11 +1055,17 @@
             const nome = document.getElementById('cliNome').value;
             const email = document.getElementById('cliEmail').value;
             const senha = document.getElementById('cliSenha').value;
+            const telefone = document.getElementById('cliTelefone').value;
             const cep = document.getElementById('cliCep').value;
             const endereco = document.getElementById('cliEndereco').value;
+            const numero = document.getElementById('cliNumero').value;
+            const complemento = document.getElementById('cliComplemento').value;
+            const bairro = document.getElementById('cliBairro').value;
+            const cidade = document.getElementById('cliCidade').value;
+            const uf = document.getElementById('cliUf').value;
 
             const { error } = await supabaseClient.from('usuarios').insert([{
-                nome, email, senha, cep, endereco, perfil: 'cliente'
+                nome, email, senha, telefone, cep, endereco, numero, complemento, bairro, cidade, uf, perfil: 'cliente'
             }]);
 
             if (error) {
@@ -854,11 +1090,16 @@
             const cpf_cnpj = document.getElementById('prestCpfCnpj').value;
             const cep = document.getElementById('prestCep').value;
             const endereco = document.getElementById('prestEndereco').value;
+            const numero = document.getElementById('prestNumero').value;
+            const complemento = document.getElementById('prestComplemento').value;
+            const bairro = document.getElementById('prestBairro').value;
+            const cidade = document.getElementById('prestCidade').value;
+            const uf = document.getElementById('prestUf').value;
             const registro_profissional = document.getElementById('prestRegistro').value || null;
             const dados_bancarios = document.getElementById('prestBancario').value;
 
             const { error } = await supabaseClient.from('usuarios').insert([{
-                nome, email, senha, especialidade, telefone, cpf_cnpj, cep, endereco, registro_profissional, dados_bancarios, foto_perfil: fotoPerfilBase64 || null, perfil: 'prestador'
+                nome, email, senha, especialidade, telefone, cpf_cnpj, cep, endereco, numero, complemento, bairro, cidade, uf, registro_profissional, dados_bancarios, foto_perfil: fotoPerfilBase64 || null, perfil: 'prestador'
             }]);
 
             if (error) {
@@ -926,8 +1167,9 @@
             const rua_servico = document.getElementById('orcamentoRua').value;
             const descricao_servic = document.getElementById('orcamentoDescricao').value;
             const cliente_email = usuarioSessao ? usuarioSessao.email : "anonimo@fixou.com";
+            const cliente_id = usuarioSessao ? usuarioSessao.id : null;
 
-            const { error } = await supabaseClient.from('orcamentos').insert([{
+            const payloadOrcamento = {
                 cliente_email, 
                 cep_servico, 
                 rua_servico, 
@@ -936,7 +1178,13 @@
                 status: 'pendente',
                 avaliado: false,
                 prestador_responsavel: null
-            }]);
+            };
+
+            if (cliente_id) {
+                payloadOrcamento.cliente_id = cliente_id;
+            }
+
+            const { error } = await supabaseClient.from('orcamentos').insert([payloadOrcamento]);
 
             if (error) {
                 alert("Erro ao enviar orçamento: " + error.message);
@@ -1229,6 +1477,23 @@
             }
         }
 
+        // NAVEGAÇÃO ENTRE AS ABAS DA ÁREA ADMINISTRATIVA
+        function mudarAbaAdmin(aba) {
+            ['clientes', 'prestadores', 'avaliacoes', 'orcamentos'].forEach(a => {
+                const secao = document.getElementById('secaoAdmin' + a.charAt(0).toUpperCase() + a.slice(1));
+                const btn = document.getElementById('menuAdmin' + a.charAt(0).toUpperCase() + a.slice(1));
+                if (secao && btn) {
+                    if (a === aba) {
+                        secao.classList.remove('hidden');
+                        btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition bg-blue-900 text-white shadow-sm";
+                    } else {
+                        secao.classList.add('hidden');
+                        btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100";
+                    }
+                }
+            });
+        }
+
         async function carregarDadosAdmin() {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') {
                 alert("Acesso restrito ao Administrador.");
@@ -1236,23 +1501,53 @@
             }
 
             const containerOrcamentosAdmin = document.getElementById('listaOrcamentosAdmin');
-            const containerUsuariosAdmin = document.getElementById('listaUsuariosAdmin');
+            const containerClientesAdmin = document.getElementById('listaClientesCadastradosAdmin');
+            const containerPrestadoresAdmin = document.getElementById('listaPrestadoresAdmin');
+            const containerAvaliacoesAdmin = document.getElementById('listaNotasAvaliacoesAdmin');
 
+            const { data: todosUsuarios, error: userErr } = await supabaseClient.from('usuarios').select('*');
             const { data: orcData, error: orcErr } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+
+            if (userErr) {
+                if (containerClientesAdmin) containerClientesAdmin.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar dados.</p>`;
+            } else {
+                cacheClientesGeral = todosUsuarios.filter(u => u.perfil === 'cliente');
+                cachePrestadoresGeral = todosUsuarios.filter(u => u.perfil === 'prestador');
+                renderizarTabelaClientesAdmin(cacheClientesGeral);
+                renderizarTabelaPrestadoresAdmin(cachePrestadoresGeral, orcData || []);
+                renderizarNotasAvaliacoesAdmin(todosUsuarios, orcData || []);
+            }
+
             if (orcErr) {
                 containerOrcamentosAdmin.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar orçamentos solicitados.</p>`;
             } else if (!orcData || orcData.length === 0) {
                 containerOrcamentosAdmin.innerHTML = `<p class="text-xs text-slate-400">Nenhuma solicitação de orçamento registrada no momento.</p>`;
             } else {
+                cacheOrcamentosGeral = orcData;
                 let htmlOrc = `<div class="grid grid-cols-1 gap-3">`;
                 orcData.forEach(o => {
                     const statusVal = o.status || 'pendente';
                     const prestadorTexto = o.prestador_responsavel ? `<strong class="text-blue-700">Profissional indicado: ${o.prestador_responsavel}</strong>` : `<strong class="text-amber-600">Aguardando indicação de profissional</strong>`;
+                    
+                    let nomeClienteExibicao = "Cliente Desconhecido";
+                    if (todosUsuarios) {
+                        let cliEncontrado = null;
+                        if (o.cliente_id) {
+                            cliEncontrado = todosUsuarios.find(u => u.id === o.cliente_id);
+                        }
+                        if (!cliEncontrado && o.cliente_email) {
+                            cliEncontrado = todosUsuarios.find(u => u.email === o.cliente_email);
+                        }
+                        if (cliEncontrado) {
+                            nomeClienteExibicao = cliEncontrado.nome;
+                        }
+                    }
+
                     htmlOrc += `
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div class="space-y-1">
                                 <div class="flex items-center space-x-2">
-                                    <span class="font-bold text-slate-900 text-xs">Cliente: ${o.cliente_email}</span>
+                                    <span class="font-bold text-slate-900 text-xs">CLIENTE: ${nomeClienteExibicao} (${o.cliente_email})</span>
                                     <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${statusVal}</span>
                                 </div>
                                 <p class="text-xs text-slate-500"><strong>Data:</strong> ${new Date(o.created_at).toLocaleString('pt-BR')} | <strong>CEP:</strong> ${o.cep_servico}</p>
@@ -1273,45 +1568,191 @@
                 htmlOrc += `</div>`;
                 containerOrcamentosAdmin.innerHTML = htmlOrc;
             }
+        }
 
-            const { data, error } = await supabaseClient.from('usuarios').select('*');
-            const { data: avalList } = await supabaseClient.from('orcamentos').select('*').eq('status', 'concluido').eq('avaliado', true);
-            
-            if (error) {
-                containerUsuariosAdmin.innerHTML = `<p class="text-xs text-rose-500">Erro ao carregar usuários.</p>`;
+        // RENDERIZAR TABELA DE CLIENTES CADASTRADOS (ADMIN) COM CLIQUE PARA DETALHES
+        function renderizarTabelaClientesAdmin(listaClientes) {
+            const containerClientesAdmin = document.getElementById('listaClientesCadastradosAdmin');
+            if (!containerClientesAdmin) return;
+
+            if (!listaClientes || listaClientes.length === 0) {
+                containerClientesAdmin.innerHTML = `<p class="text-xs text-slate-400">Nenhum cliente cadastrado no sistema.</p>`;
                 return;
             }
 
-            let html = `<h4 class="font-bold text-slate-800 text-sm mb-2">Prestadores de Serviços, Perfis e Portfólios</h4>`;
-            html += `<table class="w-full text-left text-xs mb-6"><tr class="border-b"><th class="p-2">Foto</th><th class="p-2">Nome</th><th class="p-2">Especialidade</th><th class="p-2">E-mail</th><th class="p-2">Ação</th></tr>`;
-            
-            data.filter(u => u.perfil === 'prestador').forEach(u => {
-                html += `<tr class="border-b">
-                    <td class="p-2">${u.foto_perfil ? `<img src="${u.foto_perfil}" class="w-10 h-10 rounded-full object-cover">` : 'N/A'}</td>
-                    <td class="p-2 font-bold">${u.nome}</td>
-                    <td class="p-2">${u.especialidade || 'N/A'}</td>
-                    <td class="p-2">${u.email}</td>
-                    <td class="p-2"><button onclick='abrirPerfilAdminPrestador(${JSON.stringify(u)})' class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl font-bold">Ver Perfil</button></td>
+            let html = `<table class="w-full text-left text-xs">
+                <tr class="border-b border-slate-200">
+                    <th class="p-3">Nome Completo</th>
+                    <th class="p-3">Telefone</th>
+                    <th class="p-3">E-mail</th>
+                    <th class="p-3">Município</th>
+                    <th class="p-3">Ação</th>
+                </tr>`;
+
+            listaClientes.forEach(cli => {
+                html += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td class="p-3 font-bold text-slate-900">${cli.nome}</td>
+                    <td class="p-3 text-slate-600">${cli.telefone || 'N/A'}</td>
+                    <td class="p-3 text-slate-600">${cli.email}</td>
+                    <td class="p-3 text-slate-600">${cli.cidade || 'N/A'}</td>
+                    <td class="p-3"><button onclick='abrirDetalhesClienteAdmin(${JSON.stringify(cli)})' class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl font-bold">Ver Dados</button></td>
                 </tr>`;
             });
             html += `</table>`;
-
-            html += `<h4 class="font-bold text-slate-800 text-sm mb-2">Notas e Avaliações Registradas</h4>`;
-            html += `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-2">Cliente</th><th class="p-2">Profissional Responsável</th><th class="p-2">Nota</th><th class="p-2">Comentário</th></tr>`;
-            if (avalList && avalList.length > 0) {
-                avalList.forEach(a => {
-                    html += `<tr class="border-b"><td class="p-2 font-bold">${a.cliente_email}</td><td class="p-2">${a.prestador_responsavel || 'N/A'}</td><td class="p-2 text-amber-500 font-bold">${'⭐'.repeat(a.nota_avaliacao)}</td><td class="p-2">${a.comentario_avaliacao || 'Sem comentário.'}</td></tr>`;
-                });
-            } else {
-                html += `<tr><td colspan="4" class="p-2 text-slate-400">Nenhuma avaliação cadastrada.</td></tr>`;
-            }
-            html += `</table>`;
-
-            containerUsuariosAdmin.innerHTML = html;
+            containerClientesAdmin.innerHTML = html;
         }
 
-        function abrirDetalhesOrcamentoAdmin(o) {
+        function filtrarClientesAdmin() {
+            const termo = document.getElementById('inputPesquisaClienteAdmin').value.toLowerCase().trim();
+            if (!termo) {
+                renderizarTabelaClientesAdmin(cacheClientesGeral);
+                return;
+            }
+            const filtrados = cacheClientesGeral.filter(c => c.nome.toLowerCase().includes(termo));
+            renderizarTabelaClientesAdmin(filtrados);
+        }
+
+        // RENDERIZAR TABELA DE PRESTADORES DE SERVIÇOS (ADMIN) COM NOTAS MÉDIAS REAIS
+        function renderizarTabelaPrestadoresAdmin(listaPrestadores, orcamentosList) {
+            const container = document.getElementById('listaPrestadoresAdmin');
+            if (!container) return;
+
+            if (!listaPrestadores || listaPrestadores.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400">Nenhum prestador cadastrado.</p>`;
+                return;
+            }
+
+            let html = `<table class="w-full text-left text-xs">
+                <tr class="border-b border-slate-200">
+                    <th class="p-3">Foto</th>
+                    <th class="p-3">Nome</th>
+                    <th class="p-3">Telefone</th>
+                    <th class="p-3">E-mail</th>
+                    <th class="p-3">Especialidade</th>
+                    <th class="p-3">Município</th>
+                    <th class="p-3">Nota Média</th>
+                    <th class="p-3">Ação</th>
+                </tr>`;
+
+            listaPrestadores.forEach(p => {
+                const avalPrest = orcamentosList.filter(o => o.status === 'concluido' && o.avaliado === true && o.prestador_responsavel === p.nome);
+                let mediaStr = "Sem avaliações";
+                if (avalPrest.length > 0) {
+                    let soma = avalPrest.reduce((acc, curr) => acc + curr.nota_avaliacao, 0);
+                    mediaStr = `⭐ ${(soma / avalPrest.length).toFixed(1)} (${avalPrest.length})`;
+                }
+
+                html += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td class="p-3">${p.foto_perfil ? `<img src="${p.foto_perfil}" class="w-10 h-10 rounded-full object-cover">` : '<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-user"></i></div>'}</td>
+                    <td class="p-3 font-bold text-slate-900">${p.nome}</td>
+                    <td class="p-3 text-slate-600">${p.telefone || 'N/A'}</td>
+                    <td class="p-3 text-slate-600">${p.email}</td>
+                    <td class="p-3 text-slate-600">${p.especialidade || 'N/A'}</td>
+                    <td class="p-3 text-slate-600">${p.cidade || 'N/A'}</td>
+                    <td class="p-3 font-bold text-amber-600">${mediaStr}</td>
+                    <td class="p-3"><button onclick='abrirPerfilAdminPrestador(${JSON.stringify(p)})' class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl font-bold">Ver Perfil</button></td>
+                </tr>`;
+            });
+            html += `</table>`;
+            container.innerHTML = html;
+        }
+
+        // RENDERIZAR NOTAS E AVALIAÇÕES (ADMIN) COM NOTAS MÉDIAS E LISTAGEM DETALHADA
+        function renderizarNotasAvaliacoesAdmin(todosUsuarios, orcamentosList) {
+            const container = document.getElementById('listaNotasAvaliacoesAdmin');
+            if (!container) return;
+
+            const prestadores = todosUsuarios.filter(u => u.perfil === 'prestador');
+            const avalList = orcamentosList.filter(o => o.status === 'concluido' && o.avaliado === true);
+
+            let htmlResumo = `<h4 class="font-bold text-slate-800 text-sm mb-3">Nota Média por Prestador</h4>`;
+            htmlResumo += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">`;
+            
+            prestadores.forEach(p => {
+                const avalPrest = avalList.filter(o => o.prestador_responsavel === p.nome);
+                let mediaStr = "Sem avaliações";
+                let badgeEstrelas = "";
+                if (avalPrest.length > 0) {
+                    let soma = avalPrest.reduce((acc, curr) => acc + curr.nota_avaliacao, 0);
+                    let media = (soma / avalPrest.length).toFixed(1);
+                    mediaStr = `${media}`;
+                    badgeEstrelas = `★★★★★`;
+                }
+
+                htmlResumo += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                        <h5 class="font-bold text-slate-900 text-xs">${p.nome}</h5>
+                        <p class="text-[11px] text-slate-500">${p.especialidade || 'Prestador'}</p>
+                        <div class="flex items-center space-x-2 pt-1">
+                            <span class="text-amber-500 text-xs">${badgeEstrelas}</span>
+                            <span class="font-black text-amber-600 text-sm">${mediaStr}</span>
+                            <span class="text-[10px] text-slate-400">(${avalPrest.length} avaliações)</span>
+                        </div>
+                    </div>
+                `;
+            });
+            htmlResumo += `</div>`;
+
+            let htmlTabela = `<h4 class="font-bold text-slate-800 text-sm mb-3">Histórico de Avaliações</h4>`;
+            htmlTabela += `<table class="w-full text-left text-xs"><tr class="border-b border-slate-200"><th class="p-3">Prestador Avaliado</th><th class="p-3">Cliente</th><th class="p-3">Nota</th><th class="p-3">Comentário</th></tr>`;
+            
+            if (avalList.length > 0) {
+                avalList.forEach(a => {
+                    htmlTabela += `<tr class="border-b border-slate-100"><td class="p-3 font-bold">${a.prestador_responsavel || 'N/A'}</td><td class="p-3">${a.cliente_email}</td><td class="p-3 text-amber-500 font-bold">${'⭐'.repeat(a.nota_avaliacao)} (${a.nota_avaliacao})</td><td class="p-3 text-slate-600">${a.comentario_avaliacao || 'Sem comentário.'}</td></tr>`;
+                });
+            } else {
+                htmlTabela += `<tr><td colspan="4" class="p-3 text-slate-400">Nenhuma avaliação cadastrada no sistema.</td></tr>`;
+            }
+            htmlTabela += `</table>`;
+
+            container.innerHTML = htmlResumo + htmlTabela;
+        }
+
+        // ABRIR MODAL COM OS DADOS DETALHADOS DO CLIENTE (ADMIN)
+        function abrirDetalhesClienteAdmin(cli) {
+            const container = document.getElementById('conteudoDetalhesClienteAdmin');
+            container.innerHTML = `
+                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                    <h3 class="text-xl font-black text-slate-900">Detalhes do Cliente</h3>
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold uppercase">Cliente</span>
+                </div>
+                <div class="space-y-3 text-xs text-slate-700">
+                    <p><strong>Nome:</strong> ${cli.nome}</p>
+                    <p><strong>Telefone:</strong> ${cli.telefone || 'N/A'}</p>
+                    <p><strong>E-mail:</strong> ${cli.email}</p>
+                    <p><strong>CEP:</strong> ${cli.cep || 'N/A'}</p>
+                    <p><strong>Endereço:</strong> ${cli.endereco || 'N/A'}</p>
+                    <p><strong>Número:</strong> ${cli.numero || 'N/A'}</p>
+                    <p><strong>Complemento:</strong> ${cli.complemento || 'N/A'}</p>
+                    <p><strong>Bairro:</strong> ${cli.bairro || 'N/A'}</p>
+                    <p><strong>Município:</strong> ${cli.cidade || 'N/A'}</p>
+                    <p><strong>UF:</strong> ${cli.uf || 'N/A'}</p>
+                </div>
+            `;
+            document.getElementById('modalDetalhesClienteAdmin').classList.remove('hidden');
+        }
+
+        function fecharModalDetalhesClienteAdmin() {
+            document.getElementById('modalDetalhesClienteAdmin').classList.add('hidden');
+        }
+
+        async function abrirDetalhesOrcamentoAdmin(o) {
             const container = document.getElementById('conteudoAdminDetalhesOrcamento');
+            let nomeClienteFicha = "Cliente Desconhecido";
+            const { data: todosUser } = await supabaseClient.from('usuarios').select('*');
+            if (todosUser) {
+                let cli = null;
+                if (o.cliente_id) {
+                    cli = todosUser.find(u => u.id === o.cliente_id);
+                }
+                if (!cli && o.cliente_email) {
+                    cli = todosUser.find(u => u.email === o.cliente_email);
+                }
+                if (cli) {
+                    nomeClienteFicha = cli.nome;
+                }
+            }
+
             container.innerHTML = `
                 <div class="flex justify-between items-center border-b border-slate-200 pb-4">
                     <h3 class="text-xl font-black text-slate-900">Detalhes da Solicitação</h3>
@@ -1319,7 +1760,11 @@
                 </div>
                 <div class="space-y-3 text-xs text-slate-700">
                     <p><strong>Identificação (ID):</strong> ${o.id}</p>
-                    <p><strong>Cliente Relacionado:</strong> ${o.cliente_email}</p>
+                    <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200">
+                        <p class="font-extrabold text-blue-900 text-sm">CLIENTE:</p>
+                        <p class="font-bold text-slate-900 text-sm mt-0.5">${nomeClienteFicha}</p>
+                        <p class="text-slate-500 text-[11px]">E-mail: ${o.cliente_email}</p>
+                    </div>
                     <p><strong>Profissional Indicado:</strong> ${o.prestador_responsavel || 'Nenhum'}</p>
                     <p><strong>Data da Solicitação:</strong> ${new Date(o.created_at).toLocaleString('pt-BR')}</p>
                     <p><strong>CEP / Endereço:</strong> ${o.cep_servico} - ${o.rua_servico || 'N/A'}</p>
@@ -1386,6 +1831,7 @@
                     <div>
                         <h3 class="text-2xl font-black text-slate-900">${u.nome}</h3>
                         <p class="text-xs font-semibold text-blue-900">${u.especialidade || 'Prestador'}</p>
+                        <p class="text-xs font-semibold text-slate-600">Telefone: ${u.telefone || 'N/A'}</p>
                         <p class="text-xs text-slate-500">Média de Avaliações: <strong class="text-amber-600">${media}</strong></p>
                     </div>
                 </div>
@@ -1396,7 +1842,7 @@
                 <div class="space-y-2">
                     <h4 class="font-bold text-slate-800 text-sm">Informações & Contato</h4>
                     <p class="text-xs text-slate-600"><strong>E-mail:</strong> ${u.email} | <strong>Telefone:</strong> ${u.telefone || 'N/A'}</p>
-                    <p class="text-xs text-slate-600"><strong>CEP / Endereço:</strong> ${u.cep || 'N/A'} - ${u.endereco || 'N/A'}</p>
+                    <p class="text-xs text-slate-600"><strong>CEP / Endereço:</strong> ${u.cep || 'N/A'} - ${u.endereco || 'N/A'}, ${u.numero || ''} ${u.bairro ? '- ' + u.bairro : ''} (${u.cidade || ''}/${u.uf || ''})</p>
                 </div>
                 <div class="space-y-2">
                     <h4 class="font-bold text-slate-800 text-sm">Portfólio de Trabalhos</h4>
@@ -1412,6 +1858,69 @@
 
         function fecharModalAdminPerfil() {
             document.getElementById('modalAdminPerfil').classList.add('hidden');
+        }
+
+        // FLUXO "ESQUECI MINHA SENHA" E ALTERAÇÃO SEGURA
+        function abrirModalEsqueciSenha() {
+            document.getElementById('recupEmail').value = "";
+            document.getElementById('novaSenhaInput').value = "";
+            document.getElementById('confirmaSenhaInput').value = "";
+            document.getElementById('etapaValidarEmail').classList.remove('hidden');
+            document.getElementById('etapaAlterarSenha').classList.add('hidden');
+            document.getElementById('tituloModalSenha').textContent = "Esqueci minha senha";
+            document.getElementById('modalEsqueciSenha').classList.remove('hidden');
+        }
+
+        function fecharModalEsqueciSenha() {
+            document.getElementById('modalEsqueciSenha').classList.add('hidden');
+        }
+
+        async function validarEmailRecuperacao() {
+            const email = document.getElementById('recupEmail').value.trim();
+            if (!email) {
+                alert("Informe o e-mail cadastrado.");
+                return;
+            }
+
+            const { data, error } = await supabaseClient.from('usuarios').select('*').eq('email', email);
+            if (error || !data || data.length === 0) {
+                alert("E-mail não encontrado na base de dados.");
+                return;
+            }
+
+            emailUsuarioRecuperacao = email;
+            document.getElementById('etapaValidarEmail').classList.add('hidden');
+            document.getElementById('etapaAlterarSenha').classList.remove('hidden');
+            document.getElementById('tituloModalSenha').textContent = "Alterar senha";
+        }
+
+        async function salvarNovaSenhaRecuperacao(event) {
+            event.preventDefault();
+            const novaSenha = document.getElementById('novaSenhaInput').value;
+            const confirmaSenha = document.getElementById('confirmaSenhaInput').value;
+
+            if (!novaSenha || !confirmaSenha) {
+                alert("Preencha todos os campos.");
+                return;
+            }
+
+            if (novaSenha !== confirmaSenha) {
+                alert("As senhas informadas não são iguais.");
+                return;
+            }
+
+            const { error } = await supabaseClient.from('usuarios').update({
+                senha: novaSenha
+            }).eq('email', emailUsuarioRecuperacao);
+
+            if (error) {
+                alert("Erro ao alterar senha: " + error.message);
+                return;
+            }
+
+            fecharModalEsqueciSenha();
+            alert("Senha alterada com sucesso.");
+            mudarTela('login');
         }
 
         function atualizarHeaderSessao() {
@@ -1459,7 +1968,6 @@
             const botaoSolicitarContainer = document.getElementById('botaoSolicitarContainer');
             if (botaoSolicitarContainer) botaoSolicitarContainer.classList.remove('hidden');
             
-            // Limpa explicitamente os campos de login na hora do logout para garantir que nenhum dado fique preenchido
             const frm = document.getElementById('formLoginApp');
             if (frm) frm.reset();
             const elEmail = document.getElementById('loginEmail');
