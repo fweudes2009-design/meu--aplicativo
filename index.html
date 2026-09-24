@@ -170,7 +170,7 @@
                 <h2 class="text-2xl font-black text-slate-900">Cadastro de Cliente</h2>
                 <button onclick="mudarTela('escolhaCadastro')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
             </div>
-            <form onsubmit="cadastrarClienteSupabase(event)" class="space-y-4">
+            <form id="formCadastroCliente" onsubmit="cadastrarClienteSupabase(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
                     <input type="text" id="cliNome" required placeholder="Seu nome" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
@@ -223,7 +223,7 @@
                         <input type="text" id="cliUf" required placeholder="UF" maxlength="2" class="w-full px-3 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
+                <button type="submit" id="btnSalvarCliente" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
                     SALVAR CADASTRO
                 </button>
             </form>
@@ -240,7 +240,7 @@
                 <button onclick="mudarTela('painelCliente')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <form onsubmit="salvarOrcamentoSupabase(event)" class="space-y-4">
+            <form id="formSolicitarOrcamento" onsubmit="salvarOrcamentoSupabase(event)" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">CEP para o Serviço</label>
@@ -267,7 +267,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-emerald-200 text-sm">
+                <button type="submit" id="btnEnviarOrcamento" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-emerald-200 text-sm">
                     ENVIAR ORÇAMENTO
                 </button>
             </form>
@@ -279,12 +279,12 @@
                 <div>
                     <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Cadastros / Unidades</span>
                     <h2 class="text-2xl font-black text-slate-900 mt-1">Cadastro Completo do Prestador</h2>
-                    <p class="text-xs text-slate-500">Validação obrigatória de compliance e registro</p>
+                    <p class="text-xs text-slate-500">Validação obrigatória de compliance, registro e dados PIX</p>
                 </div>
                 <button onclick="mudarTela('escolhaCadastro')" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
             </div>
 
-            <form onsubmit="cadastrarPrestadorSupabase(event)" class="space-y-4">
+            <form id="formCadastroPrestador" onsubmit="cadastrarPrestadorSupabase(event)" class="space-y-4">
                 <div class="text-center mb-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Foto do Perfil</label>
                     <div class="flex items-center justify-center space-x-4">
@@ -328,8 +328,27 @@
                         <input type="text" id="prestCpfCnpj" required placeholder="000.000.000-00" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Dados Bancários (Pix / Conta)</label>
-                        <input type="text" id="prestBancario" required placeholder="Chave Pix ou Ag/Conta" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Dados Bancários (Antigos/Gerais)</label>
+                        <input type="text" id="prestBancario" required placeholder="Ag/Conta" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- CONFIGURAÇÃO DA CHAVE PIX -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-200">
+                    <div>
+                        <label class="block text-sm font-semibold text-orange-900 mb-1">Tipo de chave PIX</label>
+                        <select id="prestTipoPix" required class="w-full px-4 py-3 bg-white border border-orange-300 rounded-xl text-sm focus:outline-none font-bold text-orange-800">
+                            <option value="">Selecione o tipo...</option>
+                            <option value="CPF">CPF</option>
+                            <option value="CNPJ">CNPJ</option>
+                            <option value="E-mail">E-mail</option>
+                            <option value="Telefone">Telefone</option>
+                            <option value="Chave aleatória">Chave aleatória</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-orange-900 mb-1">Chave PIX</label>
+                        <input type="text" id="prestChavePix" required placeholder="Digite sua chave PIX..." class="w-full px-4 py-3 bg-white border border-orange-300 rounded-xl text-sm focus:outline-none">
                     </div>
                 </div>
 
@@ -375,7 +394,7 @@
                     <input type="text" id="prestRegistro" placeholder="Ex: CREA / CFT / CRM" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
 
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-purple-200 text-sm">
+                <button type="submit" id="btnSalvarPrestador" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-purple-200 text-sm">
                     SALVAR PRESTADOR
                 </button>
             </form>
@@ -402,7 +421,7 @@
                     </div>
                     <input type="password" id="loginSenha" name="fixou_login_senha_clean" required autocomplete="new-password" placeholder="Sua senha" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
-                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
+                <button type="submit" id="btnLoginSubmit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm">
                     ENTRAR
                 </button>
             </form>
@@ -433,7 +452,7 @@
             <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
                 <div>
                     <h3 class="font-extrabold text-slate-900 text-xl">Meus Orçamentos e Serviços</h3>
-                    <p class="text-xs text-slate-400">Acompanhe as propostas enviadas pelo administrador, aceite ou recuse, e avalie o serviço concluído.</p>
+                    <p class="text-xs text-slate-400">Acompanhe as propostas enviadas pelo administrador, aceite ou recuse, negocie valores e avalie o serviço concluído.</p>
                 </div>
                 <div id="listaMeusOrcamentos" class="space-y-4">
                     <p class="text-xs text-slate-400">Carregando serviços...</p>
@@ -474,6 +493,38 @@
                         <span>Alterar foto</span>
                     </button>
                     <button onclick="fazerLogout()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Sair</button>
+                </div>
+            </div>
+
+            <!-- GERENCIAMENTO DA CHAVE PIX DO PRESTADOR -->
+            <div class="bg-white p-8 rounded-3xl border border-orange-200 space-y-4 shadow-sm">
+                <div class="flex items-center justify-between border-b border-orange-100 pb-3">
+                    <div>
+                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Financeiro / PIX</span>
+                        <h3 class="font-bold text-slate-800 text-lg mt-1">Minha Chave PIX para Recebimento</h3>
+                        <p class="text-xs text-slate-400">Atualize sua chave PIX utilizada para receber os repasses dos serviços.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Tipo de chave PIX</label>
+                        <select id="meuTipoPixInput" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none font-bold text-slate-800">
+                            <option value="CPF">CPF</option>
+                            <option value="CNPJ">CNPJ</option>
+                            <option value="E-mail">E-mail</option>
+                            <option value="Telefone">Telefone</option>
+                            <option value="Chave aleatória">Chave aleatória</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Chave PIX</label>
+                        <input type="text" id="minhaChavePixInput" placeholder="Sua chave PIX..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <button onclick="salvarMinhaChavePixSupabase()" id="btnSalvarPix" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl transition shadow-md text-xs">
+                            Atualizar Chave PIX
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -525,7 +576,7 @@
                 <p class="text-xs text-slate-400">Escreva e edite sua descrição profissional para detalhar sua experiência e serviços prestados.</p>
                 <div class="space-y-3">
                     <textarea id="prestadorDescricaoTrabalho" rows="3" placeholder="Ex: Atuo há 8 anos na área de manutenção residencial..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
-                    <button onclick="salvarDescricaoTrabalhoSupabase()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-md text-xs">
+                    <button onclick="salvarDescricaoTrabalhoSupabase()" id="btnSalvarDescricao" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-md text-xs">
                         Salvar Descrição
                     </button>
                 </div>
@@ -569,7 +620,7 @@
                     </div>
                 </div>
 
-                <button onclick="salvarFotosTrabalhoSupabase()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">
+                <button onclick="salvarFotosTrabalhoSupabase()" id="btnSalvarPortfolio" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">
                     SALVAR PORTFÓLIO DE FOTOS
                 </button>
             </div>
@@ -605,6 +656,10 @@
                     <button onclick="mudarAbaAdmin('orcamentos')" id="menuAdminOrcamentos" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
                         <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
                         <span>Orçamentos Solicitados</span>
+                    </button>
+                    <button onclick="mudarAbaAdmin('saude')" id="menuAdminSaude" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
+                        <i class="fa-solid fa-heart-pulse text-sm"></i>
+                        <span>Saúde do Sistema</span>
                     </button>
                 </div>
 
@@ -669,6 +724,45 @@
                         </div>
                     </div>
 
+                    <!-- SEÇÃO 5: SAÚDE DO SISTEMA (DIAGNÓSTICO) -->
+                    <div id="secaoAdminSaude" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-6">
+                        <div class="border-b border-slate-200 pb-4">
+                            <span class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Diagnóstico</span>
+                            <h3 class="font-extrabold text-slate-900 text-xl mt-1">Saúde do Sistema</h3>
+                            <p class="text-xs text-slate-400">Indicadores de estabilidade, conexão com Supabase e registro seguro de eventos.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Supabase</p>
+                                <p id="saudeSupabaseStatus" class="text-sm font-extrabold text-emerald-600 flex items-center space-x-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                                    <span>Conectado</span>
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Sincronização</p>
+                                <p id="saudeSyncStatus" class="text-sm font-extrabold text-emerald-600 flex items-center space-x-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                                    <span>Funcionando</span>
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Última atualização</p>
+                                <p id="saudeUltimaAtualizacao" class="text-xs font-extrabold text-slate-700">--</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-slate-800 text-sm">Erros Registrados Recentemente (Logs Seguros)</h4>
+                                <button onclick="limparLogsDiagnostico()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-lg text-xs font-bold transition">Limpar Logs</button>
+                            </div>
+                            <div id="listaLogsDiagnostico" class="bg-slate-900 text-slate-200 p-4 rounded-2xl text-xs font-mono max-h-60 overflow-y-auto space-y-1">
+                                <p class="text-slate-500">Nenhum erro registrado recentemente.</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -680,28 +774,100 @@
         <p>&copy; 2026 Fixou. Conectado com Sucesso.</p>
     </footer>
 
-    <!-- MODAL DE ENVIAR ORÇAMENTO AO CLIENTE -->
+    <!-- MODAL DE ENVIAR / RENEGOCIAR ORÇAMENTO AO CLIENTE -->
     <div id="modalEnviarOrcamento" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4 border border-emerald-200">
             <button onclick="fecharModalEnviarOrcamento()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
             <div>
                 <span class="bg-emerald-100 text-emerald-800 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo Orçamentos</span>
-                <h3 class="text-xl font-black text-slate-900 mt-1">Enviar orçamento ao cliente</h3>
+                <h3 id="tituloModalEnviarOrcamento" class="text-xl font-black text-slate-900 mt-1">Enviar orçamento ao cliente</h3>
             </div>
-            <p class="text-xs text-slate-500">Defina os valores e detalhes do orçamento para envio ao cliente.</p>
+            <p class="text-xs text-slate-500">Defina o valor base do serviço para cálculo automático (acrescenta 15% para o cliente).</p>
             <input type="hidden" id="enviarOrcamentoId">
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Valor do Orçamento (R$)</label>
-                    <input type="text" id="orcamentoValorInput" placeholder="Ex: 350,00" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Valor Base do Serviço (R$)</label>
+                    <input type="text" id="orcamentoValorInput" placeholder="Ex: 1000,00" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Detalhes / Observações do Orçamento</label>
                     <textarea id="orcamentoDetalhesInput" rows="3" placeholder="Ex: Inclui materiais e mão de obra..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
                 </div>
-                <button type="button" onclick="confirmarEnvioOrcamentoCliente()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
+                <button type="button" id="btnConfirmarEnvioOrcamento" onclick="confirmarEnvioOrcamentoCliente()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
                     ENVIAR ORÇAMENTO AO CLIENTE
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE NEGOCIAÇÃO E CHAT (EXCLUSIVO CLIENTE <-> ADMINISTRADOR) -->
+    <div id="modalNegociacaoChat" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full mx-4 shadow-2xl relative max-h-[90vh] flex flex-col space-y-4 border border-blue-200">
+            <button onclick="fecharModalNegociacaoChat()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-blue-100 text-blue-900 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo de Negociação</span>
+                <h3 class="text-xl font-black text-slate-900 mt-1">Negociação do Orçamento</h3>
+            </div>
+            
+            <div id="infoOrcamentoChatResumo" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-1">
+                <p><strong>Orçamento ID:</strong> <span id="chatResumoId">--</span></p>
+                <p><strong>Serviço:</strong> <span id="chatResumoDescricao">--</span></p>
+                <p class="font-bold text-blue-900 text-sm"><strong>Valor atual para o cliente:</strong> <span id="chatResumoValor">--</span></p>
+            </div>
+
+            <input type="hidden" id="chatOrcamentoIdHidden">
+
+            <!-- HISTÓRICO DE MENSAGENS -->
+            <div class="flex-grow bg-slate-900 text-slate-200 p-4 rounded-2xl text-xs font-mono h-64 overflow-y-auto space-y-2 border border-slate-800" id="containerMensagensChat">
+                <p class="text-slate-500 italic">Carregando mensagens da negociação...</p>
+            </div>
+
+            <!-- CAMPO DE ENVIO DE MENSAGEM -->
+            <form onsubmit="enviarMensagemNegociacao(event)" class="flex space-x-2 pt-1">
+                <input type="text" id="inputMensagemChat" required placeholder="Digite sua mensagem..." class="flex-grow px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none text-slate-800">
+                <button type="submit" id="btnEnviarMensagemChat" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition text-xs shadow-md">
+                    Enviar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE ENVIO DE FOTO DE 50% DO SERVIÇO PELO PRESTADOR -->
+    <div id="modalEnvioFoto50" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl relative space-y-5 border border-orange-200">
+            <button onclick="fecharModalEnvioFoto50()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-orange-100 text-orange-800 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Etapa 50% do Serviço</span>
+                <h3 class="text-xl font-black text-slate-900 mt-1">Enviar foto do andamento (50%)</h3>
+            </div>
+            
+            <div id="etapaValidarPixPrestador" class="space-y-4">
+                <div id="avisoPixFaltando" class="hidden bg-rose-50 p-4 rounded-2xl border border-rose-200 text-xs text-rose-800 space-y-2">
+                    <p class="font-bold">Cadastre sua chave PIX antes de enviar a comprovação do serviço.</p>
+                    <p>Você precisa definir seu tipo de chave e chave PIX em seu perfil ou abaixo para prosseguir com o recebimento.</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs text-slate-700">
+                    <p class="font-bold text-slate-900">DADOS PARA RECEBIMENTO (PIX CADASTRADO):</p>
+                    <p><strong>Tipo:</strong> <span id="resumoTipoPixLabel">--</span></p>
+                    <p><strong>Chave PIX:</strong> <span id="resumoChavePixLabel">--</span></p>
+                    <p class="text-[11px] text-slate-500 italic pt-1">"Confira sua chave PIX antes de enviar a comprovação. O pagamento será realizado utilizando os dados informados."</p>
+                </div>
+
+                <input type="hidden" id="prestadorOrcamentoId50">
+                
+                <div class="p-4 bg-orange-50/50 rounded-2xl border border-orange-200 text-center space-y-2">
+                    <div class="h-32 rounded-xl bg-white border border-orange-300 flex items-center justify-center overflow-hidden relative">
+                        <img id="previewFoto50" class="hidden w-full h-full object-cover" alt="Andamento 50%">
+                        <i id="iconeFoto50" class="fa-solid fa-camera text-orange-400 text-xl"></i>
+                    </div>
+                    <input type="file" id="inputFoto50File" accept="image/*" onchange="carregarFotoAndamento50(event)" class="text-xs text-slate-500 file:w-full file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-100 file:text-orange-800 hover:file:bg-orange-200 cursor-pointer">
+                </div>
+
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="fecharModalEnvioFoto50()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
+                    <button type="button" id="btnConfirmarEnvioComprovacao" onclick="executarEnvioComprovacao50()" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Confirmar e enviar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -736,7 +902,7 @@
 
             <div class="flex space-x-3 pt-2">
                 <button type="button" onclick="fecharModalConfirmarExcluirFoto()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
-                <button type="button" onclick="executarExclusaoFotoGaleria()" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Confirmar exclusão</button>
+                <button type="button" id="btnConfirmarExclusaoFoto" onclick="executarExclusaoFotoGaleria()" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Confirmar exclusão</button>
             </div>
         </div>
     </div>
@@ -792,7 +958,7 @@
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Comentário sobre o serviço <span class="text-xs text-slate-400 font-normal">(Opcional)</span></label>
                     <textarea id="avalComentario" rows="3" placeholder="Ex: O serviço foi realizado conforme combinado." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
+                <button type="submit" id="btnSalvarAvaliacao" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
                     ENVIAR AVALIAÇÃO
                 </button>
             </form>
@@ -814,7 +980,7 @@
                     </div>
                     <input type="file" id="inputModalConcluido" accept="image/*" onchange="carregarFotoModalConcluido(event)" required class="text-xs text-slate-500 file:w-full file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
+                <button type="submit" id="btnSalvarFotoConcluido" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
                     SALVAR FOTO DE CONCLUSÃO
                 </button>
             </form>
@@ -846,7 +1012,7 @@
                 </div>
                 <div class="flex space-x-3 pt-2">
                     <button type="button" onclick="fecharModalEsqueciSenha()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
-                    <button type="button" onclick="validarEmailRecuperacao()" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Continuar</button>
+                    <button type="button" id="btnValidarRecup" onclick="validarEmailRecuperacao()" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Continuar</button>
                 </div>
             </div>
 
@@ -863,14 +1029,14 @@
                     </div>
                     <div class="flex space-x-3 pt-2">
                         <button type="button" onclick="fecharModalEsqueciSenha()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
-                        <button type="submit" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Alterar senha</button>
+                        <button type="submit" id="btnSalvarNovaSenha" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Alterar senha</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT COM SUPABASE E CONTROLE DE GALERIA PELO ADMINISTRADOR -->
+    <!-- SCRIPT CORRIGIDO COM ROTEAMENTO ROBUSTO PARA ADMINISTRADOR -->
     <script>
         const SUPABASE_URL = "https://xjckskjqddezpevfehhu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot";
@@ -880,12 +1046,40 @@
         let fotoPerfilBase64 = "";
         let fotoOrcamentoBase64 = "";
         let fotoModalConcluidoBase64 = "";
+        let fotoAndamento50Base64 = "";
         let fotosTrabalhoPrestador = ["", "", "", ""];
         let cacheClientesGeral = [];
         let cachePrestadoresGeral = [];
         let cacheOrcamentosGeral = [];
         let emailUsuarioRecuperacao = null;
         let realtimeSubscriptionAtiva = null;
+        let logsDiagnosticoSistema = [];
+
+        function registrarErroSeguro(modulo, operacao, erroOriginal) {
+            const dataHora = new Date().toISOString();
+            const mensagemTecnica = typeof erroOriginal === 'string' ? erroOriginal : (erroOriginal.message || erroOriginal.details || JSON.stringify(erroOriginal));
+            console.error(`[Fixou Error] [${modulo}] [${operacao}]`, mensagemTecnica);
+            logsDiagnosticoSistema.unshift({ dataHora, modulo, operacao, mensagem: mensagemTecnica.substring(0, 150) });
+            if (logsDiagnosticoSistema.length > 50) logsDiagnosticoSistema.pop();
+        }
+
+        function traduzirErroTecnico(erroOriginal, modulo = "Geral", operacao = "Execução") {
+            registrarErroSeguro(modulo, operacao, erroOriginal);
+            if (!erroOriginal) return "Ocorreu um erro inesperado. Tente novamente.";
+            const msg = typeof erroOriginal === 'string' ? erroOriginal : (erroOriginal.message || erroOriginal.details || JSON.stringify(erroOriginal));
+            const msgLower = msg.toLowerCase();
+            if (msgLower.includes('invalid login credentials') || msgLower.includes('password')) return "E-mail ou senha incorretos.";
+            if (msgLower.includes('already registered') || msgLower.includes('unique constraint')) return "Já existe uma conta cadastrada com este e-mail.";
+            if (msgLower.includes('failed to fetch') || msgLower.includes('network request failed')) return "Não foi possível conectar ao sistema. Verifique sua conexão.";
+            if (msgLower.includes('violates row-level security') || msgLower.includes('permission denied')) return "Permissão negada (RLS) para gravar ou ler dados nesta tabela.";
+            return "Ocorreu um problema inesperado. Tente novamente.";
+        }
+
+        function formatarMoedaBr(valor) {
+            const num = parseFloat(valor);
+            if (isNaN(num)) return "R$ 0,00";
+            return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
 
         function formatarDataHoraBr(timestamp) {
             if (!timestamp) return 'Data não informada';
@@ -894,54 +1088,10 @@
                 if (isNaN(dataObj.getTime())) return timestamp;
                 return new Intl.DateTimeFormat('pt-BR', {
                     timeZone: 'America/Sao_Paulo',
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', hour12: false
                 }).format(dataObj).replace(',', ' às');
-            } catch (e) {
-                return timestamp;
-            }
-        }
-
-        function formatarApenasDataBr(timestamp) {
-            if (!timestamp) return 'Data não informada';
-            try {
-                const dataObj = new Date(timestamp);
-                if (isNaN(dataObj.getTime())) return timestamp;
-                return new Intl.DateTimeFormat('pt-BR', {
-                    timeZone: 'America/Sao_Paulo',
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }).format(dataObj);
-            } catch (e) {
-                return timestamp;
-            }
-        }
-
-        function traduzirErroTecnico(erroOriginal) {
-            if (!erroOriginal) return "Ocorreu um erro inesperado. Tente novamente.";
-            console.error("Erro detectado no Supabase / Sistema:", erroOriginal);
-
-            const msg = typeof erroOriginal === 'string' ? erroOriginal : (erroOriginal.message || erroOriginal.details || JSON.stringify(erroOriginal));
-            const msgLower = msg.toLowerCase();
-
-            if (msgLower.includes('invalid login credentials') || msgLower.includes('invalid grant') || msgLower.includes('password')) {
-                return "E-mail ou senha incorretos.";
-            }
-            if (msgLower.includes('already registered') || msgLower.includes('unique constraint') || msgLower.includes('duplicate key')) {
-                return "Já existe uma conta cadastrada com este e-mail.";
-            }
-            if (msgLower.includes('failed to fetch') || msgLower.includes('network request failed') || msgLower.includes('networkerror')) {
-                return "Não foi possível conectar ao sistema. Verifique sua conexão e tente novamente.";
-            }
-            if (msgLower.includes('violates row-level security') || msgLower.includes('permission denied')) {
-                return "Permissão negada (RLS) para gravar ou ler dados nesta tabela. Verifique as políticas do Supabase.";
-            }
-            return `Não foi possível concluir a operação. Tente novamente.`;
+            } catch (e) { return timestamp; }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -958,31 +1108,28 @@
 
         function iniciarRealtimeSupabase() {
             if (realtimeSubscriptionAtiva) return;
-
-            realtimeSubscriptionAtiva = supabaseClient
-                .channel('public-db-changes')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios' }, payload => {
-                    if (usuarioSessao && usuarioSessao.perfil === 'admin') {
-                        carregarDadosAdmin();
-                    } else if (usuarioSessao && usuarioSessao.perfil === 'prestador' && payload.new && payload.new.email === usuarioSessao.email) {
-                        if (payload.new.status === 'inativo' || payload.new.ativo === false) {
-                            alert("Sua conta foi desativada pelo Administrador.");
-                            fazerLogout();
-                        } else {
-                            carregarPainelPrestador();
+            try {
+                realtimeSubscriptionAtiva = supabaseClient
+                    .channel('public-db-changes')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios' }, payload => {
+                        if (usuarioSessao && usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+                    })
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'orcamentos' }, payload => {
+                        if (usuarioSessao && usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+                        else if (usuarioSessao && usuarioSessao.perfil === 'cliente') carregarPainelClienteDados();
+                        else if (usuarioSessao && usuarioSessao.perfil === 'prestador') carregarPainelPrestador();
+                    })
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'mensagens_negociacao' }, payload => {
+                        const chatOrcId = document.getElementById('chatOrcamentoIdHidden').value;
+                        const modalChat = document.getElementById('modalNegociacaoChat');
+                        if (modalChat && !modalChat.classList.contains('hidden') && chatOrcId && payload.new && String(payload.new.orcamento_id) === String(chatOrcId)) {
+                            carregarMensagensChat(chatOrcId);
                         }
-                    }
-                })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'orcamentos' }, payload => {
-                    if (usuarioSessao && usuarioSessao.perfil === 'admin') {
-                        carregarDadosAdmin();
-                    } else if (usuarioSessao && usuarioSessao.perfil === 'cliente') {
-                        carregarPainelClienteDados();
-                    } else if (usuarioSessao && usuarioSessao.perfil === 'prestador') {
-                        carregarPainelPrestador();
-                    }
-                })
-                .subscribe();
+                    })
+                    .subscribe();
+            } catch (err) {
+                registrarErroSeguro("Realtime", "iniciarRealtimeSupabase", err);
+            }
         }
 
         function mudarTela(idTela) {
@@ -994,10 +1141,6 @@
                 if (idTela === 'login') {
                     const frm = document.getElementById('formLoginApp');
                     if (frm) frm.reset();
-                    const elEmail = document.getElementById('loginEmail');
-                    const elSenha = document.getElementById('loginSenha');
-                    if (elEmail) elEmail.value = "";
-                    if (elSenha) elSenha.value = "";
                 }
                 if (idTela === 'painelAdmin') carregarDadosAdmin();
                 if (idTela === 'painelCliente') carregarPainelClienteDados();
@@ -1005,40 +1148,37 @@
             }
         }
 
+        function abrirPainelAdmin() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'admin') {
+                alert("Acesso restrito ao administrador.");
+                return;
+            }
+            mudarTela('painelAdmin');
+        }
+
         function aplicarMascaraTelefone(input) {
             let v = input.value.replace(/\D/g, '');
             if (v.length > 11) v = v.substring(0, 11);
-            if (v.length > 6) {
-                v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
-            } else if (v.length > 2) {
-                v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-            } else if (v.length > 0) {
-                v = v.replace(/^(\d*)/, '($1');
-            }
+            if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+            else if (v.length > 0) v = v.replace(/^(\d*)/, '($1');
             input.value = v;
         }
 
         function aplicarMascaraCep(input) {
             let v = input.value.replace(/\D/g, '');
             if (v.length > 8) v = v.substring(0, 8);
-            if (v.length > 5) {
-                v = v.replace(/^(\d{5})(\d{1,3}).*/, '$1-$2');
-            }
+            if (v.length > 5) v = v.replace(/^(\d{5})(\d{1,3}).*/, '$1-$2');
             input.value = v;
         }
 
         async function consultarCepAutomatico(input, tipo) {
             const cepLimpo = input.value.replace(/\D/g, '');
             if (cepLimpo.length !== 8) return;
-
             try {
                 const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
                 const data = await response.json();
-                if (data.erro) {
-                    alert("Não foi possível localizar o CEP informado. Verifique o CEP e tente novamente.");
-                    return;
-                }
-
+                if (data.erro) { alert("Não foi possível localizar o CEP informado."); return; }
                 if (tipo === 'cliente') {
                     document.getElementById('cliEndereco').value = data.logradouro || '';
                     document.getElementById('cliBairro').value = data.bairro || '';
@@ -1053,7 +1193,7 @@
                     document.getElementById('prestNumero').focus();
                 }
             } catch(e) {
-                alert("Não foi possível conectar ao serviço de CEP. Verifique sua conexão.");
+                registrarErroSeguro("ViaCEP", "consultarCepAutomatico", e);
             }
         }
 
@@ -1144,24 +1284,20 @@
         async function alterarFotoPerfilCabecalho(event) {
             const arquivo = event.target.files[0];
             if (!arquivo || !usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
-
             const leitor = new FileReader();
             leitor.onload = async function(e) {
                 const novaFotoBase64 = e.target.result;
-                const { error } = await supabaseClient.from('usuarios').update({ foto_perfil: novaFotoBase64 }).eq('email', usuarioSessao.email);
-                if (error) { 
-                    alert(traduzirErroTecnico(error)); 
-                    return; 
+                try {
+                    const { error } = await supabaseClient.from('usuarios').update({ foto_perfil: novaFotoBase64 }).eq('email', usuarioSessao.email);
+                    if (error) throw error;
+                    usuarioSessao.foto_perfil = novaFotoBase64;
+                    localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+                    const containerAvatar = document.getElementById('prestadorAvatarContainer');
+                    if (containerAvatar) containerAvatar.innerHTML = `<img src="${novaFotoBase64}" class="w-full h-full object-cover rounded-full">`;
+                    alert("Foto de perfil atualizada com sucesso!");
+                } catch(err) {
+                    alert(traduzirErroTecnico(err, "Prestador", "alterarFotoPerfilCabecalho"));
                 }
-                
-                usuarioSessao.foto_perfil = novaFotoBase64;
-                localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
-                
-                const containerAvatar = document.getElementById('prestadorAvatarContainer');
-                if (containerAvatar) {
-                    containerAvatar.innerHTML = `<img src="${novaFotoBase64}" class="w-full h-full object-cover rounded-full">`;
-                }
-                alert("Foto de perfil atualizada com sucesso!");
             };
             leitor.readAsDataURL(arquivo);
         }
@@ -1200,140 +1336,215 @@
 
         async function cadastrarClienteSupabase(event) {
             event.preventDefault();
-            const nome = document.getElementById('cliNome').value;
-            const email = document.getElementById('cliEmail').value;
-            const senha = document.getElementById('cliSenha').value;
-            const telefone = document.getElementById('cliTelefone').value;
-            const cep = document.getElementById('cliCep').value;
-            const endereco = document.getElementById('cliEndereco').value;
-            const numero = document.getElementById('cliNumero').value;
-            const complemento = document.getElementById('cliComplemento').value;
-            const bairro = document.getElementById('cliBairro').value;
-            const cidade = document.getElementById('cliCidade').value;
-            const uf = document.getElementById('cliUf').value;
+            const btn = document.getElementById('btnSalvarCliente');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Processando...";
+            try {
+                const nome = document.getElementById('cliNome').value;
+                const email = document.getElementById('cliEmail').value;
+                const senha = document.getElementById('cliSenha').value;
+                const telefone = document.getElementById('cliTelefone').value;
+                const cep = document.getElementById('cliCep').value;
+                const endereco = document.getElementById('cliEndereco').value;
+                const numero = document.getElementById('cliNumero').value;
+                const complemento = document.getElementById('cliComplemento').value;
+                const bairro = document.getElementById('cliBairro').value;
+                const cidade = document.getElementById('cliCidade').value;
+                const uf = document.getElementById('cliUf').value;
 
-            const { data, error } = await supabaseClient.from('usuarios').insert([{
-                nome, email, senha, telefone, cep, endereco, numero, complemento, bairro, cidade, uf, perfil: 'cliente', status: 'ativo'
-            }]).select();
+                const { data, error } = await supabaseClient.from('usuarios').insert([{
+                    nome, email, senha, telefone, cep, endereco, numero, complemento, bairro, cidade, uf, perfil: 'cliente', status: 'ativo'
+                }]).select();
+                if (error) throw error;
 
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
+                usuarioSessao = data && data.length > 0 ? data[0] : { perfil: 'cliente', email, nome, status: 'ativo' };
+                localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+                atualizarHeaderSessao();
+                alert("Cliente cadastrado com sucesso!");
+                abrirPainelCliente();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cadastro", "cadastrarClienteSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-
-            const clienteCadastrado = data && data.length > 0 ? data[0] : { perfil: 'cliente', email, nome, status: 'ativo' };
-            usuarioSessao = clienteCadastrado;
-            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
-            atualizarHeaderSessao();
-            alert("Cliente cadastrado com sucesso!");
-            abrirPainelCliente();
         }
 
         async function cadastrarPrestadorSupabase(event) {
             event.preventDefault();
-            const nome = document.getElementById('prestNome').value;
-            const email = document.getElementById('prestEmail').value;
-            const senha = document.getElementById('prestSenha').value;
-            const especialidade = document.getElementById('prestEspecialidade').value;
-            const telefone = document.getElementById('prestTelefone').value;
-            const cpf_cnpj = document.getElementById('prestCpfCnpj').value;
-            const cep = document.getElementById('prestCep').value;
-            const endereco = document.getElementById('prestEndereco').value;
-            const numero = document.getElementById('prestNumero').value;
-            const complemento = document.getElementById('prestComplemento').value;
-            const bairro = document.getElementById('prestBairro').value;
-            const cidade = document.getElementById('prestCidade').value;
-            const uf = document.getElementById('prestUf').value;
-            const registro_profissional = document.getElementById('prestRegistro').value || null;
-            const dados_bancarios = document.getElementById('prestBancario').value;
+            const btn = document.getElementById('btnSalvarPrestador');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Processando...";
+            try {
+                const nome = document.getElementById('prestNome').value;
+                const email = document.getElementById('prestEmail').value;
+                const senha = document.getElementById('prestSenha').value;
+                const especialidade = document.getElementById('prestEspecialidade').value;
+                const telefone = document.getElementById('prestTelefone').value;
+                const cpf_cnpj = document.getElementById('prestCpfCnpj').value;
+                const cep = document.getElementById('prestCep').value;
+                const endereco = document.getElementById('prestEndereco').value;
+                const numero = document.getElementById('prestNumero').value;
+                const complemento = document.getElementById('prestComplemento').value;
+                const bairro = document.getElementById('prestBairro').value;
+                const cidade = document.getElementById('prestCidade').value;
+                const uf = document.getElementById('prestUf').value;
+                const registro_profissional = document.getElementById('prestRegistro').value || null;
+                const dados_bancarios = document.getElementById('prestBancario').value;
+                const tipo_pix = document.getElementById('prestTipoPix').value;
+                const chave_pix = document.getElementById('prestChavePix').value;
 
-            const { data, error } = await supabaseClient.from('usuarios').insert([{
-                nome, email, senha, especialidade, telefone, cpf_cnpj, cep, endereco, numero, complemento, bairro, cidade, uf, registro_profissional, dados_bancarios, foto_perfil: fotoPerfilBase64 || null, perfil: 'prestador', status: 'ativo'
-            }]).select();
+                const { data, error } = await supabaseClient.from('usuarios').insert([{
+                    nome, email, senha, especialidade, telefone, cpf_cnpj, cep, endereco, numero, complemento, bairro, cidade, uf, registro_profissional, dados_bancarios, tipo_pix, chave_pix, foto_perfil: fotoPerfilBase64 || null, perfil: 'prestador', status: 'ativo'
+                }]).select();
+                if (error) throw error;
 
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
+                usuarioSessao = data && data.length > 0 ? data[0] : { perfil: 'prestador', email, nome, foto_perfil: fotoPerfilBase64, status: 'ativo', tipo_pix, chave_pix };
+                localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+                atualizarHeaderSessao();
+                alert("Prestador cadastrado com sucesso!");
+                carregarPainelPrestador();
+                mudarTela('painelPrestador');
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cadastro", "cadastrarPrestadorSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
+        }
 
-            usuarioSessao = data && data.length > 0 ? data[0] : { perfil: 'prestador', email, nome, foto_perfil: fotoPerfilBase64, status: 'ativo' };
-            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
-            atualizarHeaderSessao();
-            alert("Prestador cadastrado com sucesso!");
-            carregarPainelPrestador();
-            mudarTela('painelPrestador');
+        async function salvarMinhaChavePixSupabase() {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
+            const btn = document.getElementById('btnSalvarPix');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Salvando...";
+            try {
+                const tipo_pix = document.getElementById('meuTipoPixInput').value;
+                const chave_pix = document.getElementById('minhaChavePixInput').value.trim();
+                if (!chave_pix) { alert("Informe a chave PIX."); return; }
+
+                const { error } = await supabaseClient.from('usuarios').update({ tipo_pix, chave_pix }).eq('email', usuarioSessao.email);
+                if (error) throw error;
+                usuarioSessao.tipo_pix = tipo_pix;
+                usuarioSessao.chave_pix = chave_pix;
+                localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+                alert("Chave PIX atualizada com sucesso!");
+                carregarPainelPrestador();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Prestador", "salvarMinhaChavePixSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
+            }
         }
 
         async function salvarFotosTrabalhoSupabase() {
             if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
-            const fotosJson = JSON.stringify(fotosTrabalhoPrestador.filter(f => f !== ""));
-            const { error } = await supabaseClient.from('usuarios').update({ fotos_trabalho: fotosJson }).eq('email', usuarioSessao.email);
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
+            const btn = document.getElementById('btnSalvarPortfolio');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Salvando...";
+            try {
+                const fotosJson = JSON.stringify(fotosTrabalhoPrestador.filter(f => f !== ""));
+                const { error } = await supabaseClient.from('usuarios').update({ fotos_trabalho: fotosJson }).eq('email', usuarioSessao.email);
+                if (error) throw error;
+                alert("Portfólio de fotos salvo com sucesso!");
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Prestador", "salvarFotosTrabalhoSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-            alert("Portfólio de fotos salvo com sucesso!");
         }
 
         async function salvarDescricaoTrabalhoSupabase() {
             if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
-            const descricaoTexto = document.getElementById('prestadorDescricaoTrabalho').value;
-
-            let { error } = await supabaseClient.from('usuarios').update({ descrição: descricaoTexto }).eq('email', usuarioSessao.email);
-            if (error) {
-                let res2 = await supabaseClient.from('usuarios').update({ descricao: descricaoTexto }).eq('email', usuarioSessao.email);
-                if (res2.error) {
-                    alert(traduzirErroTecnico(res2.error));
-                    return;
+            const btn = document.getElementById('btnSalvarDescricao');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Salvando...";
+            try {
+                const descricaoTexto = document.getElementById('prestadorDescricaoTrabalho').value;
+                let { error } = await supabaseClient.from('usuarios').update({ descrição: descricaoTexto }).eq('email', usuarioSessao.email);
+                if (error) {
+                    let res2 = await supabaseClient.from('usuarios').update({ descricao: descricaoTexto }).eq('email', usuarioSessao.email);
+                    if (res2.error) throw res2.error;
                 }
+                usuarioSessao.descrição = descricaoTexto;
+                localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+                alert("Descrição salva com sucesso!");
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Prestador", "salvarDescricaoTrabalhoSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-
-            usuarioSessao.descrição = descricaoTexto;
-            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
-            alert("Descrição salva com sucesso!");
         }
 
         async function salvarOrcamentoSupabase(event) {
             event.preventDefault();
-            if (usuarioSessao && usuarioSessao.status === 'inativo') {
-                alert("Sua conta está inativa. Não é possível enviar orçamentos.");
-                return;
+            const btn = document.getElementById('btnEnviarOrcamento');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Enviando...";
+            try {
+                if (usuarioSessao && usuarioSessao.status === 'inativo') {
+                    alert("Sua conta está inativa. Não é possível enviar orçamentos.");
+                    return;
+                }
+                const cep_servico = document.getElementById('orcamentoCep').value;
+                const rua_servico = document.getElementById('orcamentoRua').value;
+                const descricao_servic = document.getElementById('orcamentoDescricao').value;
+                const cliente_email = usuarioSessao ? usuarioSessao.email : "anonimo@fixou.com";
+                const cliente_id = usuarioSessao ? usuarioSessao.id : null;
+
+                const payloadOrcamento = {
+                    cliente_email, cep_servico, rua_servico, descricao_servic, 
+                    foto_orcamento: fotoOrcamentoBase64 || null,
+                    status: 'Solicitado', avaliado: false, prestador_responsavel: null
+                };
+                if (cliente_id) payloadOrcamento.cliente_id = cliente_id;
+
+                const { error } = await supabaseClient.from('orcamentos').insert([payloadOrcamento]);
+                if (error) throw error;
+
+                alert("Orçamento enviado com sucesso.");
+                document.getElementById('orcamentoCep').value = "";
+                document.getElementById('orcamentoRua').value = "";
+                document.getElementById('orcamentoDescricao').value = "";
+                fotoOrcamentoBase64 = "";
+                document.getElementById('previewFotoOrcamento').classList.add('hidden');
+                document.getElementById('iconePlaceholderOrcamento').classList.remove('hidden');
+                document.getElementById('inputFotoOrcamento').value = "";
+                abrirPainelCliente();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Orçamento", "salvarOrcamentoSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-            const cep_servico = document.getElementById('orcamentoCep').value;
-            const rua_servico = document.getElementById('orcamentoRua').value;
-            const descricao_servic = document.getElementById('orcamentoDescricao').value;
-            const cliente_email = usuarioSessao ? usuarioSessao.email : "anonimo@fixou.com";
-            const cliente_id = usuarioSessao ? usuarioSessao.id : null;
-
-            const payloadOrcamento = {
-                cliente_email, cep_servico, rua_servico, descricao_servic, 
-                foto_orcamento: fotoOrcamentoBase64 || null,
-                status: 'Solicitado', avaliado: false, prestador_responsavel: null
-            };
-            if (cliente_id) payloadOrcamento.cliente_id = cliente_id;
-
-            const { error } = await supabaseClient.from('orcamentos').insert([payloadOrcamento]);
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
-            }
-
-            alert("Orçamento enviado com sucesso!");
-            document.getElementById('orcamentoCep').value = "";
-            document.getElementById('orcamentoRua').value = "";
-            document.getElementById('orcamentoDescricao').value = "";
-            fotoOrcamentoBase64 = "";
-            document.getElementById('previewFotoOrcamento').classList.add('hidden');
-            document.getElementById('iconePlaceholderOrcamento').classList.remove('hidden');
-            document.getElementById('inputFotoOrcamento').value = "";
-            abrirPainelCliente();
         }
 
-        function abrirModalEnviarOrcamento(orcamentoId) {
+        function abrirModalEnviarOrcamento(orcamentoId, valorBaseAtual = "") {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             document.getElementById('enviarOrcamentoId').value = orcamentoId;
-            document.getElementById('orcamentoValorInput').value = "";
+            document.getElementById('orcamentoValorInput').value = valorBaseAtual;
             document.getElementById('orcamentoDetalhesInput').value = "";
+            const tituloModal = document.getElementById('tituloModalEnviarOrcamento');
+            if (valorBaseAtual) {
+                tituloModal.textContent = "Enviar nova proposta ao cliente";
+            } else {
+                tituloModal.textContent = "Enviar orçamento ao cliente";
+            }
             document.getElementById('modalEnviarOrcamento').classList.remove('hidden');
         }
 
@@ -1342,173 +1553,406 @@
         }
 
         async function confirmarEnvioOrcamentoCliente() {
-            const orcamentoId = document.getElementById('enviarOrcamentoId').value;
-            const valor = document.getElementById('orcamentoValorInput').value;
-            const detalhes = document.getElementById('orcamentoDetalhesInput').value;
+            const btn = document.getElementById('btnConfirmarEnvioOrcamento');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Enviando...";
 
-            if (!orcamentoId) return;
+            try {
+                const orcamentoId = document.getElementById('enviarOrcamentoId').value;
+                const valorBaseInput = document.getElementById('orcamentoValorInput').value;
 
-            const { error } = await supabaseClient.from('orcamentos').update({
-                status: 'AGUARDANDO RESPOSTA DO CLIENTE',
-                orcamento_valor: valor,
-                orcamento_detalhes: detalhes
-            }).eq('id', orcamentoId);
+                if (!orcamentoId || !valorBaseInput) {
+                    alert("Informe o valor base do serviço.");
+                    return;
+                }
 
-            if (error) {
-                alert(traduzirErroTecnico(error));
-                return;
+                const valorBaseNum = parseFloat(valorBaseInput.replace(',', '.'));
+                if (isNaN(valorBaseNum) || valorBaseNum <= 0) {
+                    alert("Informe um valor válido.");
+                    return;
+                }
+
+                // Regra financeira estrita: Base original separada
+                const payloadAtualizacao = {
+                    valor_base: valorBaseNum,
+                    orcamento_valor: valorBaseNum,
+                    status: 'AGUARDANDO RESPOSTA DO CLIENTE'
+                };
+
+                const { data, error } = await supabaseClient.from('orcamentos').update(payloadAtualizacao).eq('id', orcamentoId).select();
+
+                if (error) throw error;
+                if (!data || data.length === 0) throw new Error("Não foi possível encontrar o registro do orçamento para atualização.");
+
+                fecharModalEnviarOrcamento();
+                alert("Nova proposta enviada ao cliente.");
+                carregarDadosAdmin();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "confirmarEnvioOrcamentoCliente"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-
-            fecharModalEnviarOrcamento();
-            alert("Orçamento enviado ao cliente.");
-            carregarDadosAdmin();
         }
 
         async function clienteResponderOrcamento(orcamentoId, aceito) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') return;
-            const novoStatus = aceito ? 'ACEITO PELO CLIENTE' : 'RECUSADO PELO CLIENTE';
+            const novoStatus = aceito ? 'ACEITO PELO CLIENTE' : 'EM NEGOCIAÇÃO';
 
-            const { error } = await supabaseClient.from('orcamentos').update({
-                status: novoStatus
-            }).eq('id', orcamentoId);
+            try {
+                const { error } = await supabaseClient.from('orcamentos').update({
+                    status: novoStatus
+                }).eq('id', orcamentoId);
 
-            if (error) {
-                alert(traduzirErroTecnico(error));
-                return;
+                if (error) throw error;
+
+                if (aceito) {
+                    alert("Orçamento aceito com sucesso.");
+                } else {
+                    alert("Orçamento recusado. Você pode negociar uma nova proposta com o administrador.");
+                }
+                carregarPainelClienteDados();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cliente", "clienteResponderOrcamento"));
             }
+        }
 
-            if (aceito) {
-                alert("Orçamento aceito pelo cliente.");
-            } else {
-                alert("Orçamento recusado pelo cliente.");
+        // =====================================================================
+        // MÓDULO DE NEGOCIAÇÃO E CHAT EXCLUSIVO (CLIENTE <-> ADMINISTRADOR)
+        // =====================================================================
+        async function abrirModalNegociacaoChat(orcamentoId) {
+            if (!usuarioSessao || (usuarioSessao.perfil !== 'cliente' && usuarioSessao.perfil !== 'admin')) return;
+            document.getElementById('chatOrcamentoIdHidden').value = orcamentoId;
+
+            try {
+                const { data: orcObj, error } = await supabaseClient.from('orcamentos').select('*').eq('id', orcamentoId).single();
+                if (error || !orcObj) throw error;
+
+                document.getElementById('chatResumoId').textContent = orcObj.id;
+                document.getElementById('chatResumoDescricao').textContent = orcObj.descricao_servic || 'Serviço residencial';
+                
+                const valorBaseRef = orcObj.valor_base || orcObj.orcamento_valor || 0;
+                const valorFinalCliente = valorBaseRef * 1.15; // CLIENTE = BASE * 1.15
+                document.getElementById('chatResumoValor').textContent = formatarMoedaBr(valorFinalCliente);
+
+                await carregarMensagensChat(orcamentoId);
+                document.getElementById('modalNegociacaoChat').classList.remove('hidden');
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Negociação", "abrirModalNegociacaoChat"));
             }
-            carregarPainelClienteDados();
+        }
+
+        function fecharModalNegociacaoChat() {
+            document.getElementById('modalNegociacaoChat').classList.add('hidden');
+        }
+
+        async function carregarMensagensChat(orcamentoId) {
+            const containerMensagens = document.getElementById('containerMensagensChat');
+            if (!containerMensagens) return;
+
+            try {
+                const { data: msgs, error } = await supabaseClient
+                    .from('mensagens_negociacao')
+                    .select('*')
+                    .eq('orcamento_id', orcamentoId)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (!msgs || msgs.length === 0) {
+                    containerMensagens.innerHTML = `<p class="text-slate-500 italic">Nenhuma mensagem na negociação ainda. Inicie a conversa abaixo.</p>`;
+                    return;
+                }
+
+                let htmlMsg = '';
+                msgs.forEach(m => {
+                    const remetenteNome = m.remetente_nome || m.remetente_email || 'Usuário';
+                    const perfilRemetente = m.remetente_perfil === 'admin' ? 'ADMINISTRADOR' : 'CLIENTE';
+                    const corPerfil = m.remetente_perfil === 'admin' ? 'text-blue-400 font-bold' : 'text-sky-400 font-bold';
+                    const dataFormatada = formatarDataHoraBr(m.created_at);
+
+                    htmlMsg += `
+                        <div class="space-y-0.5 border-b border-slate-800 pb-2">
+                            <div class="flex justify-between items-center text-[10px] text-slate-400">
+                                <span class="${corPerfil}">${perfilRemetente}: ${remetenteNome}</span>
+                                <span>${dataFormatada}</span>
+                            </div>
+                            <p class="text-slate-200 text-xs">${m.mensagem}</p>
+                        </div>
+                    `;
+                });
+                containerMensagens.innerHTML = htmlMsg;
+                containerMensagens.scrollTop = containerMensagens.scrollHeight;
+            } catch (err) {
+                registrarErroSeguro("Negociação", "carregarMensagensChat", err);
+                containerMensagens.innerHTML = `<p class="text-rose-400 italic">Não foi possível carregar as mensagens.</p>`;
+            }
+        }
+
+        async function enviarMensagemNegociacao(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnEnviarMensagemChat');
+            if (btn.disabled) return;
+            btn.disabled = true;
+
+            try {
+                const orcamentoId = document.getElementById('chatOrcamentoIdHidden').value;
+                const textoMensagem = document.getElementById('inputMensagemChat').value.trim();
+
+                if (!orcamentoId || !textoMensagem) return;
+
+                const payloadMsg = {
+                    orcamento_id: orcamentoId,
+                    remetente_email: usuarioSessao.email,
+                    remetente_nome: usuarioSessao.nome,
+                    remetente_perfil: usuarioSessao.perfil,
+                    mensagem: textoMensagem,
+                    created_at: new Date().toISOString()
+                };
+
+                const { error } = await supabaseClient.from('mensagens_negociacao').insert([payloadMsg]);
+                if (error) throw error;
+
+                document.getElementById('inputMensagemChat').value = "";
+                await carregarMensagensChat(orcamentoId);
+            } catch (err) {
+                alert("Não foi possível enviar a mensagem. Tente novamente.");
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         async function adminPublicarServico(orcamentoId) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
-
-            const { error } = await supabaseClient.from('orcamentos').update({
-                status: 'PUBLICADO PARA PRESTADORES'
-            }).eq('id', orcamentoId);
-
-            if (error) {
-                alert(traduzirErroTecnico(error));
-                return;
+            try {
+                const { error } = await supabaseClient.from('orcamentos').update({ status: 'PUBLICADO PARA PRESTADORES' }).eq('id', orcamentoId);
+                if (error) throw error;
+                alert("Serviço publicado com sucesso.");
+                carregarDadosAdmin();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "adminPublicarServico"));
             }
-
-            alert("Serviço publicado com sucesso.");
-            carregarDadosAdmin();
         }
 
         async function prestadorResponderOportunidade(orcamentoId, aceitar) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
+            try {
+                if (!aceitar) {
+                    let recusaAtual = [];
+                    const { data: orcObj } = await supabaseClient.from('orcamentos').select('prestadores_recusados').eq('id', orcamentoId).single();
+                    if (orcObj && orcObj.prestadores_recusados) {
+                        try { recusaAtual = JSON.parse(orcObj.prestadores_recusados); } catch(e){}
+                    }
+                    if (!recusaAtual.includes(usuarioSessao.email)) recusaAtual.push(usuarioSessao.email);
+                    await supabaseClient.from('orcamentos').update({ prestadores_recusados: JSON.stringify(recusaAtual) }).eq('id', orcamentoId);
+                    alert("Você recusou esta oportunidade.");
+                    carregarPainelPrestador();
+                    return;
+                }
 
-            if (!aceitar) {
-                let recusaAtual = [];
-                const { data: orcObj } = await supabaseClient.from('orcamentos').select('prestadores_recusados').eq('id', orcamentoId).single();
-                if (orcObj && orcObj.prestadores_recusados) {
-                    try { recusaAtual = JSON.parse(orcObj.prestadores_recusados); } catch(e){}
+                let interessadosAtual = [];
+                const { data: orcObj } = await supabaseClient.from('orcamentos').select('prestadores_interessados').eq('id', orcamentoId).single();
+                if (orcObj && orcObj.prestadores_interessados) {
+                    try { interessadosAtual = JSON.parse(orcObj.prestadores_interessados); } catch(e){}
                 }
-                if (!recusaAtual.includes(usuarioSessao.email)) {
-                    recusaAtual.push(usuarioSessao.email);
-                }
-                await supabaseClient.from('orcamentos').update({
-                    prestadores_recusados: JSON.stringify(recusaAtual)
+
+                const registroInteresse = {
+                    prestador_email: usuarioSessao.email,
+                    prestador_nome: usuarioSessao.nome,
+                    prestador_telefone: usuarioSessao.telefone || 'Não informado',
+                    data_manifestacao: new Date().toISOString()
+                };
+
+                interessadosAtual = interessadosAtual.filter(i => i.prestador_email !== usuarioSessao.email);
+                interessadosAtual.push(registroInteresse);
+
+                const { error } = await supabaseClient.from('orcamentos').update({
+                    prestadores_interessados: JSON.stringify(interessadosAtual),
+                    status: 'PRESTADOR ACEITOU'
                 }).eq('id', orcamentoId);
+                if (error) throw error;
 
-                alert("Você recusou esta oportunidade.");
+                alert("Você aceitou esta oportunidade.");
                 carregarPainelPrestador();
-                return;
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Prestador", "prestadorResponderOportunidade"));
             }
-
-            let interessadosAtual = [];
-            const { data: orcObj } = await supabaseClient.from('orcamentos').select('prestadores_interessados').eq('id', orcamentoId).single();
-            if (orcObj && orcObj.prestadores_interessados) {
-                try { interessadosAtual = JSON.parse(orcObj.prestadores_interessados); } catch(e){}
-            }
-
-            const registroInteresse = {
-                prestador_email: usuarioSessao.email,
-                prestador_nome: usuarioSessao.nome,
-                prestador_telefone: usuarioSessao.telefone || 'Não informado',
-                data_manifestacao: new Date().toISOString()
-            };
-
-            interessadosAtual = interessadosAtual.filter(i => i.prestador_email !== usuarioSessao.email);
-            interessadosAtual.push(registroInteresse);
-
-            const { error } = await supabaseClient.from('orcamentos').update({
-                prestadores_interessados: JSON.stringify(interessadosAtual),
-                status: 'PRESTADOR ACEITOU'
-            }).eq('id', orcamentoId);
-
-            if (error) {
-                alert(traduzirErroTecnico(error));
-                return;
-            }
-
-            alert("Você aceitou esta oportunidade.");
-            carregarPainelPrestador();
         }
 
         async function adminConfirmarPrestador(orcamentoId, prestadorNome) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
-
-            const { error } = await supabaseClient.from('orcamentos').update({
-                prestador_responsavel: prestadorNome,
-                status: 'PRESTADOR DEFINIDO'
-            }).eq('id', orcamentoId);
-
-            if (error) {
-                alert(traduzirErroTecnico(error));
-                return;
+            try {
+                const { error } = await supabaseClient.from('orcamentos').update({
+                    prestador_responsavel: prestadorNome,
+                    status: 'PRESTADOR DEFINIDO'
+                }).eq('id', orcamentoId);
+                if (error) throw error;
+                alert("Prestador confirmado para o serviço.");
+                carregarDadosAdmin();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "adminConfirmarPrestador"));
             }
+        }
 
-            alert("Prestador confirmado para o serviço.");
-            carregarDadosAdmin();
+        function abrirModalEnvioFoto50(orcamentoId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
+            const tipoPix = usuarioSessao.tipo_pix;
+            const chavePix = usuarioSessao.chave_pix;
+            const avisoFaltando = document.getElementById('avisoPixFaltando');
+            const btnEnviar = document.getElementById('btnConfirmarEnvioComprovacao');
+
+            document.getElementById('prestadorOrcamentoId50').value = orcamentoId;
+            fotoAndamento50Base64 = "";
+            document.getElementById('previewFoto50').classList.add('hidden');
+            document.getElementById('iconeFoto50').classList.remove('hidden');
+            document.getElementById('inputFoto50File').value = "";
+
+            if (!tipoPix || !chavePix || !chavePix.trim()) {
+                avisoFaltando.classList.remove('hidden');
+                document.getElementById('resumoTipoPixLabel').textContent = "Não cadastrado";
+                document.getElementById('resumoChavePixLabel').textContent = "Não cadastrada";
+                btnEnviar.disabled = true;
+                btnEnviar.classList.add('opacity-50', 'cursor-not-allowed');
+                alert("Cadastre sua chave PIX antes de enviar a comprovação do serviço.");
+            } else {
+                avisoFaltando.classList.add('hidden');
+                document.getElementById('resumoTipoPixLabel').textContent = tipoPix;
+                document.getElementById('resumoChavePixLabel').textContent = chavePix;
+                btnEnviar.disabled = false;
+                btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            document.getElementById('modalEnvioFoto50').classList.remove('hidden');
+        }
+
+        function fecharModalEnvioFoto50() {
+            document.getElementById('modalEnvioFoto50').classList.add('hidden');
+        }
+
+        function carregarFotoAndamento50(event) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    fotoAndamento50Base64 = e.target.result;
+                    const preview = document.getElementById('previewFoto50');
+                    const icone = document.getElementById('iconeFoto50');
+                    preview.src = fotoAndamento50Base64;
+                    preview.classList.remove('hidden');
+                    icone.classList.add('hidden');
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        async function executarEnvioComprovacao50() {
+            const btn = document.getElementById('btnConfirmarEnvioComprovacao');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Enviando...";
+            try {
+                const orcamentoId = document.getElementById('prestadorOrcamentoId50').value;
+                if (!orcamentoId || !fotoAndamento50Base64) {
+                    alert("Envie a foto de comprovação de 50% do serviço.");
+                    return;
+                }
+                const payloadUpdate = {
+                    foto_andamento_50: fotoAndamento50Base64,
+                    data_envio_50: new Date().toISOString(),
+                    status: 'AGUARDANDO APROVAÇÃO 50%'
+                };
+                const { error } = await supabaseClient.from('orcamentos').update(payloadUpdate).eq('id', orcamentoId);
+                if (error) throw error;
+                fecharModalEnvioFoto50();
+                alert("Comprovação enviada com sucesso ao administrador.");
+                carregarPainelPrestador();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Prestador", "executarEnvioComprovacao50"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
+            }
+        }
+
+        async function adminAprovarComprovacao50(orcamentoId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
+            try {
+                const { error } = await supabaseClient.from('orcamentos').update({ status: '50% APROVADO PARA PAGAMENTO' }).eq('id', orcamentoId);
+                if (error) throw error;
+                alert("Comprovação aprovada. Os primeiros 50% do valor do prestador foram aprovados para pagamento.");
+                carregarDadosAdmin();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "adminAprovarComprovacao50"));
+            }
+        }
+
+        async function adminSolicitarNovaComprovacao50(orcamentoId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
+            try {
+                const { error } = await supabaseClient.from('orcamentos').update({
+                    status: 'PRESTADOR DEFINIDO',
+                    foto_andamento_50: null,
+                    data_envio_50: null
+                }).eq('id', orcamentoId);
+                if (error) throw error;
+                alert("Solicitada nova comprovação ao prestador.");
+                carregarDadosAdmin();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "adminSolicitarNovaComprovacao50"));
+            }
         }
 
         async function salvarFotoConcluidoSupabase(event) {
             event.preventDefault();
-            const orcamentoId = document.getElementById('concluidoOrcamentoId').value;
-            if (!orcamentoId || !fotoModalConcluidoBase64) return;
-
-            const { error } = await supabaseClient.from('orcamentos').update({
-                foto_concluido: fotoModalConcluidoBase64,
-                status: 'SERVIÇO EM ANDAMENTO'
-            }).eq('id', orcamentoId);
-
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
+            const btn = document.getElementById('btnSalvarFotoConcluido');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Salvando...";
+            try {
+                const orcamentoId = document.getElementById('concluidoOrcamentoId').value;
+                if (!orcamentoId || !fotoModalConcluidoBase64) return;
+                const { error } = await supabaseClient.from('orcamentos').update({
+                    foto_concluido: fotoModalConcluidoBase64,
+                    status: 'SERVIÇO EM ANDAMENTO'
+                }).eq('id', orcamentoId);
+                if (error) throw error;
+                fecharModalFotoConcluido();
+                alert("Serviço marcado como concluído com sucesso.");
+                carregarPainelClienteDados();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cliente", "salvarFotoConcluidoSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-            fecharModalFotoConcluido();
-            alert("Serviço marcado como concluído com sucesso!");
-            carregarPainelClienteDados();
         }
 
         async function salvarAvaliacaoSupabase(event) {
             event.preventDefault();
-            const orcamentoId = document.getElementById('avalOrcamentoId').value;
-            const nota = parseInt(document.getElementById('avalNota').value);
-            const comentario = document.getElementById('avalComentario').value;
-
-            const payloadAvaliacao = {
-                nota_avaliacao: nota, 
-                comentario_avaliacao: comentario, 
-                avaliado: true
-            };
-
-            const { error } = await supabaseClient.from('orcamentos').update(payloadAvaliacao).eq('id', orcamentoId);
-
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
+            const btn = document.getElementById('btnSalvarAvaliacao');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Enviando...";
+            try {
+                const orcamentoId = document.getElementById('avalOrcamentoId').value;
+                const nota = parseInt(document.getElementById('avalNota').value);
+                const comentario = document.getElementById('avalComentario').value;
+                const payloadAvaliacao = { nota_avaliacao: nota, comentario_avaliacao: comentario, avaliado: true };
+                const { error } = await supabaseClient.from('orcamentos').update(payloadAvaliacao).eq('id', orcamentoId);
+                if (error) throw error;
+                fecharModalAvaliacao();
+                alert("Avaliação enviada com sucesso.");
+                carregarPainelClienteDados();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cliente", "salvarAvaliacaoSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-            fecharModalAvaliacao();
-            alert("Avaliação enviada com sucesso!");
-            carregarPainelClienteDados();
         }
 
         async function carregarPainelClienteDados() {
@@ -1516,277 +1960,332 @@
             const containerGaleria = document.getElementById('galeriaTrabalhosPrestadores');
             if (!containerOrcamentos || !containerGaleria || !usuarioSessao) return;
 
-            const { data: orcData } = await supabaseClient.from('orcamentos').select('*').eq('cliente_email', usuarioSessao.email);
-            if (!orcData || orcData.length === 0) {
-                containerOrcamentos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço registrado.</p>`;
-            } else {
-                let htmlOrc = '';
-                orcData.forEach(o => {
-                    const statusAtual = o.status || 'Solicitado';
-                    const isConcluido = statusAtual === 'SERVIÇO EM ANDAMENTO' || statusAtual === 'concluido';
-                    const isAguardandoResposta = statusAtual === 'AGUARDANDO RESPOSTA DO CLIENTE';
-                    const isAceito = statusAtual === 'ACEITO PELO CLIENTE';
-                    const isRecusado = statusAtual === 'RECUSADO PELO CLIENTE';
+            try {
+                const { data: orcData } = await supabaseClient.from('orcamentos').select('*').eq('cliente_email', usuarioSessao.email);
+                if (!orcData || orcData.length === 0) {
+                    containerOrcamentos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço registrado.</p>`;
+                } else {
+                    let htmlOrc = '';
+                    orcData.forEach(o => {
+                        const statusAtual = o.status || 'Solicitado';
+                        const isConcluido = statusAtual === 'SERVIÇO EM ANDAMENTO' || statusAtual === 'concluido';
+                        const isAguardandoResposta = statusAtual === 'AGUARDANDO RESPOSTA DO CLIENTE';
+                        const isAceito = statusAtual === 'ACEITO PELO CLIENTE';
+                        const isRecusadoOuNegociacao = statusAtual === 'RECUSADO PELO CLIENTE' || statusAtual === 'EM NEGOCIAÇÃO';
 
-                    let badgeColor = 'bg-amber-100 text-amber-800';
-                    if (isAceito || isConcluido) badgeColor = 'bg-emerald-100 text-emerald-800';
-                    if (isRecusado) badgeColor = 'bg-rose-100 text-rose-800';
+                        let badgeColor = 'bg-amber-100 text-amber-800';
+                        if (isAceito || isConcluido || statusAtual === '50% APROVADO PARA PAGAMENTO') badgeColor = 'bg-emerald-100 text-emerald-800';
+                        if (isRecusadoOuNegociacao) badgeColor = 'bg-blue-100 text-blue-800';
 
-                    let acoesCliente = '';
-                    if (isAguardandoResposta) {
-                        acoesCliente = `
-                            <div class="flex space-x-3 pt-2">
-                                <button onclick="clienteResponderOrcamento('${o.id}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ACEITAR ORÇAMENTO</button>
-                                <button onclick="clienteResponderOrcamento('${o.id}', false)" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">RECUSAR ORÇAMENTO</button>
+                        const valorBaseRef = o.valor_base || o.orcamento_valor || 0;
+                        const valorFinalCliente = valorBaseRef * 1.15; // CLIENTE = BASE * 1.15
+                        const entrada50Calc = valorFinalCliente / 2;
+                        const saldoCalc = valorFinalCliente - entrada50Calc;
+
+                        let blocoFinanceiroCliente = `
+                            <div class="bg-white p-4 rounded-xl border border-emerald-200 space-y-1 text-xs text-slate-800 shadow-xs">
+                                <p class="font-black text-emerald-900 uppercase text-xs">ORÇAMENTO</p>
+                                <p><strong>Valor total:</strong> ${formatarMoedaBr(valorFinalCliente)}</p>
+                                <p><strong>Entrada de 50%:</strong> ${formatarMoedaBr(entrada50Calc)}</p>
+                                <p><strong>Saldo após a conclusão:</strong> ${formatarMoedaBr(saldoCalc)}</p>
                             </div>
                         `;
-                    } else if (isConcluido && !o.foto_concluido) {
-                        acoesCliente = `<button onclick="abrirModalFotoConcluido('${o.id}')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Adicionar Foto (DEPOIS)</button>`;
-                    } else if (o.foto_concluido && !o.avaliado && o.prestador_responsavel) {
-                        acoesCliente = `<button onclick="abrirModalAvaliacao('${o.id}')" class="bg-amber-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fa-solid fa-star mr-1"></i> AVALIAR</button>`;
-                    }
 
-                    htmlOrc += `
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-slate-900 text-xs">CEP: ${o.cep_servico} - ${o.rua_servico}</span>
-                                <span class="${badgeColor} px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
+                        let acoesCliente = '';
+                        if (isAguardandoResposta || isRecusadoOuNegociacao) {
+                            acoesCliente = `
+                                ${blocoFinanceiroCliente}
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <button onclick="clienteResponderOrcamento('${o.id}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ACEITAR ORÇAMENTO</button>
+                                    <button onclick="clienteResponderOrcamento('${o.id}', false)" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">RECUSAR ORÇAMENTO</button>
+                                    <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                                        <i class="fa-solid fa-comments"></i>
+                                        <span>NEGOCIAR ORÇAMENTO</span>
+                                    </button>
+                                </div>
+                            `;
+                        } else if (isAceito) {
+                            acoesCliente = `
+                                ${blocoFinanceiroCliente}
+                                <div class="pt-2">
+                                    <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1">
+                                        <i class="fa-solid fa-comments"></i>
+                                        <span>Ver Histórico da Negociação</span>
+                                    </button>
+                                </div>
+                            `;
+                        } else if (isConcluido && !o.foto_concluido) {
+                            acoesCliente = `
+                                ${blocoFinanceiroCliente}
+                                <button onclick="abrirModalFotoConcluido('${o.id}')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Adicionar Foto (DEPOIS)</button>
+                            `;
+                        } else if (o.foto_concluido && !o.avaliado && o.prestador_responsavel) {
+                            acoesCliente = `
+                                ${blocoFinanceiroCliente}
+                                <button onclick="abrirModalAvaliacao('${o.id}')" class="bg-amber-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fa-solid fa-star mr-1"></i> AVALIAR</button>
+                            `;
+                        } else {
+                            acoesCliente = blocoFinanceiroCliente;
+                        }
+
+                        htmlOrc += `
+                            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-slate-900 text-xs">CEP: ${o.cep_servico} - ${o.rua_servico}</span>
+                                    <span class="${badgeColor} px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
+                                </div>
+                                <p class="text-xs text-slate-600"><strong>Descrição:</strong> ${o.descricao_servic || ''}</p>
+                                ${o.prestador_responsavel ? `<p class="text-xs font-semibold text-sky-700"><i class="fa-solid fa-user-check mr-1"></i> Prestador Responsável: ${o.prestador_responsavel}</p>` : ''}
+                                
+                                <div class="flex flex-wrap gap-4 pt-2">
+                                    ${o.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">ANTES:</p><img src="${o.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
+                                    ${o.foto_andamento_50 ? `<div><p class="text-[10px] text-orange-600 mb-1">Andamento 50%:</p><img src="${o.foto_andamento_50}" class="w-20 h-20 rounded-xl object-cover border border-orange-300"></div>` : ''}
+                                    ${o.foto_concluido ? `<div><p class="text-[10px] text-emerald-600 mb-1">DEPOIS:</p><img src="${o.foto_concluido}" class="w-20 h-20 rounded-xl object-cover border border-emerald-300"></div>` : ''}
+                                    ${o.avaliado ? `<div><p class="text-[10px] text-amber-600 mb-1">Avaliação:</p><span class="text-xs font-bold text-amber-500">${'⭐'.repeat(o.nota_avaliacao)}</span><p class="text-[11px] text-slate-600">${o.comentario_avaliacao || ''}</p></div>` : ''}
+                                </div>
+                                ${acoesCliente}
                             </div>
-                            <p class="text-xs text-slate-600"><strong>Descrição:</strong> ${o.descricao_servic || ''}</p>
-                            ${o.orcamento_valor ? `<p class="text-xs font-bold text-emerald-700">Valor Proposto: R$ ${o.orcamento_valor} - ${o.orcamento_detalhes || ''}</p>` : ''}
-                            ${o.prestador_responsavel ? `<p class="text-xs font-semibold text-sky-700"><i class="fa-solid fa-user-check mr-1"></i> Prestador Responsável: ${o.prestador_responsavel}</p>` : ''}
-                            
-                            <div class="flex flex-wrap gap-4 pt-2">
-                                ${o.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">ANTES:</p><img src="${o.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
-                                ${o.foto_concluido ? `<div><p class="text-[10px] text-emerald-600 mb-1">DEPOIS:</p><img src="${o.foto_concluido}" class="w-20 h-20 rounded-xl object-cover border border-emerald-300"></div>` : ''}
-                                ${o.avaliado ? `<div><p class="text-[10px] text-amber-600 mb-1">Avaliação:</p><span class="text-xs font-bold text-amber-500">${'⭐'.repeat(o.nota_avaliacao)}</span><p class="text-[11px] text-slate-600">${o.comentario_avaliacao || ''}</p></div>` : ''}
-                            </div>
-                            ${acoesCliente}
-                        </div>
-                    `;
-                });
-                containerOrcamentos.innerHTML = htmlOrc;
+                        `;
+                    });
+                    containerOrcamentos.innerHTML = htmlOrc;
+                }
+            } catch (err) {
+                registrarErroSeguro("Cliente", "carregarPainelClienteDados", err);
+                containerOrcamentos.innerHTML = `<p class="text-xs text-rose-600">Não foi possível carregar os orçamentos.</p>`;
             }
 
-            const { data: prestData } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
-            if (prestData) {
-                let htmlGaleria = '';
-                let encontrou = false;
-                prestData.forEach(p => {
-                    if (p.fotos_trabalho) {
-                        try {
-                            let arr = typeof p.fotos_trabalho === 'string' ? JSON.parse(p.fotos_trabalho) : p.fotos_trabalho;
-                            arr.forEach(foto => {
-                                if (foto) {
-                                    encontrou = true;
-                                    htmlGaleria += `<div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-2"><img src="${foto}" class="w-full h-32 rounded-xl object-cover border"><p class="text-[11px] font-bold text-slate-700">${p.especialidade || 'Serviço'}</p></div>`;
-                                }
-                            });
-                        } catch(e) {}
-                    }
-                });
-                containerGaleria.innerHTML = encontrou ? htmlGaleria : `<p class="text-xs text-slate-400 col-span-full">Nenhuma foto de trabalho encontrada.</p>`;
+            try {
+                const { data: prestData } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+                if (prestData) {
+                    let htmlGaleria = '';
+                    let encontrou = false;
+                    prestData.forEach(p => {
+                        if (p.fotos_trabalho) {
+                            try {
+                                let arr = typeof p.fotos_trabalho === 'string' ? JSON.parse(p.fotos_trabalho) : p.fotos_trabalho;
+                                arr.forEach(foto => {
+                                    if (foto) {
+                                        encontrou = true;
+                                        htmlGaleria += `<div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-2"><img src="${foto}" class="w-full h-32 rounded-xl object-cover border"><p class="text-[11px] font-bold text-slate-700">${p.especialidade || 'Serviço'}</p></div>`;
+                                    }
+                                });
+                            } catch(e) {}
+                        }
+                    });
+                    containerGaleria.innerHTML = encontrou ? htmlGaleria : `<p class="text-xs text-slate-400 col-span-full">Nenhuma foto de trabalho encontrada.</p>`;
+                }
+            } catch (err) {
+                containerGaleria.innerHTML = `<p class="text-xs text-rose-600">Não foi possível carregar a Galeria.</p>`;
             }
         }
 
         async function executarLoginSupabase(event) {
             event.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginSenha').value;
+            const btn = document.getElementById('btnLoginSubmit');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Entrando...";
 
-            const { data, error } = await supabaseClient.from('usuarios').select('*').eq('email', email).eq('senha', senha);
-            if (error || !data || data.length === 0) { 
-                alert("E-mail ou senha incorretos."); 
-                return; 
+            try {
+                const email = document.getElementById('loginEmail').value.trim();
+                const senha = document.getElementById('loginSenha').value;
+
+                // Consulta robusta e tolerante a maiúsculas/minúsculas no perfil
+                const { data, error } = await supabaseClient.from('usuarios').select('*').eq('email', email).eq('senha', senha);
+                if (error || !data || data.length === 0) { 
+                    alert("E-mail ou senha incorretos."); 
+                    return; 
+                }
+
+                const userFound = data[0];
+                
+                // Normaliza o perfil para minúsculas para garantir consistência perfeita no roteamento
+                if (userFound.perfil) {
+                    userFound.perfil = userFound.perfil.toLowerCase().trim();
+                }
+
+                if (userFound.perfil !== 'admin' && userFound.status === 'inativo') {
+                    alert("Acesso negado: Esta conta está inativa.");
+                    return;
+                }
+
+                usuarioSessao = userFound;
+                localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
+                atualizarHeaderSessao();
+                alert(`Bem-vindo(a), ${usuarioSessao.nome}!`);
+
+                if (usuarioSessao.perfil === 'admin') {
+                    mudarTela('painelAdmin');
+                } else if (usuarioSessao.perfil === 'prestador') { 
+                    carregarPainelPrestador(); 
+                    mudarTela('painelPrestador'); 
+                } else { 
+                    abrirPainelCliente(); 
+                }
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Login", "executarLoginSupabase"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
-
-            const userFound = data[0];
-            if (userFound.perfil !== 'admin' && userFound.status === 'inativo') {
-                alert("Acesso negado: Esta conta está inativa.");
-                return;
-            }
-
-            usuarioSessao = userFound;
-            localStorage.setItem('fixou_sessao_atual', JSON.stringify(usuarioSessao));
-            atualizarHeaderSessao();
-            alert(`Bem-vindo(a), ${usuarioSessao.nome}!`);
-
-            if (usuarioSessao.perfil === 'admin') mudarTela('painelAdmin');
-            else if (usuarioSessao.perfil === 'prestador') { carregarPainelPrestador(); mudarTela('painelPrestador'); }
-            else abrirPainelCliente();
         }
 
         async function carregarPainelPrestador() {
             if (!usuarioSessao) return;
-            const { data } = await supabaseClient.from('usuarios').select('*').eq('email', usuarioSessao.email);
-            if (data && data.length > 0) usuarioSessao = data[0];
+            try {
+                const { data } = await supabaseClient.from('usuarios').select('*').eq('email', usuarioSessao.email);
+                if (data && data.length > 0) usuarioSessao = data[0];
 
-            if (usuarioSessao.status === 'inativo') {
-                alert("Sua conta está inativa.");
-                fazerLogout();
-                return;
-            }
-
-            document.getElementById('prestadorNomeHeader').textContent = usuarioSessao.nome;
-            const containerAvatar = document.getElementById('prestadorAvatarContainer');
-            if (containerAvatar) {
-                if (usuarioSessao.foto_perfil) {
-                    containerAvatar.innerHTML = `<img src="${usuarioSessao.foto_perfil}" class="w-full h-full object-cover rounded-full">`;
-                } else {
-                    containerAvatar.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                if (usuarioSessao.status === 'inativo') {
+                    alert("Sua conta está inativa.");
+                    fazerLogout();
+                    return;
                 }
-            }
-            document.getElementById('prestadorDescricaoTrabalho').value = usuarioSessao.descrição || usuarioSessao.descricao || "";
 
-            const containerDisponiveis = document.getElementById('listaServicosDisponiveisPrestador');
-            if (containerDisponiveis) {
-                const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
-                
-                const disponiveis = todosOrcs ? todosOrcs.filter(o => {
-                    const statusOk = (o.status === 'PUBLICADO PARA PRESTADORES' || o.status === 'PRESTADOR ACEITOU');
-                    let recusados = [];
-                    if (o.prestadores_recusados) {
-                        try { recusados = JSON.parse(o.prestadores_recusados); } catch(e){}
-                    }
-                    const naoRecusou = !recusados.includes(usuarioSessao.email);
-                    const naoAtribuidoOutro = !o.prestador_responsavel || o.prestador_responsavel === usuarioSessao.nome;
-                    return statusOk && naoRecusou && naoAtribuidoOutro;
-                }) : [];
-
-                if (disponiveis.length === 0) {
-                    containerDisponiveis.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço disponível no momento.</p>`;
-                } else {
-                    let htmlDisp = '';
-                    disponiveis.forEach(s => {
-                        htmlDisp += `
-                            <div class="bg-emerald-50/60 p-5 rounded-2xl border border-emerald-200 space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Oportunidade Disponível</span>
-                                    <span class="text-xs font-bold text-slate-500">Região: ${s.rua_servico || ''} (CEP: ${s.cep_servico})</span>
-                                </div>
-                                <div class="space-y-1 text-xs text-slate-700">
-                                    <p><strong>Tipo de Serviço:</strong> Atendimento Residencial</p>
-                                    <p><strong>Município/Região:</strong> ${s.cep_servico}</p>
-                                    <p><strong>Descrição:</strong> ${s.descricao_servic || ''}</p>
-                                    ${s.orcamento_valor ? `<p class="font-bold text-emerald-800">Valor do Serviço: R$ ${s.orcamento_valor}</p>` : ''}
-                                </div>
-                                ${s.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">Foto do Serviço:</p><img src="${s.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
-                                <div class="flex space-x-3 pt-2 border-t border-emerald-100">
-                                    <button onclick="prestadorResponderOportunidade('${s.id}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ACEITAR SERVIÇO</button>
-                                    <button onclick="prestadorResponderOportunidade('${s.id}', false)" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">RECUSAR</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    containerDisponiveis.innerHTML = htmlDisp;
+                document.getElementById('prestadorNomeHeader').textContent = usuarioSessao.nome;
+                const containerAvatar = document.getElementById('prestadorAvatarContainer');
+                if (containerAvatar) {
+                    if (usuarioSessao.foto_perfil) containerAvatar.innerHTML = `<img src="${usuarioSessao.foto_perfil}" class="w-full h-full object-cover rounded-full">`;
+                    else containerAvatar.innerHTML = `<i class="fa-solid fa-user"></i>`;
                 }
-            }
+                document.getElementById('prestadorDescricaoTrabalho').value = usuarioSessao.descrição || usuarioSessao.descricao || "";
+                document.getElementById('meuTipoPixInput').value = usuarioSessao.tipo_pix || "CPF";
+                document.getElementById('minhaChavePixInput').value = usuarioSessao.chave_pix || "";
 
-            const containerNotas = document.getElementById('muralNotasPrestador');
-            if (containerNotas) {
-                const { data: orcList } = await supabaseClient.from('orcamentos').select('*').eq('avaliado', true);
-                
-                const minhasAvaliacoes = orcList ? orcList.filter(o => {
-                    return o.prestador_responsavel === usuarioSessao.nome;
-                }) : [];
-
-                if (minhasAvaliacoes.length === 0) {
-                    containerNotas.innerHTML = `<p class="text-xs text-slate-400 col-span-full">Você ainda não possui avaliações.</p>`;
-                } else {
-                    let htmlAval = '';
-                    let somaNotas = 0;
-                    minhasAvaliacoes.forEach(o => {
-                        somaNotas += o.nota_avaliacao;
-                        const dataAval = formatarApenasDataBr(o.updated_at);
-                        htmlAval += `
-                            <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-xs font-bold text-slate-900">${o.cliente_email}</span>
-                                    <span class="text-amber-500 font-extrabold text-xs">${'⭐'.repeat(o.nota_avaliacao)} (${o.nota_avaliacao.toFixed(1)})</span>
-                                </div>
-                                <p class="text-xs text-slate-700 italic">"${o.comentario_avaliacao || 'Sem comentário.'}"</p>
-                                <div class="text-[11px] text-slate-500 pt-1 border-t border-amber-100 flex justify-between">
-                                    <span>Serviço: ${o.descricao_servic ? o.descricao_servic.substring(0, 35) + '...' : 'Serviço residencial'}</span>
-                                    <span>Data: ${dataAval}</span>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    const mediaGeral = (somaNotas / minhasAvaliacoes.length).toFixed(1);
-                    containerNotas.innerHTML = `
-                        <div class="col-span-full mb-2 bg-amber-100/70 p-3 rounded-2xl border border-amber-300 flex items-center justify-between">
-                            <span class="text-xs font-black text-amber-900 uppercase">Nota média geral</span>
-                            <span class="text-sm font-black text-amber-800">⭐ ${mediaGeral} (${minhasAvaliacoes.length} avaliação${minhasAvaliacoes.length > 1 ? 's' : ''})</span>
-                        </div>
-                    ` + htmlAval;
-                }
-            }
-
-            const containerServicos = document.getElementById('listaMeusServicosPrestador');
-            if (containerServicos) {
-                const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
-                const { data: todosUsers } = await supabaseClient.from('usuarios').select('*');
-
-                const meusServicos = todosOrcs ? todosOrcs.filter(o => {
-                    return o.prestador_responsavel === usuarioSessao.nome && o.status === 'PRESTADOR DEFINIDO';
-                }) : [];
-
-                if (meusServicos.length === 0) {
-                    containerServicos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço confirmado no momento.</p>`;
-                } else {
-                    let htmlServ = '';
-                    meusServicos.forEach(s => {
-                        let nomeCliente = "Cliente Real";
-                        let telefoneCliente = "Telefone não informado";
-                        let enderecoCompletoCliente = "Endereço não informado";
-
-                        if (todosUsers) {
-                            let cli = null;
-                            if (s.cliente_id) {
-                                cli = todosUsers.find(u => u.id === s.cliente_id && u.perfil === 'cliente');
-                            }
-                            if (!cli && s.cliente_email) {
-                                cli = todosUsers.find(u => u.email === s.cliente_email && u.perfil === 'cliente');
-                            }
-                            if (cli) {
-                                nomeCliente = cli.nome || "Cliente";
-                                telefoneCliente = cli.telefone || "Telefone não informado";
-
-                                const logradouro = cli.endereco || "";
-                                const numero = cli.numero ? `, ${cli.numero}` : ", Número não informado";
-                                const complemento = cli.complemento ? `<br>Complemento: ${cli.complemento}` : "";
-                                const bairro = cli.bairro ? `<br>Bairro: ${cli.bairro}` : "";
-                                const cidade = cli.cidade || "";
-                                const uf = cli.uf || "";
-                                const cep = cli.cep || "";
-
-                                enderecoCompletoCliente = `${logradouro}${numero}${complemento}${bairro}<br>Município: ${cidade}${uf ? ' - ' + uf : ''}${cep ? '<br>CEP: ' + cep : ''}`;
-                            }
+                const containerDisponiveis = document.getElementById('listaServicosDisponiveisPrestador');
+                if (containerDisponiveis) {
+                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+                    const disponiveis = todosOrcs ? todosOrcs.filter(o => {
+                        const statusOk = (o.status === 'PUBLICADO PARA PRESTADORES' || o.status === 'PRESTADOR ACEITOU');
+                        let recusados = [];
+                        if (o.prestadores_recusados) {
+                            try { recusados = JSON.parse(o.prestadores_recusados); } catch(e){}
                         }
+                        const naoRecusou = !recusados.includes(usuarioSessao.email);
+                        const naoAtribuidoOutro = !o.prestador_responsavel || o.prestador_responsavel === usuarioSessao.nome;
+                        return statusOk && naoRecusou && naoAtribuidoOutro;
+                    }) : [];
 
-                        htmlServ += `
-                            <div class="bg-sky-50/60 p-5 rounded-2xl border border-sky-200 space-y-3">
-                                <span class="bg-sky-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Você foi selecionado para realizar este serviço.</span>
-                                <div class="bg-white p-4 rounded-xl border border-sky-100 space-y-2 text-xs text-slate-700">
-                                    <p class="font-black text-sky-900 uppercase text-sm">Dados do Cliente e Local:</p>
-                                    <p><strong>CLIENTE:</strong><br>${nomeCliente}</p>
-                                    <p><strong>TELEFONE:</strong><br>${telefoneCliente}</p>
-                                    <p><strong>SERVIÇO:</strong><br>${s.descricao_servic || 'Serviço solicitado'}</p>
-                                    <p><strong>ENDEREÇO COMPLETO:</strong><br>${enderecoCompletoCliente}</p>
+                    if (disponiveis.length === 0) {
+                        containerDisponiveis.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço disponível no momento.</p>`;
+                    } else {
+                        let htmlDisp = '';
+                        disponiveis.forEach(s => {
+                            const valorBaseRef = s.valor_base || s.orcamento_valor || 0;
+                            const valorPrestadorServico = valorBaseRef * 0.85; // PRESTADOR = BASE * 0.85
+                            htmlDisp += `
+                                <div class="bg-emerald-50/60 p-5 rounded-2xl border border-emerald-200 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Oportunidade Disponível</span>
+                                        <span class="text-xs font-bold text-slate-500">Região: ${s.rua_servico || ''} (CEP: ${s.cep_servico})</span>
+                                    </div>
+                                    <div class="space-y-1 text-xs text-slate-700">
+                                        <p><strong>Valor do Serviço:</strong> <span class="font-bold text-emerald-800">${formatarMoedaBr(valorPrestadorServico)}</span></p>
+                                        <p><strong>Descrição:</strong> ${s.descricao_servic || ''}</p>
+                                    </div>
+                                    ${s.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">Foto do Serviço:</p><img src="${s.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
+                                    <div class="flex space-x-3 pt-2 border-t border-emerald-100">
+                                        <button onclick="prestadorResponderOportunidade('${s.id}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ACEITAR SERVIÇO</button>
+                                        <button onclick="prestadorResponderOportunidade('${s.id}', false)" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">RECUSAR</button>
+                                    </div>
                                 </div>
-                                <p class="text-[11px] text-sky-800 font-semibold italic bg-sky-100/60 p-2.5 rounded-lg border border-sky-200">
-                                    "Entre em contato com o cliente para combinar a melhor data e horário para a realização do serviço."
-                                </p>
-                            </div>
-                        `;
-                    });
-                    containerServicos.innerHTML = htmlServ;
+                            `;
+                        });
+                        containerDisponiveis.innerHTML = htmlDisp;
+                    }
                 }
+
+                const containerNotas = document.getElementById('muralNotasPrestador');
+                if (containerNotas) {
+                    const { data: orcList } = await supabaseClient.from('orcamentos').select('*').eq('avaliado', true);
+                    const minhasAvaliacoes = orcList ? orcList.filter(o => o.prestador_responsavel === usuarioSessao.nome) : [];
+                    if (minhasAvaliacoes.length === 0) {
+                        containerNotas.innerHTML = `<p class="text-xs text-slate-400 col-span-full">Você ainda não possui avaliações.</p>`;
+                    } else {
+                        let htmlAval = '';
+                        let somaNotas = 0;
+                        minhasAvaliacoes.forEach(o => {
+                            somaNotas += o.nota_avaliacao;
+                            htmlAval += `
+                                <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs font-bold text-slate-900">${o.cliente_email}</span>
+                                        <span class="text-amber-500 font-extrabold text-xs">${'⭐'.repeat(o.nota_avaliacao)} (${o.nota_avaliacao.toFixed(1)})</span>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic">"${o.comentario_avaliacao || 'Sem comentário.'}"</p>
+                                </div>
+                            `;
+                        });
+                        const mediaGeral = (somaNotas / minhasAvaliacoes.length).toFixed(1);
+                        containerNotas.innerHTML = `<div class="col-span-full mb-2 bg-amber-100/70 p-3 rounded-2xl border border-amber-300 flex items-center justify-between"><span class="text-xs font-black text-amber-900 uppercase">Nota média geral</span><span class="text-sm font-black text-amber-800">⭐ ${mediaGeral} (${minhasAvaliacoes.length} avaliação)</span></div>` + htmlAval;
+                    }
+                }
+
+                const containerServicos = document.getElementById('listaMeusServicosPrestador');
+                if (containerServicos) {
+                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+                    const { data: todosUsers } = await supabaseClient.from('usuarios').select('*');
+                    const meusServicos = todosOrcs ? todosOrcs.filter(o => o.prestador_responsavel === usuarioSessao.nome && (o.status === 'PRESTADOR DEFINIDO' || o.status === 'AGUARDANDO APROVAÇÃO 50%' || o.status === '50% APROVADO PARA PAGAMENTO')) : [];
+
+                    if (meusServicos.length === 0) {
+                        containerServicos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço confirmado no momento.</p>`;
+                    } else {
+                        let htmlServ = '';
+                        meusServicos.forEach(s => {
+                            let nomeCliente = "Cliente Real";
+                            let telefoneCliente = "Telefone não informado";
+                            let enderecoCompletoCliente = "Endereço não informado";
+                            const statusServico = s.status || 'PRESTADOR DEFINIDO';
+                            const valorBaseServico = s.valor_base || s.orcamento_valor || 0;
+                            const valorPrestadorServico = valorBaseServico * 0.85;
+
+                            if (todosUsers) {
+                                let cli = s.cliente_id ? todosUsers.find(u => u.id === s.cliente_id && u.perfil === 'cliente') : null;
+                                if (!cli && s.cliente_email) cli = todosUsers.find(u => u.email === s.cliente_email && u.perfil === 'cliente');
+                                if (cli) {
+                                    nomeCliente = cli.nome || "Cliente";
+                                    telefoneCliente = cli.telefone || "Telefone não informado";
+                                    enderecoCompletoCliente = `${cli.endereco || ''}, ${cli.numero || ''} - ${cli.bairro || ''}, ${cli.cidade || ''}/${cli.uf || ''} (CEP: ${cli.cep || ''})`;
+                                }
+                            }
+
+                            let acao50Prestador = '';
+                            if (statusServico === 'PRESTADOR DEFINIDO') {
+                                acao50Prestador = `<div class="pt-2"><button onclick="abrirModalEnvioFoto50('${s.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-md"><i class="fa-solid fa-camera mr-1"></i> Enviar foto do andamento (50%)</button></div>`;
+                            } else if (statusServico === 'AGUARDANDO APROVAÇÃO 50%') {
+                                acao50Prestador = `<p class="text-xs font-bold text-amber-600 bg-amber-50 p-2 rounded-xl border border-amber-200">Comprovação de 50% enviada. Aguardando aprovação do Administrador.</p>`;
+                            } else if (statusServico === '50% APROVADO PARA PAGAMENTO') {
+                                acao50Prestador = `<p class="text-xs font-bold text-emerald-700 bg-emerald-50 p-2 rounded-xl border border-emerald-200">50% aprovado para pagamento pelo Administrador.</p>`;
+                            }
+
+                            htmlServ += `
+                                <div class="bg-sky-50/60 p-5 rounded-2xl border border-sky-200 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="bg-sky-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Serviço Confirmado</span>
+                                        <span class="text-xs font-bold text-slate-700 uppercase">${statusServico}</span>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-xl border border-sky-100 space-y-1 text-xs text-slate-700">
+                                        <p class="font-black text-sky-900 uppercase text-sm">Dados do Cliente e Local:</p>
+                                        <p><strong>VALOR DO SERVIÇO:</strong> <span class="font-bold text-emerald-700">${formatarMoedaBr(valorPrestadorServico)}</span></p>
+                                        <p><strong>CLIENTE:</strong> ${nomeCliente}</p>
+                                        <p><strong>TELEFONE:</strong> ${telefoneCliente}</p>
+                                        <p><strong>ENDEREÇO:</strong> ${enderecoCompletoCliente}</p>
+                                    </div>
+                                    ${acao50Prestador}
+                                </div>
+                            `;
+                        });
+                        containerServicos.innerHTML = htmlServ;
+                    }
+                }
+            } catch (err) {
+                registrarErroSeguro("Prestador", "carregarPainelPrestador", err);
             }
         }
 
         function mudarAbaAdmin(aba) {
-            ['clientes', 'prestadores', 'avaliacoes', 'orcamentos'].forEach(a => {
+            ['clientes', 'prestadores', 'avaliacoes', 'orcamentos', 'saude'].forEach(a => {
                 const secao = document.getElementById('secaoAdmin' + a.charAt(0).toUpperCase() + a.slice(1));
                 const btn = document.getElementById('menuAdmin' + a.charAt(0).toUpperCase() + a.slice(1));
                 if (secao && btn) {
@@ -1799,153 +2298,210 @@
                     }
                 }
             });
+            if (aba === 'saude') atualizarSaudeSistemaPainel();
+        }
+
+        function atualizarSaudeSistemaPainel() {
+            const elData = document.getElementById('saudeUltimaAtualizacao');
+            const elLogs = document.getElementById('listaLogsDiagnostico');
+            if (elData) elData.textContent = formatarDataHoraBr(new Date().toISOString());
+            if (elLogs) {
+                if (logsDiagnosticoSistema.length === 0) elLogs.innerHTML = `<p class="text-slate-500">Nenhum erro registrado recentemente.</p>`;
+                else {
+                    let htmlLog = '';
+                    logsDiagnosticoSistema.forEach(l => {
+                        htmlLog += `<p><span class="text-amber-400">[${l.dataHora.substring(11, 19)}]</span> <span class="text-sky-400">[${l.modulo}:${l.operacao}]</span> ${l.mensagem}</p>`;
+                    });
+                    elLogs.innerHTML = htmlLog;
+                }
+            }
+        }
+
+        function limparLogsDiagnostico() {
+            logsDiagnosticoSistema = [];
+            atualizarSaudeSistemaPainel();
+            alert("Logs de diagnóstico limpos com sucesso.");
         }
 
         async function carregarDadosAdmin() {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
 
-            const { data: todosUsuarios } = await supabaseClient.from('usuarios').select('*');
-            const { data: orcData } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+            try {
+                const { data: todosUsuarios, error: errUsers } = await supabaseClient.from('usuarios').select('*');
+                if (errUsers) throw errUsers;
 
-            if (todosUsuarios) {
-                cacheClientesGeral = todosUsuarios.filter(u => u.perfil === 'cliente');
-                cachePrestadoresGeral = todosUsuarios.filter(u => u.perfil === 'prestador');
-                renderizarTabelaClientesAdmin(cacheClientesGeral);
-                renderizarTabelaPrestadoresAdmin(cachePrestadoresGeral, orcData || []);
-                renderizarNotasAvaliacoesAdmin(todosUsuarios, orcData || []);
-            }
+                const { data: orcData, error: errOrc } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+                if (errOrc) throw errOrc;
 
-            if (orcData) {
-                const containerOrcamentosAdmin = document.getElementById('listaOrcamentosAdmin');
-                let htmlOrc = `<div class="grid grid-cols-1 gap-3">`;
-                orcData.forEach(o => {
-                    let nomeCli = "Cliente Desconhecido";
-                    let statusCliBadge = "";
-                    let cliObj = null;
-                    if (todosUsuarios) {
-                        if (o.cliente_id) {
-                            cliObj = todosUsuarios.find(u => u.id === o.cliente_id && u.perfil === 'cliente');
-                        }
-                        if (!cliObj && o.cliente_email) {
-                            cliObj = todosUsuarios.find(u => u.email === o.cliente_email && u.perfil === 'cliente');
-                        }
-                        if (cliObj) {
-                            nomeCli = cliObj.nome;
-                            if ((cliObj.status || 'ativo') === 'inativo') {
-                                statusCliBadge = ' <span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded text-[10px] font-bold">Cliente Inativo</span>';
+                if (todosUsuarios) {
+                    cacheClientesGeral = todosUsuarios.filter(u => u.perfil === 'cliente');
+                    cachePrestadoresGeral = todosUsuarios.filter(u => u.perfil === 'prestador');
+                    
+                    // Renderização isolada protegida contra falhas pontuais
+                    try { renderizarTabelaClientesAdmin(cacheClientesGeral); } catch(e) { registrarErroSeguro("Admin", "renderizarClientes", e); }
+                    try { renderizarTabelaPrestadoresAdmin(cachePrestadoresGeral, orcData || []); } catch(e) { registrarErroSeguro("Admin", "renderizarPrestadores", e); }
+                    try { renderizarNotasAvaliacoesAdmin(todosUsuarios, orcData || []); } catch(e) { registrarErroSeguro("Admin", "renderizarAvaliacoes", e); }
+                }
+
+                if (orcData) {
+                    const containerOrcamentosAdmin = document.getElementById('listaOrcamentosAdmin');
+                    if (containerOrcamentosAdmin) {
+                        let htmlOrc = `<div class="grid grid-cols-1 gap-3">`;
+                        orcData.forEach(o => {
+                            let nomeCli = "Cliente Desconhecido";
+                            let statusCliBadge = "";
+                            let cliObj = null;
+                            if (todosUsuarios) {
+                                cliObj = o.cliente_id ? todosUsuarios.find(u => u.id === o.cliente_id && u.perfil === 'cliente') : null;
+                                if (!cliObj && o.cliente_email) cliObj = todosUsuarios.find(u => u.email === o.cliente_email && u.perfil === 'cliente');
+                                if (cliObj) {
+                                    nomeCli = cliObj.nome;
+                                    if ((cliObj.status || 'ativo') === 'inativo') statusCliBadge = ' <span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded text-[10px] font-bold">Cliente Inativo</span>';
+                                }
                             }
-                        }
-                    }
 
-                    const statusAtual = o.status || 'Solicitado';
-                    let acoesAdmin = '';
+                            const statusAtual = o.status || 'Solicitado';
+                            const valorBaseAdm = o.valor_base || o.orcamento_valor || 0;
+                            const valorFinalCliente = valorBaseAdm * 1.15; // CLIENTE = BASE * 1.15
+                            const valorPrestadorAdm = valorBaseAdm * 0.85; // PRESTADOR = BASE * 0.85
 
-                    if (statusAtual === 'Solicitado') {
-                        acoesAdmin = `<button onclick="abrirModalEnviarOrcamento('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Enviar Orçamento</button>`;
-                    } else if (statusAtual === 'ACEITO PELO CLIENTE') {
-                        acoesAdmin = `<button onclick="adminPublicarServico('${o.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">PUBLICAR SERVIÇO</button>`;
-                    } else if (statusAtual === 'PRESTADOR ACEITOU') {
-                        let interessados = [];
-                        if (o.prestadores_interessados) {
-                            try { interessados = JSON.parse(o.prestadores_interessados); } catch(e){}
-                        }
-                        acoesAdmin = `<div class="space-y-2"><p class="text-[11px] font-bold text-blue-900">Prestador(es) Interessado(s):</p>`;
-                        interessados.forEach(i => {
-                            let notaPrestador = "5.0";
-                            acoesAdmin += `
-                                <div class="bg-blue-50 p-2 rounded-xl border border-blue-200 flex items-center justify-between text-xs">
-                                    <div>
-                                        <p><strong>Prestador:</strong> ${i.prestador_nome}</p>
-                                        <p><strong>Telefone:</strong> ${i.prestador_telefone}</p>
-                                        <p><strong>Nota Média:</strong> ⭐ ${notaPrestador}</p>
+                            let acoesAdmin = '';
+                            if (statusAtual === 'Solicitado') {
+                                acoesAdmin = `<button onclick="abrirModalEnviarOrcamento('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Enviar Orçamento</button>`;
+                            } else if (statusAtual === 'ACEITO PELO CLIENTE') {
+                                acoesAdmin = `<button onclick="adminPublicarServico('${o.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">PUBLICAR SERVIÇO</button>`;
+                            } else if (statusAtual === 'EM NEGOCIAÇÃO' || statusAtual === 'RECUSADO PELO CLIENTE') {
+                                acoesAdmin = `
+                                    <div class="flex flex-wrap gap-2 items-center">
+                                        <span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">Cliente solicitou negociação</span>
+                                        <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1 shadow-sm">
+                                            <i class="fa-solid fa-comments"></i>
+                                            <span>Abrir Chat / Negociar</span>
+                                        </button>
+                                        <button onclick="abrirModalEnviarOrcamento('${o.id}', '${valorBaseAdm}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+                                            Enviar Nova Proposta
+                                        </button>
                                     </div>
-                                    <button onclick="adminConfirmarPrestador('${o.id}', '${i.prestador_nome}')" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Confirmar Prestador</button>
+                                `;
+                            } else if (statusAtual === 'PRESTADOR ACEITOU') {
+                                let interessados = [];
+                                if (o.prestadores_interessados) {
+                                    try { interessados = JSON.parse(o.prestadores_interessados); } catch(e){}
+                                }
+                                acoesAdmin = `<div class="space-y-2"><p class="text-[11px] font-bold text-blue-900">Prestador(es) Interessado(s):</p>`;
+                                interessados.forEach(i => {
+                                    acoesAdmin += `
+                                        <div class="bg-blue-50 p-2 rounded-xl border border-blue-200 flex items-center justify-between text-xs">
+                                            <div>
+                                                <p><strong>Prestador:</strong> ${i.prestador_nome}</p>
+                                                <p><strong>Telefone:</strong> ${i.prestador_telefone}</p>
+                                            </div>
+                                            <button onclick="adminConfirmarPrestador('${o.id}', '${i.prestador_nome}')" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Confirmar Prestador</button>
+                                        </div>
+                                    `;
+                                });
+                                acoesAdmin += `</div>`;
+                            } else if (statusAtual === 'AGUARDANDO APROVAÇÃO 50%') {
+                                let prestadorObjPix = todosUsuarios && o.prestador_responsavel ? todosUsuarios.find(u => u.nome === o.prestador_responsavel && u.perfil === 'prestador') : null;
+                                const tipoPixPrestador = prestadorObjPix ? (prestadorObjPix.tipo_pix || 'Não informado') : 'Não informado';
+                                const chavePixPrestador = prestadorObjPix ? (prestadorObjPix.chave_pix || 'Não informada') : 'Não informada';
+                                const primeiro50Prestador = valorPrestadorAdm * 0.50; // 50% DO VALOR DO PRESTADOR
+                                acoesAdmin = `
+                                    <div class="bg-orange-50/80 p-4 rounded-2xl border border-orange-200 space-y-3">
+                                        <p class="font-black text-orange-900 uppercase text-xs">Comprovação de 50% do Serviço:</p>
+                                        <div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 text-xs">
+                                            <p><strong>VALOR DO SERVIÇO DO PRESTADOR:</strong> ${formatarMoedaBr(valorPrestadorAdm)}</p>
+                                            <p><strong>VALOR REFERENTE AOS PRIMEIROS 50%:</strong> ${formatarMoedaBr(primeiro50Prestador)}</p>
+                                            <p><strong>Tipo PIX:</strong> ${tipoPixPrestador}</p>
+                                            <p><strong>Chave PIX:</strong> ${chavePixPrestador}</p>
+                                        </div>
+                                        ${o.foto_andamento_50 ? `<div><img src="${o.foto_andamento_50}" class="w-32 h-32 rounded-xl object-cover border border-orange-300"></div>` : ''}
+                                        <div class="flex space-x-3 pt-2">
+                                            <button onclick="adminAprovarComprovacao50('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Aprovar comprovação</button>
+                                            <button onclick="adminSolicitarNovaComprovacao50('${o.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Solicitar nova comprovação</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+
+                            htmlOrc += `
+                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-slate-900 text-xs">${nomeCli}${statusCliBadge} (${o.cliente_email})</span>
+                                        <span class="bg-blue-100 text-blue-900 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">CEP: ${o.cep_servico} | Valor Base: ${formatarMoedaBr(valorBaseAdm)} | Cliente (+15%): ${formatarMoedaBr(valorFinalCliente)} | Prestador (-15%): ${formatarMoedaBr(valorPrestadorAdm)}</p>
+                                    ${o.prestador_responsavel ? `<p class="text-xs font-bold text-sky-700">Prestador Definido: ${o.prestador_responsavel}</p>` : ''}
+                                    <div class="flex flex-col space-y-2 pt-2 border-t border-slate-200">
+                                        ${acoesAdmin}
+                                        <div>
+                                            <button onclick='abrirDetalhesOrcamentoAdmin(${JSON.stringify(o)})' class="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Ver Solicitação</button>
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                         });
-                        acoesAdmin += `</div>`;
+                        htmlOrc += `</div>`;
+                        containerOrcamentosAdmin.innerHTML = htmlOrc;
                     }
-
-                    htmlOrc += `
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-slate-900 text-xs">${nomeCli}${statusCliBadge} (${o.cliente_email})</span>
-                                <span class="bg-blue-100 text-blue-900 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
-                            </div>
-                            <p class="text-xs text-slate-500">CEP: ${o.cep_servico} | Serviço: ${o.descricao_servic || ''}</p>
-                            ${o.prestador_responsavel ? `<p class="text-xs font-bold text-sky-700">Prestador Definido: ${o.prestador_responsavel}</p>` : ''}
-                            <div class="flex items-center space-x-2 pt-2 border-t border-slate-200">
-                                ${acoesAdmin}
-                                <button onclick='abrirDetalhesOrcamentoAdmin(${JSON.stringify(o)})' class="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Ver Solicitação</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                htmlOrc += `</div>`;
-                containerOrcamentosAdmin.innerHTML = htmlOrc;
+                }
+            } catch (err) {
+                registrarErroSeguro("Admin", "carregarDadosAdmin", err);
             }
         }
 
         async function abrirFichaPrestadorAdmin(prestadorId) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
+            try {
+                const { data: prestadorObj, error } = await supabaseClient.from('usuarios').select('*').eq('id', prestadorId).single();
+                if (error || !prestadorObj) throw error;
+                let fotosGaleria = [];
+                if (prestadorObj.fotos_trabalho) {
+                    try { fotosGaleria = typeof prestadorObj.fotos_trabalho === 'string' ? JSON.parse(prestadorObj.fotos_trabalho) : prestadorObj.fotos_trabalho; } catch(e) {}
+                }
+                let htmlGaleria = '';
+                const fotosValidas = fotosGaleria.filter(f => f && f.trim() !== "");
+                if (fotosValidas.length === 0) {
+                    htmlGaleria = `<p class="text-xs text-slate-400 italic">Este prestador ainda não possui trabalhos cadastrados na galeria.</p>`;
+                } else {
+                    htmlGaleria = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
+                    fotosValidas.forEach((foto, indexReal) => {
+                        htmlGaleria += `
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-2">
+                                <img src="${foto}" class="w-full h-32 rounded-xl object-cover border border-slate-300">
+                                <button onclick="abrirModalConfirmarExcluirFoto('${prestadorObj.id}', '${prestadorObj.nome}', ${indexReal}, '${foto}')" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-xl transition text-xs flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>Excluir foto</span>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    htmlGaleria += `</div>`;
+                }
 
-            const { data: prestadorObj, error } = await supabaseClient.from('usuarios').select('*').eq('id', prestadorId).single();
-            if (error || !prestadorObj) {
-                alert("Não foi possível carregar os dados do prestador.");
-                return;
-            }
-
-            let fotosGaleria = [];
-            if (prestadorObj.fotos_trabalho) {
-                try {
-                    fotosGaleria = typeof prestadorObj.fotos_trabalho === 'string' ? JSON.parse(prestadorObj.fotos_trabalho) : prestadorObj.fotos_trabalho;
-                } catch(e) {}
-            }
-
-            let htmlGaleria = '';
-            const fotosValidas = fotosGaleria.filter(f => f && f.trim() !== "");
-
-            if (fotosValidas.length === 0) {
-                htmlGaleria = `<p class="text-xs text-slate-400 italic">Este prestador ainda não possui trabalhos cadastrados na galeria.</p>`;
-            } else {
-                htmlGaleria = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
-                fotosValidas.forEach((foto, indexReal) => {
-                    htmlGaleria += `
-                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-2">
-                            <img src="${foto}" class="w-full h-32 rounded-xl object-cover border border-slate-300">
-                            <button onclick="abrirModalConfirmarExcluirFoto('${prestadorObj.id}', '${prestadorObj.nome}', ${indexReal}, '${foto}')" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-xl transition text-xs flex items-center justify-center space-x-1.5">
-                                <i class="fa-solid fa-trash-can"></i>
-                                <span>Excluir foto</span>
-                            </button>
-                        </div>
-                    `;
-                });
-                htmlGaleria += `</div>`;
-            }
-
-            const container = document.getElementById('conteudoFichaPrestadorAdmin');
-            container.innerHTML = `
-                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
-                    <div class="flex items-center space-x-3">
-                        ${prestadorObj.foto_perfil ? `<img src="${prestadorObj.foto_perfil}" class="w-12 h-12 rounded-full object-cover">` : '<div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div>'}
-                        <div>
-                            <h3 class="text-xl font-black text-slate-900">${prestadorObj.nome}</h3>
-                            <p class="text-xs text-slate-500">${prestadorObj.especialidade || 'Prestador'} | ${prestadorObj.email}</p>
+                document.getElementById('conteudoFichaPrestadorAdmin').innerHTML = `
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                        <div class="flex items-center space-x-3">
+                            ${prestadorObj.foto_perfil ? `<img src="${prestadorObj.foto_perfil}" class="w-12 h-12 rounded-full object-cover">` : '<div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div>'}
+                            <div>
+                                <h3 class="text-xl font-black text-slate-900">${prestadorObj.nome}</h3>
+                                <p class="text-xs text-slate-500">${prestadorObj.especialidade || 'Prestador'} | ${prestadorObj.email}</p>
+                                <p class="text-xs font-bold text-orange-600 mt-0.5">PIX (${prestadorObj.tipo_pix || 'Não inf.'}): ${prestadorObj.chave_pix || 'Não cadastrada'}</p>
+                            </div>
                         </div>
                     </div>
-                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold uppercase">Ficha Admin</span>
-                </div>
-
-                <div class="space-y-4 pt-2">
-                    <h4 class="font-bold text-slate-800 text-base flex items-center space-x-2">
-                        <i class="fa-solid fa-images text-purple-600"></i>
-                        <span>Galeria de Trabalhos</span>
-                    </h4>
-                    ${htmlGaleria}
-                </div>
-            `;
-
-            document.getElementById('modalFichaPrestadorAdmin').classList.remove('hidden');
+                    <div class="space-y-4 pt-2">
+                        <h4 class="font-bold text-slate-800 text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-images text-purple-600"></i>
+                            <span>Galeria de Trabalhos</span>
+                        </h4>
+                        ${htmlGaleria}
+                    </div>
+                `;
+                document.getElementById('modalFichaPrestadorAdmin').classList.remove('hidden');
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "abrirFichaPrestadorAdmin"));
+            }
         }
 
         function fecharModalFichaPrestadorAdmin() {
@@ -1965,43 +2521,25 @@
         }
 
         async function executarExclusaoFotoGaleria() {
-            const prestadorId = document.getElementById('excluirPrestadorId').value;
-            const indiceFoto = parseInt(document.getElementById('excluirFotoIndice').value);
-
-            if (!prestadorId || isNaN(indiceFoto)) return;
-
-            const { data: prestadorObj, error: errFetch } = await supabaseClient.from('usuarios').select('*').eq('id', prestadorId).single();
-            if (errFetch || !prestadorObj) {
-                alert("Não foi possível localizar o prestador.");
-                return;
+            const btn = document.getElementById('btnConfirmarExclusaoFoto');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            try {
+                const prestadorId = document.getElementById('excluirPrestadorId').value;
+                const indiceFoto = parseInt(document.getElementById('excluirFotoIndice').value);
+                const { data: prestadorObj } = await supabaseClient.from('usuarios').select('*').eq('id', prestadorId).single();
+                let fotosGaleria = prestadorObj.fotos_trabalho ? (typeof prestadorObj.fotos_trabalho === 'string' ? JSON.parse(prestadorObj.fotos_trabalho) : prestadorObj.fotos_trabalho) : [];
+                fotosGaleria.splice(indiceFoto, 1);
+                await supabaseClient.from('usuarios').update({ fotos_trabalho: JSON.stringify(fotosGaleria) }).eq('id', prestadorId);
+                fecharModalConfirmarExcluirFoto();
+                alert("Foto excluída com sucesso.");
+                abrirFichaPrestadorAdmin(prestadorId);
+                carregarDadosAdmin();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Admin", "executarExclusaoFotoGaleria"));
+            } finally {
+                btn.disabled = false;
             }
-
-            let fotosGaleria = [];
-            if (prestadorObj.fotos_trabalho) {
-                try {
-                    fotosGaleria = typeof prestadorObj.fotos_trabalho === 'string' ? JSON.parse(prestadorObj.fotos_trabalho) : prestadorObj.fotos_trabalho;
-                } catch(e) {}
-            }
-
-            // Remover a foto do array mantendo as demais intactas
-            fotosGaleria.splice(indiceFoto, 1);
-            const fotosAtualizadasJson = JSON.stringify(fotosGaleria);
-
-            const { error: errUpdate } = await supabaseClient.from('usuarios').update({
-                fotos_trabalho: fotosAtualizadasJson
-            }).eq('id', prestadorId);
-
-            if (errUpdate) {
-                alert("Não foi possível excluir a foto. Tente novamente.");
-                return;
-            }
-
-            fecharModalConfirmarExcluirFoto();
-            alert("Foto excluída com sucesso.");
-            
-            // Atualizar a ficha aberta e os dados administrativos
-            abrirFichaPrestadorAdmin(prestadorId);
-            carregarDadosAdmin();
         }
 
         async function abrirDetalhesOrcamentoAdmin(o) {
@@ -2009,35 +2547,22 @@
             let nomeCli = "Cliente Desconhecido";
             let telefoneCli = "Telefone não informado";
             let enderecoCli = "Endereço não informado";
-            let statusCliTexto = "Ativo";
-
-            const { data: todosUser } = await supabaseClient.from('usuarios').select('*');
-            if (todosUser) {
-                let cli = null;
-                if (o.cliente_id) {
-                    cli = todosUser.find(u => u.id === o.cliente_id && u.perfil === 'cliente');
-                }
-                if (!cli && o.cliente_email) {
-                    cli = todosUser.find(u => u.email === o.cliente_email && u.perfil === 'cliente');
-                }
-                if (cli) {
-                    nomeCli = cli.nome || "Cliente Desconhecido";
-                    telefoneCli = cli.telefone || "Telefone não informado";
-                    statusCliTexto = (cli.status || 'ativo').toUpperCase();
-                    
-                    const logradouro = cli.endereco || "";
-                    const numero = cli.numero ? `, ${cli.numero}` : ", Número não informado";
-                    const complemento = cli.complemento ? `<br>Complemento: ${cli.complemento}` : "";
-                    const bairro = cli.bairro ? `<br>Bairro: ${cli.bairro}` : "";
-                    const cidade = cli.cidade || "";
-                    const uf = cli.uf || "";
-                    const cep = cli.cep || "";
-
-                    if (logradouro || cidade) {
-                        enderecoCli = `${logradouro}${numero}${complemento}${bairro}<br>Município: ${cidade}${uf ? '<br>UF: ' + uf : ''}${cep ? '<br>CEP: ' + cep : ''}`;
+            try {
+                const { data: todosUser } = await supabaseClient.from('usuarios').select('*');
+                if (todosUser) {
+                    let cli = o.cliente_id ? todosUser.find(u => u.id === o.cliente_id && u.perfil === 'cliente') : null;
+                    if (!cli && o.cliente_email) cli = todosUser.find(u => u.email === o.cliente_email && u.perfil === 'cliente');
+                    if (cli) {
+                        nomeCli = cli.nome || "Cliente";
+                        telefoneCli = cli.telefone || "Telefone não informado";
+                        enderecoCli = `${cli.endereco || ''}, ${cli.numero || ''} - ${cli.bairro || ''}, ${cli.cidade || ''}/${cli.uf || ''} (CEP: ${cli.cep || ''})`;
                     }
                 }
-            }
+            } catch (e) {}
+
+            const valorBaseAdm = o.valor_base || o.orcamento_valor || 0;
+            const valorFinalCliente = valorBaseAdm * 1.15;
+            const valorPrestadorAdm = valorBaseAdm * 0.85;
 
             container.innerHTML = `
                 <div class="flex justify-between items-center border-b border-slate-200 pb-4">
@@ -2045,25 +2570,20 @@
                     <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold uppercase">${o.status || 'Solicitado'}</span>
                 </div>
                 <div class="space-y-4 text-xs text-slate-700">
-                    <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-200 space-y-1.5">
-                        <p class="font-black text-blue-900 text-sm uppercase">Dados do Cliente:</p>
-                        <p><strong>Cliente:</strong><br>${nomeCli}</p>
-                        <p><strong>Status do Cliente:</strong> ${statusCliTexto}</p>
-                        <p><strong>Telefone:</strong><br>${telefoneCli}</p>
-                        <p><strong>Endereço:</strong><br>${enderecoCli}</p>
+                    <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-200 space-y-1">
+                        <p class="font-black text-blue-900 text-sm uppercase">Valores do Orçamento:</p>
+                        <p><strong>Valor Base:</strong> ${formatarMoedaBr(valorBaseAdm)}</p>
+                        <p><strong>Valor Cliente (+15%):</strong> ${formatarMoedaBr(valorFinalCliente)}</p>
+                        <p><strong>Valor Prestador (-15%):</strong> ${formatarMoedaBr(valorPrestadorAdm)}</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                        <p class="font-black text-slate-900 uppercase text-sm">Dados do Cliente:</p>
+                        <p><strong>Cliente:</strong> ${nomeCli}</p>
+                        <p><strong>Telefone:</strong> ${telefoneCli}</p>
+                        <p><strong>Endereço:</strong> ${enderecoCli}</p>
                         <p><strong>E-mail:</strong> ${o.cliente_email}</p>
                     </div>
-                    <p><strong>Profissional Definido:</strong> ${o.prestador_responsavel || 'Nenhum'}</p>
-                    <p><strong>Data da Solicitação:</strong> ${formatarDataHoraBr(o.created_at)}</p>
-                    <p><strong>CEP / Endereço do Serviço:</strong> ${o.cep_servico} - ${o.rua_servico || 'N/A'}</p>
-                    <div>
-                        <p class="font-bold mb-1">Descrição Completa do Serviço:</p>
-                        <p class="bg-slate-50 p-3 rounded-xl border border-slate-200">${o.descricao_servic || 'Sem descrição.'}</p>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        ${o.foto_orcamento ? `<div><p class="font-semibold text-slate-500 mb-1">Foto Inicial (ANTES):</p><img src="${o.foto_orcamento}" class="w-full h-40 rounded-xl object-cover border"></div>` : '<p class="text-slate-400">Sem foto inicial anexada.</p>'}
-                        ${o.foto_concluido ? `<div><p class="font-semibold text-emerald-600 mb-1">Foto Final (DEPOIS):</p><img src="${o.foto_concluido}" class="w-full h-40 rounded-xl object-cover border border-emerald-300"></div>` : ''}
-                    </div>
+                    <p><strong>Descrição:</strong> ${o.descricao_servic || 'Sem descrição.'}</p>
                 </div>
             `;
             document.getElementById('modalAdminDetalhesOrcamento').classList.remove('hidden');
@@ -2076,25 +2596,9 @@
         function abrirModalDesativarCliente(id, nome, email, statusAtual) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             const novoStatus = (statusAtual === 'inativo') ? 'ativo' : 'inativo';
-            
             document.getElementById('desativacaoUsuarioId').value = id;
             document.getElementById('desativacaoTipoPerfil').value = 'cliente';
             document.getElementById('desativacaoNovoStatus').value = novoStatus;
-
-            if (novoStatus === 'inativo') {
-                document.getElementById('desativacaoBadgeTipo').textContent = 'Desativação de Cliente';
-                document.getElementById('desativacaoTituloModal').textContent = 'Desativar cliente?';
-                document.getElementById('desativacaoMensagemModal').textContent = 'Tem certeza de que deseja desativar este cliente? O acesso ao sistema será bloqueado, mas seu histórico será preservado.';
-                document.getElementById('btnConfirmarDesativacaoAcao').textContent = 'Confirmar desativação';
-                document.getElementById('btnConfirmarDesativacaoAcao').className = "w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs";
-            } else {
-                document.getElementById('desativacaoBadgeTipo').textContent = 'Reativação de Cliente';
-                document.getElementById('desativacaoTituloModal').textContent = 'Reativar cliente?';
-                document.getElementById('desativacaoMensagemModal').textContent = 'Tem certeza de que deseja reativar este usuário?';
-                document.getElementById('btnConfirmarDesativacaoAcao').textContent = 'Confirmar reativação';
-                document.getElementById('btnConfirmarDesativacaoAcao').className = "w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs";
-            }
-
             document.getElementById('desativacaoNomeUsuario').textContent = nome;
             document.getElementById('desativacaoEmailUsuario').textContent = email;
             document.getElementById('modalConfirmarDesativacao').classList.remove('hidden');
@@ -2103,25 +2607,9 @@
         function abrirModalDesativarPrestador(id, nome, email, statusAtual) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             const novoStatus = (statusAtual === 'inativo') ? 'ativo' : 'inativo';
-
             document.getElementById('desativacaoUsuarioId').value = id;
             document.getElementById('desativacaoTipoPerfil').value = 'prestador';
             document.getElementById('desativacaoNovoStatus').value = novoStatus;
-
-            if (novoStatus === 'inativo') {
-                document.getElementById('desativacaoBadgeTipo').textContent = 'Desativação de Prestador';
-                document.getElementById('desativacaoTituloModal').textContent = 'Desativar prestador?';
-                document.getElementById('desativacaoMensagemModal').textContent = 'Tem certeza de que deseja desativar este prestador? O acesso ao sistema será bloqueado, mas seu histórico de serviços e avaliações será preservado.';
-                document.getElementById('btnConfirmarDesativacaoAcao').textContent = 'Confirmar desativação';
-                document.getElementById('btnConfirmarDesativacaoAcao').className = "w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs";
-            } else {
-                document.getElementById('desativacaoBadgeTipo').textContent = 'Reativação de Prestador';
-                document.getElementById('desativacaoTituloModal').textContent = 'Reativar prestador?';
-                document.getElementById('desativacaoMensagemModal').textContent = 'Tem certeza de que deseja reativar este usuário?';
-                document.getElementById('btnConfirmarDesativacaoAcao').textContent = 'Confirmar reativação';
-                document.getElementById('btnConfirmarDesativacaoAcao').className = "w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs";
-            }
-
             document.getElementById('desativacaoNomeUsuario').textContent = nome;
             document.getElementById('desativacaoEmailUsuario').textContent = email;
             document.getElementById('modalConfirmarDesativacao').classList.remove('hidden');
@@ -2135,30 +2623,14 @@
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             const idUsuario = document.getElementById('desativacaoUsuarioId').value;
             const novoStatus = document.getElementById('desativacaoNovoStatus').value;
-            const btnConfirmar = document.getElementById('btnConfirmarDesativacaoAcao');
-
-            if (!idUsuario) return;
-
-            btnConfirmar.disabled = true;
-            btnConfirmar.textContent = "Processando...";
-
             try {
                 const { error } = await supabaseClient.from('usuarios').update({ status: novoStatus }).eq('id', idUsuario);
                 if (error) throw error;
-
                 fecharModalConfirmarDesativacao();
-                if (novoStatus === 'inativo') {
-                    alert("Usuário desativado com sucesso (status Inativo).");
-                } else {
-                    alert("Usuário reativado com sucesso (status Ativo).");
-                }
+                alert("Status atualizado com sucesso.");
                 carregarDadosAdmin();
             } catch (err) {
-                console.error("Erro ao alterar status:", err);
-                alert(traduzirErroTecnico(err));
-            } finally {
-                btnConfirmar.disabled = false;
-                btnConfirmar.textContent = "Confirmar";
+                alert(traduzirErroTecnico(err, "Admin", "executarMudancaStatusUsuario"));
             }
         }
 
@@ -2170,16 +2642,14 @@
                 const statusAtual = cli.status || 'ativo';
                 const statusBadge = statusAtual === 'ativo' ? '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold text-[10px]">ATIVO</span>' : '<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold text-[10px]">INATIVO</span>';
                 const botaoTexto = statusAtual === 'ativo' ? 'Desativar' : 'Reativar';
-                const botaoClasse = statusAtual === 'ativo' ? 'bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl font-bold transition' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-xl font-bold transition';
-
                 html += `
                     <tr class="border-b">
                         <td class="p-3 font-bold">${cli.nome}</td>
-                        <td class="p-3">${cli.telefone || 'Telefone não informado'}</td>
+                        <td class="p-3">${cli.telefone || 'N/A'}</td>
                         <td class="p-3">${cli.email}</td>
                         <td class="p-3">${statusBadge}</td>
                         <td class="p-3 text-center">
-                            <button onclick="abrirModalDesativarCliente('${cli.id}', '${cli.nome}', '${cli.email}', '${statusAtual}')" class="${botaoClasse}">${botaoTexto}</button>
+                            <button onclick="abrirModalDesativarCliente('${cli.id}', '${cli.nome}', '${cli.email}', '${statusAtual}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl font-bold transition">${botaoTexto}</button>
                         </td>
                     </tr>
                 `;
@@ -2201,18 +2671,16 @@
             listaPrestadores.forEach(p => {
                 const statusAtual = p.status || 'ativo';
                 const statusBadge = statusAtual === 'ativo' ? '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold text-[10px]">ATIVO</span>' : '<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold text-[10px]">INATIVO</span>';
-                const botaoStatusTexto = statusAtual === 'ativo' ? 'Desativar' : 'Reativar';
-                const botaoStatusClasse = statusAtual === 'ativo' ? 'bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl font-bold transition' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-xl font-bold transition';
-
+                const botaoTexto = statusAtual === 'ativo' ? 'Desativar' : 'Reativar';
                 html += `
                     <tr class="border-b">
                         <td class="p-3 font-bold">${p.nome}</td>
-                        <td class="p-3">${p.telefone || 'Telefone não informado'}</td>
+                        <td class="p-3">${p.telefone || 'N/A'}</td>
                         <td class="p-3">${p.email}</td>
                         <td class="p-3">${statusBadge}</td>
                         <td class="p-3 text-center space-x-2">
-                            <button onclick="abrirFichaPrestadorAdmin('${p.id}')" class="bg-purple-50 hover:bg-purple-100 text-purple-700 px-3 py-1.5 rounded-xl font-bold transition">Galeria de Trabalhos</button>
-                            <button onclick="abrirModalDesativarPrestador('${p.id}', '${p.nome}', '${p.email}', '${statusAtual}')" class="${botaoStatusClasse}">${botaoStatusTexto}</button>
+                            <button onclick="abrirFichaPrestadorAdmin('${p.id}')" class="bg-purple-50 hover:bg-purple-100 text-purple-700 px-3 py-1.5 rounded-xl font-bold transition">Galeria</button>
+                            <button onclick="abrirModalDesativarPrestador('${p.id}', '${p.nome}', '${p.email}', '${statusAtual}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl font-bold transition">${botaoTexto}</button>
                         </td>
                     </tr>
                 `;
@@ -2245,12 +2713,21 @@
         }
 
         async function validarEmailRecuperacao() {
-            const email = document.getElementById('recupEmail').value.trim();
-            const { data } = await supabaseClient.from('usuarios').select('*').eq('email', email);
-            if (!data || data.length === 0) { alert("E-mail não encontrado."); return; }
-            emailUsuarioRecuperacao = email;
-            document.getElementById('etapaValidarEmail').classList.add('hidden');
-            document.getElementById('etapaAlterarSenha').classList.remove('hidden');
+            const btn = document.getElementById('btnValidarRecup');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            try {
+                const email = document.getElementById('recupEmail').value.trim();
+                const { data } = await supabaseClient.from('usuarios').select('*').eq('email', email);
+                if (!data || data.length === 0) { alert("E-mail não encontrado."); return; }
+                emailUsuarioRecuperacao = email;
+                document.getElementById('etapaValidarEmail').classList.add('hidden');
+                document.getElementById('etapaAlterarSenha').classList.remove('hidden');
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Recuperação", "validarEmailRecuperacao"));
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         async function salvarNovaSenhaRecuperacao(event) {
@@ -2258,15 +2735,15 @@
             const novaSenha = document.getElementById('novaSenhaInput').value;
             const confirmaSenha = document.getElementById('confirmaSenhaInput').value;
             if (novaSenha !== confirmaSenha) { alert("As senhas informadas não são iguais."); return; }
-
-            const { error } = await supabaseClient.from('usuarios').update({ senha: novaSenha }).eq('email', emailUsuarioRecuperacao);
-            if (error) { 
-                alert(traduzirErroTecnico(error)); 
-                return; 
+            try {
+                const { error } = await supabaseClient.from('usuarios').update({ senha: novaSenha }).eq('email', emailUsuarioRecuperacao);
+                if (error) throw error;
+                fecharModalEsqueciSenha();
+                alert("Senha alterada com sucesso.");
+                mudarTela('login');
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Recuperação", "salvarNovaSenhaRecuperacao"));
             }
-            fecharModalEsqueciSenha();
-            alert("Senha alterada com sucesso!");
-            mudarTela('login');
         }
 
         function atualizarHeaderSessao() {
@@ -2290,11 +2767,8 @@
                 } else {
                     if (btnCliente) { btnCliente.classList.remove('hidden'); btnCliente.classList.add('flex'); }
                     if (botaoSolicitarContainer) {
-                        if (usuarioSessao.status === 'inativo') {
-                            botaoSolicitarContainer.classList.add('hidden');
-                        } else {
-                            botaoSolicitarContainer.classList.remove('hidden');
-                        }
+                        if (usuarioSessao.status === 'inativo') botaoSolicitarContainer.classList.add('hidden');
+                        else botaoSolicitarContainer.classList.remove('hidden');
                     }
                 }
             }
