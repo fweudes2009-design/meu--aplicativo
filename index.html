@@ -706,6 +706,41 @@
         </div>
     </div>
 
+    <!-- MODAL FICHA DO PRESTADOR / GALERIA DE TRABALHOS (ADMIN) -->
+    <div id="modalFichaPrestadorAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
+            <button onclick="fecharModalFichaPrestadorAdmin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="conteudoFichaPrestadorAdmin" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO DE FOTO DA GALERIA -->
+    <div id="modalConfirmarExcluirFoto" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-5 border border-amber-200">
+            <button onclick="fecharModalConfirmarExcluirFoto()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-amber-100 text-amber-800 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Gerenciamento de Galeria</span>
+                <h3 class="text-xl font-black text-slate-900 mt-1">Excluir foto?</h3>
+            </div>
+            <p class="text-xs text-slate-600">Tem certeza de que deseja excluir esta foto da Galeria de Trabalhos do Prestador?</p>
+            
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs text-slate-700 text-center">
+                <p><strong>Prestador:</strong> <span id="excluirFotoPrestadorNome">--</span></p>
+                <div class="flex justify-center">
+                    <img id="excluirFotoPreviaImg" src="" class="w-28 h-28 rounded-xl object-cover border border-slate-300">
+                </div>
+            </div>
+
+            <input type="hidden" id="excluirPrestadorId">
+            <input type="hidden" id="excluirFotoIndice">
+
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="fecharModalConfirmarExcluirFoto()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
+                <button type="button" onclick="executarExclusaoFotoGaleria()" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Confirmar exclusão</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE CONFIRMAÇÃO DE DESATIVAÇÃO / REATIVAÇÃO -->
     <div id="modalConfirmarDesativacao" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-5 border border-amber-200">
@@ -835,7 +870,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM SUPABASE E NOVO FLUXO DE ORÇAMENTO E CONTRATAÇÃO -->
+    <!-- SCRIPT COM SUPABASE E CONTROLE DE GALERIA PELO ADMINISTRADOR -->
     <script>
         const SUPABASE_URL = "https://xjckskjqddezpevfehhu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot";
@@ -1294,7 +1329,6 @@
             abrirPainelCliente();
         }
 
-        // Funções do Novo Fluxo de Orçamento e Contratação
         function abrirModalEnviarOrcamento(orcamentoId) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             document.getElementById('enviarOrcamentoId').value = orcamentoId;
@@ -1371,7 +1405,6 @@
             if (!usuarioSessao || usuarioSessao.perfil !== 'prestador') return;
 
             if (!aceitar) {
-                // Registrar recusa sem afetar os demais
                 let recusaAtual = [];
                 const { data: orcObj } = await supabaseClient.from('orcamentos').select('prestadores_recusados').eq('id', orcamentoId).single();
                 if (orcObj && orcObj.prestadores_recusados) {
@@ -1389,7 +1422,6 @@
                 return;
             }
 
-            // Aceitar oportunidade
             let interessadosAtual = [];
             const { data: orcObj } = await supabaseClient.from('orcamentos').select('prestadores_interessados').eq('id', orcamentoId).single();
             if (orcObj && orcObj.prestadores_interessados) {
@@ -1403,7 +1435,6 @@
                 data_manifestacao: new Date().toISOString()
             };
 
-            // Evitar duplicidade
             interessadosAtual = interessadosAtual.filter(i => i.prestador_email !== usuarioSessao.email);
             interessadosAtual.push(registroInteresse);
 
@@ -1607,7 +1638,6 @@
             }
             document.getElementById('prestadorDescricaoTrabalho').value = usuarioSessao.descrição || usuarioSessao.descricao || "";
 
-            // Carregar Serviços Disponíveis para os Prestadores
             const containerDisponiveis = document.getElementById('listaServicosDisponiveisPrestador');
             if (containerDisponiveis) {
                 const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
@@ -1652,7 +1682,6 @@
                 }
             }
 
-            // Carregar Mural de Avaliações
             const containerNotas = document.getElementById('muralNotasPrestador');
             if (containerNotas) {
                 const { data: orcList } = await supabaseClient.from('orcamentos').select('*').eq('avaliado', true);
@@ -1693,7 +1722,6 @@
                 }
             }
 
-            // Carregar Serviços Confirmados / Atribuídos ao Prestador
             const containerServicos = document.getElementById('listaMeusServicosPrestador');
             if (containerServicos) {
                 const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
@@ -1856,6 +1884,124 @@
                 htmlOrc += `</div>`;
                 containerOrcamentosAdmin.innerHTML = htmlOrc;
             }
+        }
+
+        async function abrirFichaPrestadorAdmin(prestadorId) {
+            if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
+
+            const { data: prestadorObj, error } = await supabaseClient.from('usuarios').select('*').eq('id', prestadorId).single();
+            if (error || !prestadorObj) {
+                alert("Não foi possível carregar os dados do prestador.");
+                return;
+            }
+
+            let fotosGaleria = [];
+            if (prestadorObj.fotos_trabalho) {
+                try {
+                    fotosGaleria = typeof prestadorObj.fotos_trabalho === 'string' ? JSON.parse(prestadorObj.fotos_trabalho) : prestadorObj.fotos_trabalho;
+                } catch(e) {}
+            }
+
+            let htmlGaleria = '';
+            const fotosValidas = fotosGaleria.filter(f => f && f.trim() !== "");
+
+            if (fotosValidas.length === 0) {
+                htmlGaleria = `<p class="text-xs text-slate-400 italic">Este prestador ainda não possui trabalhos cadastrados na galeria.</p>`;
+            } else {
+                htmlGaleria = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
+                fotosValidas.forEach((foto, indexReal) => {
+                    htmlGaleria += `
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center space-y-2">
+                            <img src="${foto}" class="w-full h-32 rounded-xl object-cover border border-slate-300">
+                            <button onclick="abrirModalConfirmarExcluirFoto('${prestadorObj.id}', '${prestadorObj.nome}', ${indexReal}, '${foto}')" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-xl transition text-xs flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>Excluir foto</span>
+                            </button>
+                        </div>
+                    `;
+                });
+                htmlGaleria += `</div>`;
+            }
+
+            const container = document.getElementById('conteudoFichaPrestadorAdmin');
+            container.innerHTML = `
+                <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                    <div class="flex items-center space-x-3">
+                        ${prestadorObj.foto_perfil ? `<img src="${prestadorObj.foto_perfil}" class="w-12 h-12 rounded-full object-cover">` : '<div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div>'}
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900">${prestadorObj.nome}</h3>
+                            <p class="text-xs text-slate-500">${prestadorObj.especialidade || 'Prestador'} | ${prestadorObj.email}</p>
+                        </div>
+                    </div>
+                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold uppercase">Ficha Admin</span>
+                </div>
+
+                <div class="space-y-4 pt-2">
+                    <h4 class="font-bold text-slate-800 text-base flex items-center space-x-2">
+                        <i class="fa-solid fa-images text-purple-600"></i>
+                        <span>Galeria de Trabalhos</span>
+                    </h4>
+                    ${htmlGaleria}
+                </div>
+            `;
+
+            document.getElementById('modalFichaPrestadorAdmin').classList.remove('hidden');
+        }
+
+        function fecharModalFichaPrestadorAdmin() {
+            document.getElementById('modalFichaPrestadorAdmin').classList.add('hidden');
+        }
+
+        function abrirModalConfirmarExcluirFoto(prestadorId, prestadorNome, indiceFoto, fotoUrl) {
+            document.getElementById('excluirPrestadorId').value = prestadorId;
+            document.getElementById('excluirFotoIndice').value = indiceFoto;
+            document.getElementById('excluirFotoPrestadorNome').textContent = prestadorNome;
+            document.getElementById('excluirFotoPreviaImg').src = fotoUrl;
+            document.getElementById('modalConfirmarExcluirFoto').classList.remove('hidden');
+        }
+
+        function fecharModalConfirmarExcluirFoto() {
+            document.getElementById('modalConfirmarExcluirFoto').classList.add('hidden');
+        }
+
+        async function executarExclusaoFotoGaleria() {
+            const prestadorId = document.getElementById('excluirPrestadorId').value;
+            const indiceFoto = parseInt(document.getElementById('excluirFotoIndice').value);
+
+            if (!prestadorId || isNaN(indiceFoto)) return;
+
+            const { data: prestadorObj, error: errFetch } = await supabaseClient.from('usuarios').select('*').eq('id', prestadorId).single();
+            if (errFetch || !prestadorObj) {
+                alert("Não foi possível localizar o prestador.");
+                return;
+            }
+
+            let fotosGaleria = [];
+            if (prestadorObj.fotos_trabalho) {
+                try {
+                    fotosGaleria = typeof prestadorObj.fotos_trabalho === 'string' ? JSON.parse(prestadorObj.fotos_trabalho) : prestadorObj.fotos_trabalho;
+                } catch(e) {}
+            }
+
+            // Remover a foto do array mantendo as demais intactas
+            fotosGaleria.splice(indiceFoto, 1);
+            const fotosAtualizadasJson = JSON.stringify(fotosGaleria);
+
+            const { error: errUpdate } = await supabaseClient.from('usuarios').update({
+                fotos_trabalho: fotosAtualizadasJson
+            }).eq('id', prestadorId);
+
+            if (errUpdate) {
+                alert("Não foi possível excluir a foto. Tente novamente.");
+                return;
+            }
+
+            fecharModalConfirmarExcluirFoto();
+            alert("Foto excluída com sucesso.");
+            
+            // Atualizar a ficha aberta e os dados administrativos
+            abrirFichaPrestadorAdmin(prestadorId);
+            carregarDadosAdmin();
         }
 
         async function abrirDetalhesOrcamentoAdmin(o) {
@@ -2055,8 +2201,8 @@
             listaPrestadores.forEach(p => {
                 const statusAtual = p.status || 'ativo';
                 const statusBadge = statusAtual === 'ativo' ? '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold text-[10px]">ATIVO</span>' : '<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold text-[10px]">INATIVO</span>';
-                const botaoTexto = statusAtual === 'ativo' ? 'Desativar' : 'Reativar';
-                const botaoClasse = statusAtual === 'ativo' ? 'bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl font-bold transition' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-xl font-bold transition';
+                const botaoStatusTexto = statusAtual === 'ativo' ? 'Desativar' : 'Reativar';
+                const botaoStatusClasse = statusAtual === 'ativo' ? 'bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl font-bold transition' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-xl font-bold transition';
 
                 html += `
                     <tr class="border-b">
@@ -2064,8 +2210,9 @@
                         <td class="p-3">${p.telefone || 'Telefone não informado'}</td>
                         <td class="p-3">${p.email}</td>
                         <td class="p-3">${statusBadge}</td>
-                        <td class="p-3 text-center">
-                            <button onclick="abrirModalDesativarPrestador('${p.id}', '${p.nome}', '${p.email}', '${statusAtual}')" class="${botaoClasse}">${botaoTexto}</button>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="abrirFichaPrestadorAdmin('${p.id}')" class="bg-purple-50 hover:bg-purple-100 text-purple-700 px-3 py-1.5 rounded-xl font-bold transition">Galeria de Trabalhos</button>
+                            <button onclick="abrirModalDesativarPrestador('${p.id}', '${p.nome}', '${p.email}', '${statusAtual}')" class="${botaoStatusClasse}">${botaoStatusTexto}</button>
                         </td>
                     </tr>
                 `;
