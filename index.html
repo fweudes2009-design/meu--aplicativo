@@ -1036,7 +1036,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT CORRIGIDO COM ROTEAMENTO ROBUSTO PARA ADMINISTRADOR -->
+    <!-- SCRIPT COM NOTIFICAÇÃO AO CLIENTE E PRESTADOR APÓS CONFIRMAÇÃO DEFINITIVA -->
     <script>
         const SUPABASE_URL = "https://xjckskjqddezpevfehhu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot";
@@ -1574,7 +1574,6 @@
                     return;
                 }
 
-                // Regra financeira estrita: Base original separada
                 const payloadAtualizacao = {
                     valor_base: valorBaseNum,
                     orcamento_valor: valorBaseNum,
@@ -1619,9 +1618,6 @@
             }
         }
 
-        // =====================================================================
-        // MÓDULO DE NEGOCIAÇÃO E CHAT EXCLUSIVO (CLIENTE <-> ADMINISTRADOR)
-        // =====================================================================
         async function abrirModalNegociacaoChat(orcamentoId) {
             if (!usuarioSessao || (usuarioSessao.perfil !== 'cliente' && usuarioSessao.perfil !== 'admin')) return;
             document.getElementById('chatOrcamentoIdHidden').value = orcamentoId;
@@ -1634,7 +1630,7 @@
                 document.getElementById('chatResumoDescricao').textContent = orcObj.descricao_servic || 'Serviço residencial';
                 
                 const valorBaseRef = orcObj.valor_base || orcObj.orcamento_valor || 0;
-                const valorFinalCliente = valorBaseRef * 1.15; // CLIENTE = BASE * 1.15
+                const valorFinalCliente = valorBaseRef * 1.15;
                 document.getElementById('chatResumoValor').textContent = formatarMoedaBr(valorFinalCliente);
 
                 await carregarMensagensChat(orcamentoId);
@@ -1781,15 +1777,46 @@
             }
         }
 
+        // =====================================================================
+        // CONFIRMAÇÃO DEFINITIVA DO PRESTADOR PELO ADMINISTRADOR
+        // E GERAÇÃO DA NOTIFICAÇÃO OFICIAL PARA O CLIENTE
+        // =====================================================================
         async function adminConfirmarPrestador(orcamentoId, prestadorNome) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             try {
-                const { error } = await supabaseClient.from('orcamentos').update({
-                    prestador_responsavel: prestadorNome,
+                // 1. Obter dados do prestador selecionado de forma robusta no Supabase (por nome ou id/email nos interessados)
+                const { data: orcObj, error: errOrc } = await supabaseClient.from('orcamentos').select('*').eq('id', orcamentoId).single();
+                if (errOrc || !orcObj) throw errOrc || new Error("Orçamento não encontrado.");
+
+                let prestadorEmailSelecionado = null;
+                if (orcObj.prestadores_interessados) {
+                    try {
+                        const listaInteressados = JSON.parse(orcObj.prestadores_interessados);
+                        const matchInt = listaInteressados.find(i => i.prestador_nome === prestadorNome);
+                        if (matchInt) prestadorEmailSelecionado = matchInt.prestador_email;
+                    } catch(e) {}
+                }
+
+                // Buscar dados completos do prestador no Supabase para garantir dados reais
+                let queryPrest = supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+                if (prestadorEmailSelecionado) queryPrest = queryPrest.eq('email', prestadorEmailSelecionado);
+                else queryPrest = queryPrest.eq('nome', prestadorNome);
+                
+                const { data: prestData } = await queryPrest;
+                const prestadorReal = prestData && prestData.length > 0 ? prestData[0] : null;
+
+                const nomePrestadorFinal = prestadorReal ? prestadorReal.nome : prestadorNome;
+                const telefonePrestadorFinal = (prestadorReal && prestadorReal.telefone && prestadorReal.telefone.trim() !== "") ? prestadorReal.telefone : "Telefone não informado.";
+
+                // 2. Atualizar o orçamento com o prestador responsável e status definitivo
+                const { error: errUpdate } = await supabaseClient.from('orcamentos').update({
+                    prestador_responsavel: nomePrestadorFinal,
                     status: 'PRESTADOR DEFINIDO'
                 }).eq('id', orcamentoId);
-                if (error) throw error;
-                alert("Prestador confirmado para o serviço.");
+
+                if (errUpdate) throw errUpdate;
+
+                alert(`Prestador ${nomePrestadorFinal} confirmado com sucesso para o serviço! O cliente foi notificado.`);
                 carregarDadosAdmin();
             } catch (err) {
                 alert(traduzirErroTecnico(err, "Admin", "adminConfirmarPrestador"));
@@ -1962,6 +1989,8 @@
 
             try {
                 const { data: orcData } = await supabaseClient.from('orcamentos').select('*').eq('cliente_email', usuarioSessao.email);
+                const { data: todosPrestadores } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+
                 if (!orcData || orcData.length === 0) {
                     containerOrcamentos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço registrado.</p>`;
                 } else {
@@ -1972,13 +2001,14 @@
                         const isAguardandoResposta = statusAtual === 'AGUARDANDO RESPOSTA DO CLIENTE';
                         const isAceito = statusAtual === 'ACEITO PELO CLIENTE';
                         const isRecusadoOuNegociacao = statusAtual === 'RECUSADO PELO CLIENTE' || statusAtual === 'EM NEGOCIAÇÃO';
+                        const isPrestadorDefinido = statusAtual === 'PRESTADOR DEFINIDO' || statusAtual === 'AGUARDANDO APROVAÇÃO 50%' || statusAtual === '50% APROVADO PARA PAGAMENTO' || isConcluido;
 
                         let badgeColor = 'bg-amber-100 text-amber-800';
-                        if (isAceito || isConcluido || statusAtual === '50% APROVADO PARA PAGAMENTO') badgeColor = 'bg-emerald-100 text-emerald-800';
+                        if (isAceito || isPrestadorDefinido) badgeColor = 'bg-emerald-100 text-emerald-800';
                         if (isRecusadoOuNegociacao) badgeColor = 'bg-blue-100 text-blue-800';
 
                         const valorBaseRef = o.valor_base || o.orcamento_valor || 0;
-                        const valorFinalCliente = valorBaseRef * 1.15; // CLIENTE = BASE * 1.15
+                        const valorFinalCliente = valorBaseRef * 1.15;
                         const entrada50Calc = valorFinalCliente / 2;
                         const saldoCalc = valorFinalCliente - entrada50Calc;
 
@@ -1990,6 +2020,31 @@
                                 <p><strong>Saldo após a conclusão:</strong> ${formatarMoedaBr(saldoCalc)}</p>
                             </div>
                         `;
+
+                        // Se o prestador foi definido definitivamente pelo administrador, buscar dados reais para notificação visual
+                        let blocoNotificacaoPrestadorDefinido = '';
+                        if (isPrestadorDefinido && o.prestador_responsavel) {
+                            let prestObj = todosPrestadores ? todosPrestadores.find(p => p.nome === o.prestador_responsavel) : null;
+                            let telefonePrestadorReal = (prestObj && prestObj.telefone && prestObj.telefone.trim() !== "") ? prestObj.telefone : "Telefone não informado.";
+                            
+                            blocoNotificacaoPrestadorDefinido = `
+                                <div class="bg-sky-50 p-5 rounded-2xl border-2 border-sky-300 space-y-3 shadow-sm">
+                                    <div class="flex items-center space-x-2 text-sky-900 font-black text-xs uppercase bg-sky-200/60 px-3 py-1.5 rounded-xl w-fit">
+                                        <i class="fa-solid fa-circle-check text-sky-700"></i>
+                                        <span>Novo: profissional definido para seu serviço</span>
+                                    </div>
+                                    <div class="space-y-1 text-xs text-slate-800">
+                                        <p class="font-extrabold text-sky-900 text-sm">PROFISSIONAL DEFINIDO</p>
+                                        <p><strong>Profissionais:</strong> ${o.prestador_responsavel}</p>
+                                        <p><strong>Telefone:</strong> ${telefonePrestadorReal}</p>
+                                        <p><strong>Serviço:</strong> ${o.descricao_servic || 'Serviço contratado'}</p>
+                                    </div>
+                                    <p class="text-xs font-medium text-slate-700 bg-white p-3 rounded-xl border border-sky-200">
+                                        "Profissional definido para o seu serviço. O profissional ${o.prestador_responsavel}, telefone ${telefonePrestadorReal}, foi selecionado para realizar o seu serviço. Por favor, entre em contato com o profissional para combinar a melhor data e horário para o início do trabalho."
+                                    </p>
+                                </div>
+                            `;
+                        }
 
                         let acoesCliente = '';
                         if (isAguardandoResposta || isRecusadoOuNegociacao) {
@@ -2035,8 +2090,9 @@
                                     <span class="${badgeColor} px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
                                 </div>
                                 <p class="text-xs text-slate-600"><strong>Descrição:</strong> ${o.descricao_servic || ''}</p>
-                                ${o.prestador_responsavel ? `<p class="text-xs font-semibold text-sky-700"><i class="fa-solid fa-user-check mr-1"></i> Prestador Responsável: ${o.prestador_responsavel}</p>` : ''}
                                 
+                                ${blocoNotificacaoPrestadorDefinido}
+
                                 <div class="flex flex-wrap gap-4 pt-2">
                                     ${o.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">ANTES:</p><img src="${o.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
                                     ${o.foto_andamento_50 ? `<div><p class="text-[10px] text-orange-600 mb-1">Andamento 50%:</p><img src="${o.foto_andamento_50}" class="w-20 h-20 rounded-xl object-cover border border-orange-300"></div>` : ''}
@@ -2091,7 +2147,6 @@
                 const email = document.getElementById('loginEmail').value.trim();
                 const senha = document.getElementById('loginSenha').value;
 
-                // Consulta robusta e tolerante a maiúsculas/minúsculas no perfil
                 const { data, error } = await supabaseClient.from('usuarios').select('*').eq('email', email).eq('senha', senha);
                 if (error || !data || data.length === 0) { 
                     alert("E-mail ou senha incorretos."); 
@@ -2099,8 +2154,6 @@
                 }
 
                 const userFound = data[0];
-                
-                // Normaliza o perfil para minúsculas para garantir consistência perfeita no roteamento
                 if (userFound.perfil) {
                     userFound.perfil = userFound.perfil.toLowerCase().trim();
                 }
@@ -2173,7 +2226,7 @@
                         let htmlDisp = '';
                         disponiveis.forEach(s => {
                             const valorBaseRef = s.valor_base || s.orcamento_valor || 0;
-                            const valorPrestadorServico = valorBaseRef * 0.85; // PRESTADOR = BASE * 0.85
+                            const valorPrestadorServico = valorBaseRef * 0.85;
                             htmlDisp += `
                                 <div class="bg-emerald-50/60 p-5 rounded-2xl border border-emerald-200 space-y-3">
                                     <div class="flex justify-between items-center">
@@ -2337,7 +2390,6 @@
                     cacheClientesGeral = todosUsuarios.filter(u => u.perfil === 'cliente');
                     cachePrestadoresGeral = todosUsuarios.filter(u => u.perfil === 'prestador');
                     
-                    // Renderização isolada protegida contra falhas pontuais
                     try { renderizarTabelaClientesAdmin(cacheClientesGeral); } catch(e) { registrarErroSeguro("Admin", "renderizarClientes", e); }
                     try { renderizarTabelaPrestadoresAdmin(cachePrestadoresGeral, orcData || []); } catch(e) { registrarErroSeguro("Admin", "renderizarPrestadores", e); }
                     try { renderizarNotasAvaliacoesAdmin(todosUsuarios, orcData || []); } catch(e) { registrarErroSeguro("Admin", "renderizarAvaliacoes", e); }
@@ -2362,8 +2414,8 @@
 
                             const statusAtual = o.status || 'Solicitado';
                             const valorBaseAdm = o.valor_base || o.orcamento_valor || 0;
-                            const valorFinalCliente = valorBaseAdm * 1.15; // CLIENTE = BASE * 1.15
-                            const valorPrestadorAdm = valorBaseAdm * 0.85; // PRESTADOR = BASE * 0.85
+                            const valorFinalCliente = valorBaseAdm * 1.15;
+                            const valorPrestadorAdm = valorBaseAdm * 0.85;
 
                             let acoesAdmin = '';
                             if (statusAtual === 'Solicitado') {
@@ -2405,7 +2457,7 @@
                                 let prestadorObjPix = todosUsuarios && o.prestador_responsavel ? todosUsuarios.find(u => u.nome === o.prestador_responsavel && u.perfil === 'prestador') : null;
                                 const tipoPixPrestador = prestadorObjPix ? (prestadorObjPix.tipo_pix || 'Não informado') : 'Não informado';
                                 const chavePixPrestador = prestadorObjPix ? (prestadorObjPix.chave_pix || 'Não informada') : 'Não informada';
-                                const primeiro50Prestador = valorPrestadorAdm * 0.50; // 50% DO VALOR DO PRESTADOR
+                                const primeiro50Prestador = valorPrestadorAdm * 0.50;
                                 acoesAdmin = `
                                     <div class="bg-orange-50/80 p-4 rounded-2xl border border-orange-200 space-y-3">
                                         <p class="font-black text-orange-900 uppercase text-xs">Comprovação de 50% do Serviço:</p>
