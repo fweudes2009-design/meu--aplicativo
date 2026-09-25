@@ -448,11 +448,11 @@
                 </div>
             </div>
 
-            <!-- AVALIAR PRESTADOR / ORÇAMENTOS -->
+            <!-- ORÇAMENTOS E SERVIÇOS -->
             <div class="bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
                 <div>
                     <h3 class="font-extrabold text-slate-900 text-xl">Meus Orçamentos e Serviços</h3>
-                    <p class="text-xs text-slate-400">Acompanhe as propostas enviadas pelo administrador, aceite ou recuse, negocie valores e avalie o serviço concluído.</p>
+                    <p class="text-xs text-slate-400">Acompanhe as propostas enviadas pelo administrador, aceite ou recuse, negocie valores e conclua o serviço com avaliação.</p>
                 </div>
                 <div id="listaMeusOrcamentos" class="space-y-4">
                     <p class="text-xs text-slate-400">Carregando serviços...</p>
@@ -483,7 +483,14 @@
                         <input type="file" id="inputFotoPerfilCabecalho" accept="image/*" onchange="alterarFotoPerfilCabecalho(event)" class="hidden">
                     </div>
                     <div>
-                        <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Sou Prestador</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Sou Prestador</span>
+                            <!-- BOTÃO DE MENSAGENS / FALAR COM ADMINISTRAÇÃO (COM CONTADOR) -->
+                            <button onclick="abrirModalChatPrestadorAdmin()" id="btnMensagensPrestadorHeader" class="hidden items-center space-x-1.5 bg-white text-orange-900 hover:bg-orange-50 px-3.5 py-1 rounded-full text-xs font-black transition shadow-xs">
+                                <i class="fa-solid fa-comments"></i>
+                                <span id="labelContadorMensagensPrestador">Falar com Administração</span>
+                            </button>
+                        </div>
                         <h2 id="prestadorNomeHeader" class="text-2xl font-black mt-1">Bem-vindo(a)</h2>
                     </div>
                 </div>
@@ -649,13 +656,27 @@
                         <i class="fa-solid fa-toolbox text-sm"></i>
                         <span>Prestadores de Serviços</span>
                     </button>
+                    <button onclick="mudarAbaAdmin('mensagensPrestadores')" id="menuAdminMensagensPrestadores" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center justify-between transition text-slate-700 hover:bg-slate-100">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-comments text-sm"></i>
+                            <span>Mensagens (Prestadores)</span>
+                        </div>
+                        <span id="badgeMenuMensagensPrestadores" class="hidden bg-orange-600 text-white px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
+                    </button>
                     <button onclick="mudarAbaAdmin('avaliacoes')" id="menuAdminAvaliacoes" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
                         <i class="fa-solid fa-star text-sm"></i>
                         <span>Notas e Avaliações</span>
                     </button>
-                    <button onclick="mudarAbaAdmin('orcamentos')" id="menuAdminOrcamentos" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
-                        <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
-                        <span>Orçamentos Solicitados</span>
+                    <button onclick="mudarAbaAdmin('orcamentos')" id="menuAdminOrcamentos" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center justify-between transition text-slate-700 hover:bg-slate-100">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
+                            <span>Orçamentos Solicitados</span>
+                        </div>
+                        <span id="badgeMenuOrcamentosGeral" class="hidden bg-blue-600 text-white px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
+                    </button>
+                    <button onclick="mudarAbaAdmin('financeiro')" id="menuAdminFinanceiro" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
+                        <i class="fa-solid fa-wallet text-sm"></i>
+                        <span>Financeiro</span>
                     </button>
                     <button onclick="mudarAbaAdmin('saude')" id="menuAdminSaude" class="w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100">
                         <i class="fa-solid fa-heart-pulse text-sm"></i>
@@ -695,12 +716,29 @@
                         </div>
                     </div>
 
+                    <!-- SEÇÃO DE MENSAGENS (PRESTADOR ↔ ADMINISTRADOR) -->
+                    <div id="secaoAdminMensagensPrestadores" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                            <div>
+                                <span class="bg-orange-100 text-orange-900 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Comunicação</span>
+                                <h3 class="font-extrabold text-slate-900 text-xl mt-1">Mensagens com Prestadores</h3>
+                                <p class="text-xs text-slate-400">Conversas e canais bidirecionais ativos entre o Administrador e os Prestadores.</p>
+                            </div>
+                            <button onclick="carregarDadosAdmin()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-rotate mr-1"></i> Atualizar Lista
+                            </button>
+                        </div>
+                        <div id="listaCanaisPrestadorAdmin" class="space-y-3">
+                            <p class="text-xs text-slate-400">Carregando conversas com prestadores...</p>
+                        </div>
+                    </div>
+
                     <!-- SEÇÃO 3: NOTAS E AVALIAÇÕES -->
                     <div id="secaoAdminAvaliacoes" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-4">
                         <div class="border-b border-slate-200 pb-4">
                             <span class="bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Exclusivo Admin</span>
                             <h3 class="font-extrabold text-slate-900 text-xl mt-1">Notas e Avaliações</h3>
-                            <p class="text-xs text-slate-400">Consulta de avaliações reais e notas médias calculadas por prestador.</p>
+                            <p class="text-xs text-slate-400">Consulta de avaliações reais ordenadas da mais recente para a mais antiga.</p>
                         </div>
                         <div id="listaNotasAvaliacoesAdmin" class="space-y-4">
                             <p class="text-xs text-slate-400">Carregando avaliações...</p>
@@ -713,7 +751,7 @@
                             <div>
                                 <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Orçamentos</span>
                                 <h3 class="font-extrabold text-slate-900 text-xl mt-1">Orçamentos Solicitados</h3>
-                                <p class="text-xs text-slate-400">Listagem oficial de solicitações de orçamento com identificação do cliente responsável e status.</p>
+                                <p class="text-xs text-slate-400">Listagem oficial de solicitações de orçamento ordenadas da mais recente para a mais antiga.</p>
                             </div>
                             <button onclick="carregarDadosAdmin()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold transition">
                                 <i class="fa-solid fa-rotate mr-1"></i> Atualizar Lista
@@ -724,7 +762,79 @@
                         </div>
                     </div>
 
-                    <!-- SEÇÃO 5: SAÚDE DO SISTEMA (DIAGNÓSTICO) -->
+                    <!-- SEÇÃO 5: FINANCEIRO (FORMATO TABELA + RESUMO + RANKING) -->
+                    <div id="secaoAdminFinanceiro" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-6">
+                        <div class="border-b border-slate-200 pb-4">
+                            <span class="bg-blue-100 text-blue-900 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Financeiro</span>
+                            <h3 class="font-extrabold text-slate-900 text-xl mt-1">Movimentações Financeiras e Relatórios</h3>
+                            <p class="text-xs text-slate-400">Acompanhamento contábil oficial, entradas e saídas reais, e ranking de prestadores.</p>
+                        </div>
+
+                        <!-- INDICADORES SIMPLES DE RESUMO FINANCEIRO -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Entradas</p>
+                                <p id="finResumoEntradas" class="text-base font-extrabold text-emerald-600">R$ 0,00</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Saídas</p>
+                                <p id="finResumoSaidas" class="text-base font-extrabold text-rose-600">R$ 0,00</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Saldo</p>
+                                <p id="finResumoSaldo" class="text-base font-extrabold text-blue-900">R$ 0,00</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                                <p class="text-[11px] font-bold text-slate-400 uppercase">Serviços</p>
+                                <p id="finResumoServicos" class="text-base font-extrabold text-slate-700">0</p>
+                            </div>
+                        </div>
+
+                        <!-- FILTROS DA TABELA FINANCEIRA -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Pesquisar</label>
+                                <input type="text" id="filtroFinPesquisa" oninput="renderizarTabelaFinanceiroCompleta()" placeholder="Cliente, serviço..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Status</label>
+                                <select id="filtroFinStatus" onchange="renderizarTabelaFinanceiroCompleta()" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:outline-none font-bold text-slate-800">
+                                    <option value="">Todos os status</option>
+                                    <option value="Aguardando pagamento">Aguardando pagamento</option>
+                                    <option value="Entrada recebida">Entrada recebida</option>
+                                    <option value="50% aprovado para pagamento">50% aprovado para pagamento</option>
+                                    <option value="50% pago">50% pago</option>
+                                    <option value="Pagamento concluído">Pagamento concluído</option>
+                                </select>
+                            </div>
+                            <div>
+                                <button onclick="limparFiltrosFinanceiro()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl transition text-xs">Limpar Filtros</button>
+                            </div>
+                        </div>
+
+                        <!-- TABELA PRINCIPAL FINANCEIRA -->
+                        <div class="overflow-x-auto">
+                            <div id="listaFinanceiroAdmin" class="min-w-full">
+                                <p class="text-xs text-slate-400">Carregando movimentações financeiras...</p>
+                            </div>
+                        </div>
+
+                        <!-- SEÇÃO: PRESTADORES MAIS SOLICITADOS (RANKING) -->
+                        <div class="space-y-4 pt-4 border-t border-slate-200">
+                            <div>
+                                <h4 class="font-extrabold text-slate-900 text-lg">Prestadores Mais Solicitados</h4>
+                                <p class="text-xs text-slate-400">Ranking baseado exclusivamente em serviços com prestador definitivamente vinculado.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <div id="tabelaRankingPrestadores" class="min-w-full">
+                                    <p class="text-xs text-slate-400">Carregando ranking...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- SEÇÃO 6: SAÚDE DO SISTEMA (DIAGNÓSTICO) -->
                     <div id="secaoAdminSaude" class="secao-admin-painel hidden bg-white p-8 rounded-3xl border border-slate-200 space-y-6">
                         <div class="border-b border-slate-200 pb-4">
                             <span class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-xs font-black uppercase">Módulo Diagnóstico</span>
@@ -810,25 +920,71 @@
             </div>
             
             <div id="infoOrcamentoChatResumo" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-1">
-                <p><strong>Orçamento ID:</strong> <span id="chatResumoId">--</span></p>
+                <p><strong>Orçamento:</strong> <span id="chatResumoId">--</span></p>
                 <p><strong>Serviço:</strong> <span id="chatResumoDescricao">--</span></p>
                 <p class="font-bold text-blue-900 text-sm"><strong>Valor atual para o cliente:</strong> <span id="chatResumoValor">--</span></p>
             </div>
 
             <input type="hidden" id="chatOrcamentoIdHidden">
 
-            <!-- HISTÓRICO DE MENSAGENS -->
+            <!-- HISTÓRICO DE MENSAGENS (MAIS ANTIGA NO TOPO, MAIS RECENTE NO FINAL) -->
             <div class="flex-grow bg-slate-900 text-slate-200 p-4 rounded-2xl text-xs font-mono h-64 overflow-y-auto space-y-2 border border-slate-800" id="containerMensagensChat">
                 <p class="text-slate-500 italic">Carregando mensagens da negociação...</p>
             </div>
 
             <!-- CAMPO DE ENVIO DE MENSAGEM -->
             <form onsubmit="enviarMensagemNegociacao(event)" class="flex space-x-2 pt-1">
-                <input type="text" id="inputMensagemChat" required placeholder="Digite sua mensagem..." class="flex-grow px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none text-slate-800">
+                <input type="text" id="inputMensagemChat" required autocomplete="off" placeholder="Digite sua mensagem..." class="flex-grow px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none text-slate-800">
                 <button type="submit" id="btnEnviarMensagemChat" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition text-xs shadow-md">
                     Enviar
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CHAT ADMINISTRADOR ↔ PRESTADOR -->
+    <div id="modalChatPrestadorAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full mx-4 shadow-2xl relative max-h-[90vh] flex flex-col space-y-4 border border-orange-200">
+            <button onclick="fecharModalChatPrestadorAdmin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-orange-100 text-orange-900 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo de Comunicação</span>
+                <h3 id="tituloChatPrestadorAdmin" class="text-xl font-black text-slate-900 mt-1">Canal com a Administração</h3>
+            </div>
+            
+            <div id="infoChatPrestadorResumo" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-1">
+                <p><strong>Participante:</strong> <span id="chatPrestadorResumoNome">--</span></p>
+                <p><strong>Serviço/Contexto:</strong> <span id="chatPrestadorResumoServico">Canal Direto com Administração</span></p>
+            </div>
+
+            <input type="hidden" id="chatPrestadorEmailHidden">
+            <input type="hidden" id="chatPrestadorOrcamentoIdHidden">
+
+            <!-- HISTÓRICO DE MENSAGENS -->
+            <div class="flex-grow bg-slate-900 text-slate-200 p-4 rounded-2xl text-xs font-mono h-64 overflow-y-auto space-y-2 border border-slate-800" id="containerMensagensChatPrestador">
+                <p class="text-slate-500 italic">Carregando mensagens...</p>
+            </div>
+
+            <!-- CAMPO DE ENVIO -->
+            <form onsubmit="enviarMensagemPrestadorAdmin(event)" class="flex space-x-2 pt-1">
+                <input type="text" id="inputMensagemChatPrestador" required autocomplete="off" placeholder="Digite sua mensagem..." class="flex-grow px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:outline-none text-slate-800">
+                <button type="submit" id="btnEnviarMensagemChatPrestador" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-xl transition text-xs shadow-md">
+                    Enviar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALHES FINANCEIROS (VER DETALHES) -->
+    <div id="modalDetalhesFinanceiro" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-5 border border-blue-200">
+            <button onclick="fecharModalDetalhesFinanceiro()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-blue-100 text-blue-900 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo Financeiro</span>
+                <h3 class="text-xl font-black text-slate-900 mt-1">Detalhes da Movimentação</h3>
+            </div>
+            <div id="conteudoDetalhesFinanceiro" class="space-y-3 text-xs text-slate-700">
+                <!-- Preenchido dinamicamente -->
+            </div>
         </div>
     </div>
 
@@ -868,6 +1024,78 @@
                     <button type="button" onclick="fecharModalEnvioFoto50()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Cancelar</button>
                     <button type="button" id="btnConfirmarEnvioComprovacao" onclick="executarEnvioComprovacao50()" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Confirmar e enviar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONCLUSÃO E AVALIAÇÃO DO SERVIÇO PELO CLIENTE -->
+    <div id="modalConclusaoAvaliacaoCliente" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-5 border border-sky-200">
+            <button onclick="fecharModalConclusaoAvaliacaoCliente()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-sky-100 text-sky-900 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo Conclusão</span>
+                <h3 class="text-xl font-black text-slate-900 mt-1">Conclusão e avaliação do serviço</h3>
+            </div>
+            
+            <input type="hidden" id="conclusaoOrcamentoIdInput">
+
+            <!-- RESUMO DO SERVIÇO E PROFISSIONAL -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1 text-xs text-slate-700">
+                <p><strong>SERVIÇO:</strong> <span id="conclusaoResumoServico" class="font-bold text-slate-900">--</span></p>
+                <p><strong>PROFISSIONAL:</strong> <span id="conclusaoResumoPrestador" class="font-bold text-sky-900">--</span></p>
+            </div>
+
+            <!-- FOTO DO SERVIÇO CONCLUÍDO -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-slate-700">Foto do serviço concluído <span class="text-rose-500">*</span></label>
+                <div class="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-200 text-center space-y-2">
+                    <div class="h-32 rounded-xl bg-white border border-emerald-300 flex items-center justify-center overflow-hidden relative shadow-xs">
+                        <img id="previewFotoConclusaoCliente" class="hidden w-full h-full object-cover" alt="Conclusão">
+                        <i id="iconeFotoConclusaoCliente" class="fa-solid fa-camera text-emerald-500 text-lg"></i>
+                    </div>
+                    <input type="file" id="inputFotoConclusaoCliente" accept="image/*" onchange="carregarFotoConclusaoCliente(event)" class="text-xs text-slate-500 file:w-full file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer">
+                </div>
+            </div>
+
+            <!-- AVALIAÇÃO DE 1 A 5 ESTRELAS -->
+            <div class="space-y-1">
+                <label class="block text-sm font-semibold text-slate-700">Como você avalia o serviço realizado? <span class="text-rose-500">*</span></label>
+                <select id="selectEstrelasCliente" class="w-full px-4 py-3 bg-slate-50 border border-amber-300 rounded-xl text-sm font-bold text-amber-600 focus:outline-none">
+                    <option value="5">⭐⭐⭐⭐⭐ (5 - Excelente)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 - Muito Bom)</option>
+                    <option value="3">⭐⭐⭐ (3 - Bom)</option>
+                    <option value="2">⭐⭐ (2 - Regular)</option>
+                    <option value="1">⭐ (1 - Ruim)</option>
+                </select>
+            </div>
+
+            <!-- COMENTÁRIO SOBRE O SERVIÇO -->
+            <div class="space-y-1">
+                <label class="block text-sm font-semibold text-slate-700">Comentário sobre o serviço</label>
+                <textarea id="textareaComentarioCliente" rows="3" placeholder="Conte como foi sua experiência com o serviço realizado..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="fecharModalConclusaoAvaliacaoCliente()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 rounded-xl transition text-xs">Cancelar</button>
+                <button type="button" onclick="abrirModalConfirmacaoAntesFinalizar()" class="w-1/2 bg-sky-600 hover:bg-sky-700 text-white font-bold py-3.5 rounded-xl transition shadow-md text-xs">Confirmar conclusão e avaliação</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO ANTES DE FINALIZAR (ANTI-ACIDENTE) -->
+    <div id="modalConfirmacaoAntesFinalizar" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-5 border border-amber-200">
+            <button onclick="fecharModalConfirmacaoAntesFinalizar()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div>
+                <span class="bg-amber-100 text-amber-800 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Confirmação de Segurança</span>
+                <h3 class="text-xl font-black text-slate-900 mt-1">Confirmar conclusão do serviço?</h3>
+            </div>
+            <p class="text-xs text-slate-600">Confirme que o serviço foi concluído antes de enviar sua avaliação.</p>
+            
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="fecharModalConfirmacaoAntesFinalizar()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition text-xs">Voltar</button>
+                <button type="button" id="btnExecutarFinalizacaoDefinitiva" onclick="executarFinalizacaoConclusaoCliente()" class="w-1/2 bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl transition shadow-md text-xs">Confirmar</button>
             </div>
         </div>
     </div>
@@ -933,60 +1161,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE AVALIAÇÃO -->
-    <div id="modalAvaliacao" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4 border border-amber-200">
-            <button onclick="fecharModalAvaliacao()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <div>
-                <span class="bg-amber-100 text-amber-800 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo Avaliações</span>
-                <h3 class="text-xl font-black text-slate-900 mt-1">Avaliar Prestador</h3>
-            </div>
-            <p class="text-xs text-slate-500">Selecione uma nota de 1 a 5 estrelas e adicione um comentário opcional sobre o serviço realizado.</p>
-            <form onsubmit="salvarAvaliacaoSupabase(event)" class="space-y-4">
-                <input type="hidden" id="avalOrcamentoId">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Avaliação: <span class="text-amber-500 text-base">★★★★★</span> <span class="text-rose-500">*</span></label>
-                    <select id="avalNota" required class="w-full px-4 py-3 bg-slate-50 border border-amber-300 rounded-xl text-sm font-bold text-amber-600 focus:outline-none">
-                        <option value="5">⭐⭐⭐⭐⭐ (5 - Excelente)</option>
-                        <option value="4">⭐⭐⭐⭐ (4 - Muito Bom)</option>
-                        <option value="3">⭐⭐⭐ (3 - Bom)</option>
-                        <option value="2">⭐⭐ (2 - Regular)</option>
-                        <option value="1">⭐ (1 - Ruim)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Comentário sobre o serviço <span class="text-xs text-slate-400 font-normal">(Opcional)</span></label>
-                    <textarea id="avalComentario" rows="3" placeholder="Ex: O serviço foi realizado conforme combinado." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none"></textarea>
-                </div>
-                <button type="submit" id="btnSalvarAvaliacao" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
-                    ENVIAR AVALIAÇÃO
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL FOTO CONCLUÍDO -->
-    <div id="modalFotoConcluido" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4">
-            <button onclick="fecharModalFotoConcluido()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="text-xl font-black text-slate-900">Adicionar Foto do Resultado (DEPOIS)</h3>
-            <p class="text-xs text-slate-500">Envie a foto mostrando o serviço concluído.</p>
-            <form onsubmit="salvarFotoConcluidoSupabase(event)" class="space-y-4">
-                <input type="hidden" id="concluidoOrcamentoId">
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
-                    <div class="h-32 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden relative">
-                        <img id="previewModalConcluido" class="hidden w-full h-full object-cover" alt="Resultado">
-                        <i id="iconeModalConcluido" class="fa-solid fa-camera text-slate-400 text-xl"></i>
-                    </div>
-                    <input type="file" id="inputModalConcluido" accept="image/*" onchange="carregarFotoModalConcluido(event)" required class="text-xs text-slate-500 file:w-full file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
-                </div>
-                <button type="submit" id="btnSalvarFotoConcluido" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-sm">
-                    SALVAR FOTO DE CONCLUSÃO
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- MODAL DETALHES ORÇAMENTO ADMIN -->
     <div id="modalAdminDetalhesOrcamento" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
         <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-6">
@@ -1036,7 +1210,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT COM NOTIFICAÇÃO AO CLIENTE E PRESTADOR APÓS CONFIRMAÇÃO DEFINITIVA -->
+    <!-- SCRIPT COM CORREÇÃO CRÍTICA DO CHAT ADMINISTRADOR ↔ PRESTADOR -->
     <script>
         const SUPABASE_URL = "https://xjckskjqddezpevfehhu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_1381GxPZDX-kcLMbqJUlKg_IiYtHdot";
@@ -1045,7 +1219,7 @@
         let usuarioSessao = null;
         let fotoPerfilBase64 = "";
         let fotoOrcamentoBase64 = "";
-        let fotoModalConcluidoBase64 = "";
+        let fotoConclusaoClienteBase64 = "";
         let fotoAndamento50Base64 = "";
         let fotosTrabalhoPrestador = ["", "", "", ""];
         let cacheClientesGeral = [];
@@ -1053,6 +1227,8 @@
         let cacheOrcamentosGeral = [];
         let emailUsuarioRecuperacao = null;
         let realtimeSubscriptionAtiva = null;
+        let realtimeChatSubscriptionAtiva = null;
+        let realtimeChatPrestadorSubscriptionAtiva = null;
         let logsDiagnosticoSistema = [];
 
         function registrarErroSeguro(modulo, operacao, erroOriginal) {
@@ -1065,14 +1241,14 @@
 
         function traduzirErroTecnico(erroOriginal, modulo = "Geral", operacao = "Execução") {
             registrarErroSeguro(modulo, operacao, erroOriginal);
-            if (!erroOriginal) return "Ocorreu um erro inesperado. Tente novamente.";
+            if (!erroOriginal) return "Não foi possível carregar as solicitações. Tente novamente.";
             const msg = typeof erroOriginal === 'string' ? erroOriginal : (erroOriginal.message || erroOriginal.details || JSON.stringify(erroOriginal));
             const msgLower = msg.toLowerCase();
             if (msgLower.includes('invalid login credentials') || msgLower.includes('password')) return "E-mail ou senha incorretos.";
             if (msgLower.includes('already registered') || msgLower.includes('unique constraint')) return "Já existe uma conta cadastrada com este e-mail.";
-            if (msgLower.includes('failed to fetch') || msgLower.includes('network request failed')) return "Não foi possível conectar ao sistema. Verifique sua conexão.";
-            if (msgLower.includes('violates row-level security') || msgLower.includes('permission denied')) return "Permissão negada (RLS) para gravar ou ler dados nesta tabela.";
-            return "Ocorreu um problema inesperado. Tente novamente.";
+            if (msgLower.includes('failed to fetch') || msgLower.includes('network request failed')) return "Não foi possível carregar as solicitações. Tente novamente.";
+            if (msgLower.includes('violates row-level security') || msgLower.includes('permission denied')) return "Não foi possível carregar as solicitações. Tente novamente.";
+            return "Não foi possível carregar as solicitações. Tente novamente.";
         }
 
         function formatarMoedaBr(valor) {
@@ -1086,12 +1262,32 @@
             try {
                 const dataObj = new Date(timestamp);
                 if (isNaN(dataObj.getTime())) return timestamp;
-                return new Intl.DateTimeFormat('pt-BR', {
+                
+                const dataFormatada = new Intl.DateTimeFormat('pt-BR', {
                     timeZone: 'America/Sao_Paulo',
-                    day: '2-digit', month: '2-digit', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', hour12: false
-                }).format(dataObj).replace(',', ' às');
+                    day: '2-digit', month: '2-digit', year: 'numeric'
+                }).format(dataObj);
+
+                const horaFormatada = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/Sao_Paulo',
+                    hour: '2-digit', minute: '2-digit', hour12: true
+                }).format(dataObj);
+
+                return `${dataFormatada} - ${horaFormatada}`;
             } catch (e) { return timestamp; }
+        }
+
+        function gerarCodigoSequencialVisual(listaTotal, itemAtualId) {
+            if (!listaTotal || listaTotal.length === 0) return "001";
+            const listaOrdenadaCronologica = [...listaTotal].sort((a, b) => {
+                const dataA = new Date(a.created_at || 0).getTime();
+                const dataB = new Date(b.created_at || 0).getTime();
+                return dataA - dataB;
+            });
+            const index = listaOrdenadaCronologica.findIndex(i => String(i.id) === String(itemAtualId));
+            if (index === -1) return "001";
+            const numeroSeq = index + 1;
+            return String(numeroSeq).padStart(3, '0');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1119,12 +1315,13 @@
                         else if (usuarioSessao && usuarioSessao.perfil === 'cliente') carregarPainelClienteDados();
                         else if (usuarioSessao && usuarioSessao.perfil === 'prestador') carregarPainelPrestador();
                     })
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'mensagens_negociacao' }, payload => {
-                        const chatOrcId = document.getElementById('chatOrcamentoIdHidden').value;
-                        const modalChat = document.getElementById('modalNegociacaoChat');
-                        if (modalChat && !modalChat.classList.contains('hidden') && chatOrcId && payload.new && String(payload.new.orcamento_id) === String(chatOrcId)) {
-                            carregarMensagensChat(chatOrcId);
-                        }
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_negociacao' }, payload => {
+                        if (usuarioSessao && usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+                        else if (usuarioSessao && usuarioSessao.perfil === 'cliente') carregarPainelClienteDados();
+                    })
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_prestador' }, payload => {
+                        if (usuarioSessao && usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+                        else if (usuarioSessao && usuarioSessao.perfil === 'prestador') carregarPainelPrestador();
                     })
                     .subscribe();
             } catch (err) {
@@ -1210,45 +1407,115 @@
             mudarTela('solicitar');
         }
 
-        function abrirModalAvaliacao(orcamentoId) {
+        async function abrirModalConclusaoAvaliacaoCliente(orcamentoId) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') return;
-            document.getElementById('avalOrcamentoId').value = orcamentoId;
-            document.getElementById('avalComentario').value = "";
-            document.getElementById('avalNota').value = "5";
-            document.getElementById('modalAvaliacao').classList.remove('hidden');
+            try {
+                const { data: orcObj, error } = await supabaseClient.from('orcamentos').select('*').eq('id', orcamentoId).single();
+                if (error || !orcObj) throw error;
+
+                document.getElementById('conclusaoOrcamentoIdInput').value = orcamentoId;
+                document.getElementById('conclusaoResumoServico').textContent = orcObj.descricao_servic || 'Serviço residencial';
+                document.getElementById('conclusaoResumoPrestador').textContent = orcObj.prestador_responsavel || 'Profissional definido';
+
+                fotoConclusaoClienteBase64 = "";
+                document.getElementById('previewFotoConclusaoCliente').classList.add('hidden');
+                document.getElementById('iconeFotoConclusaoCliente').classList.remove('hidden');
+                document.getElementById('inputFotoConclusaoCliente').value = "";
+                document.getElementById('selectEstrelasCliente').value = "5";
+                document.getElementById('textareaComentarioCliente').value = "";
+
+                document.getElementById('modalConclusaoAvaliacaoCliente').classList.remove('hidden');
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cliente", "abrirModalConclusaoAvaliacaoCliente"));
+            }
         }
 
-        function fecharModalAvaliacao() {
-            document.getElementById('modalAvaliacao').classList.add('hidden');
+        function fecharModalConclusaoAvaliacaoCliente() {
+            document.getElementById('modalConclusaoAvaliacaoCliente').classList.add('hidden');
         }
 
-        function abrirModalFotoConcluido(orcamentoId) {
-            if (!usuarioSessao || usuarioSessao.perfil !== 'cliente') return;
-            document.getElementById('concluidoOrcamentoId').value = orcamentoId;
-            fotoModalConcluidoBase64 = "";
-            document.getElementById('previewModalConcluido').classList.add('hidden');
-            document.getElementById('iconeModalConcluido').classList.remove('hidden');
-            document.getElementById('inputModalConcluido').value = "";
-            document.getElementById('modalFotoConcluido').classList.remove('hidden');
-        }
-
-        function fecharModalFotoConcluido() {
-            document.getElementById('modalFotoConcluido').classList.add('hidden');
-        }
-
-        function carregarFotoModalConcluido(event) {
+        function carregarFotoConclusaoCliente(event) {
             const arquivo = event.target.files[0];
             if (arquivo) {
                 const leitor = new FileReader();
                 leitor.onload = function(e) {
-                    fotoModalConcluidoBase64 = e.target.result;
-                    const preview = document.getElementById('previewModalConcluido');
-                    const icone = document.getElementById('iconeModalConcluido');
-                    preview.src = fotoModalConcluidoBase64;
+                    fotoConclusaoClienteBase64 = e.target.result;
+                    const preview = document.getElementById('previewFotoConclusaoCliente');
+                    const icone = document.getElementById('iconeFotoConclusaoCliente');
+                    preview.src = fotoConclusaoClienteBase64;
                     preview.classList.remove('hidden');
                     icone.classList.add('hidden');
                 };
                 leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        function abrirModalConfirmacaoAntesFinalizar() {
+            if (!fotoConclusaoClienteBase64) {
+                alert("Por favor, adicione a foto do serviço concluído.");
+                return;
+            }
+            document.getElementById('modalConfirmacaoAntesFinalizar').classList.remove('hidden');
+        }
+
+        function fecharModalConfirmacaoAntesFinalizar() {
+            document.getElementById('modalConfirmacaoAntesFinalizar').classList.add('hidden');
+        }
+
+        async function executarFinalizacaoConclusaoCliente() {
+            const btn = document.getElementById('btnExecutarFinalizacaoDefinitiva');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Salvando...";
+
+            try {
+                const orcamentoId = document.getElementById('conclusaoOrcamentoIdInput').value;
+                const notaVal = parseInt(document.getElementById('selectEstrelasCliente').value);
+                const comentarioVal = document.getElementById('textareaComentarioCliente').value.trim();
+
+                if (!orcamentoId || !fotoConclusaoClienteBase64 || isNaN(notaVal)) {
+                    alert("Preencha todos os campos obrigatórios.");
+                    return;
+                }
+
+                const { data: orcObj, error: errOrc } = await supabaseClient.from('orcamentos').select('*').eq('id', orcamentoId).single();
+                if (errOrc || !orcObj) throw errOrc || new Error("Orçamento não encontrado.");
+
+                if (orcObj.avaliado === true || orcObj.status === 'SERVIÇO CONCLUÍDO') {
+                    alert("Você já avaliou este serviço.");
+                    fecharModalConfirmacaoAntesFinalizar();
+                    fecharModalConclusaoAvaliacaoCliente();
+                    return;
+                }
+
+                const payloadAtualizacao = {
+                    foto_concluido: fotoConclusaoClienteBase64,
+                    nota_avaliacao: notaVal,
+                    comentario_avaliacao: comentarioVal,
+                    avaliado: true,
+                    status: 'SERVIÇO CONCLUÍDO'
+                };
+
+                let { error: errUpdate } = await supabaseClient.from('orcamentos').update({
+                    ...payloadAtualizacao,
+                    data_conclusao: new Date().toISOString()
+                }).eq('id', orcamentoId);
+
+                if (errUpdate) {
+                    let errUpdate2 = await supabaseClient.from('orcamentos').update(payloadAtualizacao).eq('id', orcamentoId);
+                    if (errUpdate2.error) throw errUpdate2.error;
+                }
+
+                fecharModalConfirmacaoAntesFinalizar();
+                fecharModalConclusaoAvaliacaoCliente();
+                alert("Serviço concluído e avaliação enviada com sucesso.");
+                carregarPainelClienteDados();
+            } catch (err) {
+                alert(traduzirErroTecnico(err, "Cliente", "executarFinalizacaoConclusaoCliente"));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
         }
 
@@ -1498,7 +1765,7 @@
             btn.textContent = "Enviando...";
             try {
                 if (usuarioSessao && usuarioSessao.status === 'inativo') {
-                    alert("Sua conta está inativa. Não é possível enviar orçamentos.");
+                    alert("Sua conta está inativa. Não é possível solicitar novos orçamentos.");
                     return;
                 }
                 const cep_servico = document.getElementById('orcamentoCep').value;
@@ -1534,7 +1801,7 @@
             }
         }
 
-        function abrirModalEnviarOrcamento(orcamentoId, valorBaseAtual = "") {
+        async function abrirModalEnviarOrcamento(orcamentoId, valorBaseAtual = "") {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             document.getElementById('enviarOrcamentoId').value = orcamentoId;
             document.getElementById('orcamentoValorInput').value = valorBaseAtual;
@@ -1618,6 +1885,9 @@
             }
         }
 
+        // =========================================================================
+        // MÓDULO DE CHAT BIDIRECIONAL CLIENTE ↔ ADMINISTRADOR
+        // =========================================================================
         async function abrirModalNegociacaoChat(orcamentoId) {
             if (!usuarioSessao || (usuarioSessao.perfil !== 'cliente' && usuarioSessao.perfil !== 'admin')) return;
             document.getElementById('chatOrcamentoIdHidden').value = orcamentoId;
@@ -1626,22 +1896,52 @@
                 const { data: orcObj, error } = await supabaseClient.from('orcamentos').select('*').eq('id', orcamentoId).single();
                 if (error || !orcObj) throw error;
 
-                document.getElementById('chatResumoId').textContent = orcObj.id;
+                const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: true });
+                const codVisual = gerarCodigoSequencialVisual(todosOrcs || [], orcObj.id);
+
+                document.getElementById('chatResumoId').textContent = `Orçamento Nº ${codVisual}`;
                 document.getElementById('chatResumoDescricao').textContent = orcObj.descricao_servic || 'Serviço residencial';
                 
                 const valorBaseRef = orcObj.valor_base || orcObj.orcamento_valor || 0;
                 const valorFinalCliente = valorBaseRef * 1.15;
                 document.getElementById('chatResumoValor').textContent = formatarMoedaBr(valorFinalCliente);
 
+                await marcarMensagensComoLidasNaConversa(orcamentoId);
                 await carregarMensagensChat(orcamentoId);
+                ativarRealtimeChatBidirecional(orcamentoId);
+
                 document.getElementById('modalNegociacaoChat').classList.remove('hidden');
+                
+                if (usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+                else carregarPainelClienteDados();
             } catch (err) {
-                alert(traduzirErroTecnico(err, "Negociação", "abrirModalNegociacaoChat"));
+                alert("Não foi possível carregar a conversa. Tente novamente.");
             }
         }
 
         function fecharModalNegociacaoChat() {
+            if (realtimeChatSubscriptionAtiva) {
+                supabaseClient.removeChannel(realtimeChatSubscriptionAtiva);
+                realtimeChatSubscriptionAtiva = null;
+            }
             document.getElementById('modalNegociacaoChat').classList.add('hidden');
+            if (usuarioSessao && usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+            else if (usuarioSessao && usuarioSessao.perfil === 'cliente') carregarPainelClienteDados();
+        }
+
+        async function marcarMensagensComoLidasNaConversa(orcamentoId) {
+            if (!usuarioSessao) return;
+            try {
+                const perfilDestinatario = usuarioSessao.perfil === 'admin' ? 'admin' : 'cliente';
+                await supabaseClient
+                    .from('mensagens_negociacao')
+                    .update({ lida: true })
+                    .eq('orcamento_id', orcamentoId)
+                    .neq('remetente_perfil', perfilDestinatario)
+                    .eq('lida', false);
+            } catch (e) {
+                registrarErroSeguro("Chat", "marcarMensagensComoLidasNaConversa", e);
+            }
         }
 
         async function carregarMensagensChat(orcamentoId) {
@@ -1657,34 +1957,85 @@
 
                 if (error) throw error;
 
+                containerMensagens.innerHTML = '';
+
                 if (!msgs || msgs.length === 0) {
                     containerMensagens.innerHTML = `<p class="text-slate-500 italic">Nenhuma mensagem na negociação ainda. Inicie a conversa abaixo.</p>`;
                     return;
                 }
 
-                let htmlMsg = '';
                 msgs.forEach(m => {
-                    const remetenteNome = m.remetente_nome || m.remetente_email || 'Usuário';
-                    const perfilRemetente = m.remetente_perfil === 'admin' ? 'ADMINISTRADOR' : 'CLIENTE';
-                    const corPerfil = m.remetente_perfil === 'admin' ? 'text-blue-400 font-bold' : 'text-sky-400 font-bold';
-                    const dataFormatada = formatarDataHoraBr(m.created_at);
-
-                    htmlMsg += `
-                        <div class="space-y-0.5 border-b border-slate-800 pb-2">
-                            <div class="flex justify-between items-center text-[10px] text-slate-400">
-                                <span class="${corPerfil}">${perfilRemetente}: ${remetenteNome}</span>
-                                <span>${dataFormatada}</span>
-                            </div>
-                            <p class="text-slate-200 text-xs">${m.mensagem}</p>
-                        </div>
-                    `;
+                    renderizarMensagemNaTela(m);
                 });
-                containerMensagens.innerHTML = htmlMsg;
+
                 containerMensagens.scrollTop = containerMensagens.scrollHeight;
             } catch (err) {
-                registrarErroSeguro("Negociação", "carregarMensagensChat", err);
                 containerMensagens.innerHTML = `<p class="text-rose-400 italic">Não foi possível carregar as mensagens.</p>`;
             }
+        }
+
+        function renderizarMensagemNaTela(m) {
+            const containerMensagens = document.getElementById('containerMensagensChat');
+            if (!containerMensagens) return;
+
+            const avisoVazio = containerMensagens.querySelector('.italic');
+            if (avisoVazio && containerMensagens.children.length === 1) {
+                containerMensagens.innerHTML = '';
+            }
+
+            const msgIdUnico = `msg-${m.id || Math.random()}`;
+            if (document.getElementById(msgIdUnico)) return;
+
+            const remetenteNome = m.remetente_nome || m.remetente_email || 'Usuário';
+            const perfilRemetente = (m.remetente_perfil || '').toLowerCase();
+            const isAdmin = perfilRemetente === 'admin' || perfilRemetente === 'administrador';
+            
+            const rotuloPerfil = isAdmin ? 'ADMINISTRADOR' : 'CLIENTE';
+            const corPerfil = isAdmin ? 'text-blue-400 font-bold' : 'text-sky-400 font-bold';
+            const dataFormatada = formatarDataHoraBr(m.created_at);
+
+            const divMsg = document.createElement('div');
+            divMsg.id = msgIdUnico;
+            divMsg.className = "space-y-0.5 border-b border-slate-800 pb-2";
+            divMsg.innerHTML = `
+                <div class="flex justify-between items-center text-[10px] text-slate-400">
+                    <span class="${corPerfil}">${rotuloPerfil}: ${remetenteNome}</span>
+                    <span>${dataFormatada}</span>
+                </div>
+                <p class="text-slate-200 text-xs">${m.mensagem}</p>
+            `;
+            containerMensagens.appendChild(divMsg);
+            containerMensagens.scrollTop = containerMensagens.scrollHeight;
+        }
+
+        function ativarRealtimeChatBidirecional(orcamentoId) {
+            if (realtimeChatSubscriptionAtiva) {
+                supabaseClient.removeChannel(realtimeChatSubscriptionAtiva);
+                realtimeChatSubscriptionAtiva = null;
+            }
+
+            realtimeChatSubscriptionAtiva = supabaseClient
+                .channel(`chat-bidirecional-${orcamentoId}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'mensagens_negociacao',
+                        filter: `orcamento_id=eq.${orcamentoId}`
+                    },
+                    (payload) => {
+                        if (payload && payload.new) {
+                            renderizarMensagemNaTela(payload.new);
+                            const modalAberto = !document.getElementById('modalNegociacaoChat').classList.contains('hidden');
+                            const idAtualAberto = document.getElementById('chatOrcamentoIdHidden').value;
+                            if (modalAberto && String(idAtualAberto) === String(orcamentoId)) {
+                                marcarMensagensComoLidasNaConversa(orcamentoId);
+                            }
+                        }
+                    }
+                )
+                .subscribe();
         }
 
         async function enviarMensagemNegociacao(event) {
@@ -1692,6 +2043,8 @@
             const btn = document.getElementById('btnEnviarMensagemChat');
             if (btn.disabled) return;
             btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Enviando...";
 
             try {
                 const orcamentoId = document.getElementById('chatOrcamentoIdHidden').value;
@@ -1705,18 +2058,241 @@
                     remetente_nome: usuarioSessao.nome,
                     remetente_perfil: usuarioSessao.perfil,
                     mensagem: textoMensagem,
-                    created_at: new Date().toISOString()
+                    lida: false
                 };
 
-                const { error } = await supabaseClient.from('mensagens_negociacao').insert([payloadMsg]);
-                if (error) throw error;
+                const { data, error } = await supabaseClient.from('mensagens_negociacao').insert([payloadMsg]).select();
+                if (error) {
+                    registrarErroSeguro("Chat", "enviarMensagemNegociacao", error);
+                    throw error;
+                }
+
+                if (usuarioSessao.perfil === 'cliente') {
+                    await supabaseClient.from('orcamentos').update({ status: 'EM NEGOCIAÇÃO' }).eq('id', orcamentoId);
+                }
 
                 document.getElementById('inputMensagemChat').value = "";
-                await carregarMensagensChat(orcamentoId);
+                
+                if (data && data.length > 0) {
+                    renderizarMensagemNaTela(data[0]);
+                }
+            } catch (err) {
+                alert("Não foi possível enviar a mensagem. Verifique a conexão ou as permissões da tabela mensagens_negociacao no Supabase.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
+            }
+        }
+
+        // =========================================================================
+        // MÓDULO DE CORREÇÃO CRÍTICA: CHAT BIDIRECIONAL ADMINISTRADOR ↔ PRESTADOR
+        // =========================================================================
+        async function abrirModalChatPrestadorAdmin(prestadorEmailParam = null, orcamentoIdParam = null) {
+            if (!usuarioSessao) return;
+
+            let emailPrestadorAlvo = prestadorEmailParam;
+            let orcamentoIdAlvo = orcamentoIdParam || null;
+
+            if (usuarioSessao.perfil === 'prestador') {
+                emailPrestadorAlvo = usuarioSessao.email;
+                document.getElementById('chatPrestadorResumoNome').textContent = usuarioSessao.nome;
+                document.getElementById('chatPrestadorResumoServico').textContent = orcamentoIdAlvo ? `Serviço / Orçamento Vinculado` : "Canal Geral de Comunicação";
+            } else if (usuarioSessao.perfil === 'admin') {
+                if (!emailPrestadorAlvo) {
+                    alert("Selecione um prestador para iniciar a conversa.");
+                    return;
+                }
+                const prestObj = cachePrestadoresGeral.find(p => p.email === emailPrestadorAlvo);
+                document.getElementById('chatPrestadorResumoNome').textContent = prestObj ? prestObj.nome : emailPrestadorAlvo;
+                document.getElementById('chatPrestadorResumoServico').textContent = orcamentoIdAlvo ? `Serviço / Orçamento Vinculado` : "Canal Geral de Comunicação";
+            }
+
+            document.getElementById('chatPrestadorEmailHidden').value = emailPrestadorAlvo;
+            document.getElementById('chatPrestadorOrcamentoIdHidden').value = orcamentoIdAlvo || "";
+
+            await marcarMensagensPrestadorComoLidas(emailPrestadorAlvo, orcamentoIdAlvo);
+            await carregarMensagensChatPrestador(emailPrestadorAlvo, orcamentoIdAlvo);
+            ativarRealtimeChatPrestador(emailPrestadorAlvo, orcamentoIdAlvo);
+
+            document.getElementById('modalChatPrestadorAdmin').classList.remove('hidden');
+
+            if (usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+            else carregarPainelPrestador();
+        }
+
+        function fecharModalChatPrestadorAdmin() {
+            if (realtimeChatPrestadorSubscriptionAtiva) {
+                supabaseClient.removeChannel(realtimeChatPrestadorSubscriptionAtiva);
+                realtimeChatPrestadorSubscriptionAtiva = null;
+            }
+            document.getElementById('modalChatPrestadorAdmin').classList.add('hidden');
+            if (usuarioSessao && usuarioSessao.perfil === 'admin') carregarDadosAdmin();
+            else if (usuarioSessao && usuarioSessao.perfil === 'prestador') carregarPainelPrestador();
+        }
+
+        async function marcarMensagensPrestadorComoLidas(prestadorEmail, orcamentoId) {
+            if (!usuarioSessao) return;
+            try {
+                const perfilDestinatario = usuarioSessao.perfil === 'admin' ? 'admin' : 'prestador';
+                let query = supabaseClient
+                    .from('mensagens_prestador')
+                    .update({ lida: true })
+                    .eq('prestador_email', prestadorEmail)
+                    .neq('remetente_perfil', perfilDestinatario)
+                    .eq('lida', false);
+
+                if (orcamentoId) {
+                    query = query.eq('orcamento_id', orcamentoId);
+                } else {
+                    query = query.is('orcamento_id', null);
+                }
+                await query;
+            } catch (e) {
+                registrarErroSeguro("ChatPrestador", "marcarMensagensPrestadorComoLidas", e);
+            }
+        }
+
+        async function carregarMensagensChatPrestador(prestadorEmail, orcamentoId) {
+            const container = document.getElementById('containerMensagensChatPrestador');
+            if (!container) return;
+
+            try {
+                let query = supabaseClient
+                    .from('mensagens_prestador')
+                    .select('*')
+                    .eq('prestador_email', prestadorEmail);
+
+                if (orcamentoId) {
+                    query = query.eq('orcamento_id', orcamentoId);
+                } else {
+                    query = query.is('orcamento_id', null);
+                }
+
+                const { data: msgs, error } = await query.order('created_at', { ascending: true });
+                if (error) throw error;
+
+                container.innerHTML = '';
+                if (!msgs || msgs.length === 0) {
+                    container.innerHTML = `<p class="text-slate-500 italic">Nenhuma mensagem neste canal ainda. Inicie a conversa abaixo.</p>`;
+                    return;
+                }
+
+                msgs.forEach(m => renderizarMensagemPrestadorNaTela(m));
+                container.scrollTop = container.scrollHeight;
+            } catch (err) {
+                container.innerHTML = `<p class="text-rose-400 italic">Não foi possível carregar as mensagens. Tente novamente.</p>`;
+            }
+        }
+
+        function renderizarMensagemPrestadorNaTela(m) {
+            const container = document.getElementById('containerMensagensChatPrestador');
+            if (!container) return;
+
+            const avisoVazio = container.querySelector('.italic');
+            if (avisoVazio && container.children.length === 1) {
+                container.innerHTML = '';
+            }
+
+            const idUnicoMsg = m.id ? String(m.id) : `rand-${Math.random()}`;
+            const msgIdUnico = `msg-p-${idUnicoMsg}`;
+            if (document.getElementById(msgIdUnico)) return;
+
+            const remetenteNome = m.remetente_nome || m.remetente_email || 'Usuário';
+            const perfilRemetente = (m.remetente_perfil || '').toLowerCase();
+            const isAdmin = perfilRemetente === 'admin' || perfilRemetente === 'administrador';
+
+            const rotuloPerfil = isAdmin ? 'ADMINISTRADOR' : 'PRESTADOR';
+            const corPerfil = isAdmin ? 'text-blue-400 font-bold' : 'text-orange-400 font-bold';
+            const dataFormatada = formatarDataHoraBr(m.created_at);
+
+            const divMsg = document.createElement('div');
+            divMsg.id = msgIdUnico;
+            divMsg.className = "space-y-0.5 border-b border-slate-800 pb-2";
+            divMsg.innerHTML = `
+                <div class="flex justify-between items-center text-[10px] text-slate-400">
+                    <span class="${corPerfil}">${rotuloPerfil}: ${remetenteNome}</span>
+                    <span>${dataFormatada}</span>
+                </div>
+                <p class="text-slate-200 text-xs">${m.mensagem}</p>
+            `;
+            container.appendChild(divMsg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function ativarRealtimeChatPrestador(prestadorEmail, orcamentoId) {
+            if (realtimeChatPrestadorSubscriptionAtiva) {
+                supabaseClient.removeChannel(realtimeChatPrestadorSubscriptionAtiva);
+                realtimeChatPrestadorSubscriptionAtiva = null;
+            }
+
+            realtimeChatPrestadorSubscriptionAtiva = supabaseClient
+                .channel(`chat-prestador-${prestadorEmail}-${orcamentoId || 'geral'}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'mensagens_prestador',
+                        filter: `prestador_email=eq.${prestadorEmail}`
+                    },
+                    (payload) => {
+                        if (payload && payload.new) {
+                            const msgOrcId = payload.new.orcamento_id || null;
+                            const currentOrcId = orcamentoId || null;
+                            if (String(msgOrcId) === String(currentOrcId)) {
+                                renderizarMensagemPrestadorNaTela(payload.new);
+                                const modalAberto = !document.getElementById('modalChatPrestadorAdmin').classList.contains('hidden');
+                                const emailAtualAberto = document.getElementById('chatPrestadorEmailHidden').value;
+                                if (modalAberto && String(emailAtualAberto) === String(prestadorEmail)) {
+                                    marcarMensagensPrestadorComoLidas(prestadorEmail, orcamentoId);
+                                }
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
+        async function enviarMensagemPrestadorAdmin(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnEnviarMensagemChatPrestador');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const textoOriginal = btn.textContent;
+            btn.textContent = "Enviando...";
+
+            try {
+                const prestadorEmail = document.getElementById('chatPrestadorEmailHidden').value;
+                const orcamentoIdVal = document.getElementById('chatPrestadorOrcamentoIdHidden').value;
+                const textoMensagem = document.getElementById('inputMensagemChatPrestador').value.trim();
+
+                if (!prestadorEmail || !textoMensagem) return;
+
+                const payloadMsg = {
+                    prestador_email: prestadorEmail,
+                    orcamento_id: orcamentoIdVal && orcamentoIdVal !== "" ? orcamentoIdVal : null,
+                    remetente_email: usuarioSessao.email,
+                    remetente_nome: usuarioSessao.nome,
+                    remetente_perfil: usuarioSessao.perfil,
+                    mensagem: textoMensagem,
+                    lida: false
+                };
+
+                const { data, error } = await supabaseClient.from('mensagens_prestador').insert([payloadMsg]).select();
+                if (error) {
+                    registrarErroSeguro("ChatPrestador", "enviarMensagemPrestadorAdmin", error);
+                    throw error;
+                }
+
+                document.getElementById('inputMensagemChatPrestador').value = "";
+                if (data && data.length > 0) {
+                    renderizarMensagemPrestadorNaTela(data[0]);
+                }
             } catch (err) {
                 alert("Não foi possível enviar a mensagem. Tente novamente.");
             } finally {
                 btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
         }
 
@@ -1777,14 +2353,9 @@
             }
         }
 
-        // =====================================================================
-        // CONFIRMAÇÃO DEFINITIVA DO PRESTADOR PELO ADMINISTRADOR
-        // E GERAÇÃO DA NOTIFICAÇÃO OFICIAL PARA O CLIENTE
-        // =====================================================================
         async function adminConfirmarPrestador(orcamentoId, prestadorNome) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             try {
-                // 1. Obter dados do prestador selecionado de forma robusta no Supabase (por nome ou id/email nos interessados)
                 const { data: orcObj, error: errOrc } = await supabaseClient.from('orcamentos').select('*').eq('id', orcamentoId).single();
                 if (errOrc || !orcObj) throw errOrc || new Error("Orçamento não encontrado.");
 
@@ -1797,7 +2368,6 @@
                     } catch(e) {}
                 }
 
-                // Buscar dados completos do prestador no Supabase para garantir dados reais
                 let queryPrest = supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
                 if (prestadorEmailSelecionado) queryPrest = queryPrest.eq('email', prestadorEmailSelecionado);
                 else queryPrest = queryPrest.eq('nome', prestadorNome);
@@ -1808,7 +2378,6 @@
                 const nomePrestadorFinal = prestadorReal ? prestadorReal.nome : prestadorNome;
                 const telefonePrestadorFinal = (prestadorReal && prestadorReal.telefone && prestadorReal.telefone.trim() !== "") ? prestadorReal.telefone : "Telefone não informado.";
 
-                // 2. Atualizar o orçamento com o prestador responsável e status definitivo
                 const { error: errUpdate } = await supabaseClient.from('orcamentos').update({
                     prestador_responsavel: nomePrestadorFinal,
                     status: 'PRESTADOR DEFINIDO'
@@ -1931,57 +2500,6 @@
             }
         }
 
-        async function salvarFotoConcluidoSupabase(event) {
-            event.preventDefault();
-            const btn = document.getElementById('btnSalvarFotoConcluido');
-            if (btn.disabled) return;
-            btn.disabled = true;
-            const textoOriginal = btn.textContent;
-            btn.textContent = "Salvando...";
-            try {
-                const orcamentoId = document.getElementById('concluidoOrcamentoId').value;
-                if (!orcamentoId || !fotoModalConcluidoBase64) return;
-                const { error } = await supabaseClient.from('orcamentos').update({
-                    foto_concluido: fotoModalConcluidoBase64,
-                    status: 'SERVIÇO EM ANDAMENTO'
-                }).eq('id', orcamentoId);
-                if (error) throw error;
-                fecharModalFotoConcluido();
-                alert("Serviço marcado como concluído com sucesso.");
-                carregarPainelClienteDados();
-            } catch (err) {
-                alert(traduzirErroTecnico(err, "Cliente", "salvarFotoConcluidoSupabase"));
-            } finally {
-                btn.disabled = false;
-                btn.textContent = textoOriginal;
-            }
-        }
-
-        async function salvarAvaliacaoSupabase(event) {
-            event.preventDefault();
-            const btn = document.getElementById('btnSalvarAvaliacao');
-            if (btn.disabled) return;
-            btn.disabled = true;
-            const textoOriginal = btn.textContent;
-            btn.textContent = "Enviando...";
-            try {
-                const orcamentoId = document.getElementById('avalOrcamentoId').value;
-                const nota = parseInt(document.getElementById('avalNota').value);
-                const comentario = document.getElementById('avalComentario').value;
-                const payloadAvaliacao = { nota_avaliacao: nota, comentario_avaliacao: comentario, avaliado: true };
-                const { error } = await supabaseClient.from('orcamentos').update(payloadAvaliacao).eq('id', orcamentoId);
-                if (error) throw error;
-                fecharModalAvaliacao();
-                alert("Avaliação enviada com sucesso.");
-                carregarPainelClienteDados();
-            } catch (err) {
-                alert(traduzirErroTecnico(err, "Cliente", "salvarAvaliacaoSupabase"));
-            } finally {
-                btn.disabled = false;
-                btn.textContent = textoOriginal;
-            }
-        }
-
         async function carregarPainelClienteDados() {
             const containerOrcamentos = document.getElementById('listaMeusOrcamentos');
             const containerGaleria = document.getElementById('galeriaTrabalhosPrestadores');
@@ -1989,41 +2507,63 @@
 
             try {
                 const { data: orcData } = await supabaseClient.from('orcamentos').select('*').eq('cliente_email', usuarioSessao.email);
-                const { data: todosPrestadores } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+                const orcDataOrdenado = (orcData || []).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
 
-                if (!orcData || orcData.length === 0) {
+                const { data: todosOrcsParaSeq } = await supabaseClient.from('orcamentos').select('id, created_at');
+                const { data: todosPrestadores } = await supabaseClient.from('usuarios').select('*').eq('perfil', 'prestador');
+                const { data: todasMsgs } = await supabaseClient.from('mensagens_negociacao').select('*');
+
+                if (orcDataOrdenado.length === 0) {
                     containerOrcamentos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço registrado.</p>`;
                 } else {
                     let htmlOrc = '';
-                    orcData.forEach(o => {
+                    orcDataOrdenado.forEach(o => {
+                        const codigoVisual = gerarCodigoSequencialVisual(todosOrcsParaSeq || [], o.id);
                         const statusAtual = o.status || 'Solicitado';
-                        const isConcluido = statusAtual === 'SERVIÇO EM ANDAMENTO' || statusAtual === 'concluido';
+                        const isConcluido = statusAtual === 'SERVIÇO CONCLUÍDO' || statusAtual === 'concluido';
                         const isAguardandoResposta = statusAtual === 'AGUARDANDO RESPOSTA DO CLIENTE';
                         const isAceito = statusAtual === 'ACEITO PELO CLIENTE';
                         const isRecusadoOuNegociacao = statusAtual === 'RECUSADO PELO CLIENTE' || statusAtual === 'EM NEGOCIAÇÃO';
-                        const isPrestadorDefinido = statusAtual === 'PRESTADOR DEFINIDO' || statusAtual === 'AGUARDANDO APROVAÇÃO 50%' || statusAtual === '50% APROVADO PARA PAGAMENTO' || isConcluido;
+                        const isPrestadorDefinido = statusAtual === 'PRESTADOR DEFINIDO' || statusAtual === 'AGUARDANDO APROVAÇÃO 50%' || statusAtual === '50% APROVADO PARA PAGAMENTO';
 
                         let badgeColor = 'bg-amber-100 text-amber-800';
                         if (isAceito || isPrestadorDefinido) badgeColor = 'bg-emerald-100 text-emerald-800';
                         if (isRecusadoOuNegociacao) badgeColor = 'bg-blue-100 text-blue-800';
+                        if (isConcluido) badgeColor = 'bg-purple-100 text-purple-900 font-black';
 
                         const valorBaseRef = o.valor_base || o.orcamento_valor || 0;
                         const valorFinalCliente = valorBaseRef * 1.15;
                         const entrada50Calc = valorFinalCliente / 2;
                         const saldoCalc = valorFinalCliente - entrada50Calc;
+                        const dataHoraCriacaoFormatada = formatarDataHoraBr(o.created_at);
+
+                        let qtdNaoLidasCliente = 0;
+                        if (todasMsgs) {
+                            qtdNaoLidasCliente = todasMsgs.filter(m => String(m.orcamento_id) === String(o.id) && String(m.lida) === 'false' && (m.remetente_perfil || '').toLowerCase() !== 'cliente').length;
+                        }
+
+                        let badgeNotifClienteHtml = '';
+                        if (qtdNaoLidasCommunity(qtdNaoLidasCliente)) {
+                            badgeNotifClienteHtml = `
+                                <div class="bg-sky-100 border border-sky-300 p-3 rounded-xl flex items-center justify-between text-xs font-bold text-sky-900 mb-2">
+                                    <span>Administrador respondeu (Nova mensagem na negociação)</span>
+                                    <span class="bg-sky-600 text-white px-2 py-0.5 rounded-full text-[10px] font-black">🔵 ${qtdNaoLidasCliente}</span>
+                                </div>
+                            `;
+                        }
 
                         let blocoFinanceiroCliente = `
                             <div class="bg-white p-4 rounded-xl border border-emerald-200 space-y-1 text-xs text-slate-800 shadow-xs">
-                                <p class="font-black text-emerald-900 uppercase text-xs">ORÇAMENTO</p>
+                                <p class="font-black text-emerald-900 uppercase text-xs">ORÇAMENTO Nº ${codigoVisual}</p>
+                                <p><strong>Data/Hora:</strong> ${dataHoraCriacaoFormatada}</p>
                                 <p><strong>Valor total:</strong> ${formatarMoedaBr(valorFinalCliente)}</p>
                                 <p><strong>Entrada de 50%:</strong> ${formatarMoedaBr(entrada50Calc)}</p>
                                 <p><strong>Saldo após a conclusão:</strong> ${formatarMoedaBr(saldoCalc)}</p>
                             </div>
                         `;
 
-                        // Se o prestador foi definido definitivamente pelo administrador, buscar dados reais para notificação visual
                         let blocoNotificacaoPrestadorDefinido = '';
-                        if (isPrestadorDefinido && o.prestador_responsavel) {
+                        if ((isPrestadorDefinido || isConcluido) && o.prestador_responsavel) {
                             let prestObj = todosPrestadores ? todosPrestadores.find(p => p.nome === o.prestador_responsavel) : null;
                             let telefonePrestadorReal = (prestObj && prestObj.telefone && prestObj.telefone.trim() !== "") ? prestObj.telefone : "Telefone não informado.";
                             
@@ -2031,13 +2571,13 @@
                                 <div class="bg-sky-50 p-5 rounded-2xl border-2 border-sky-300 space-y-3 shadow-sm">
                                     <div class="flex items-center space-x-2 text-sky-900 font-black text-xs uppercase bg-sky-200/60 px-3 py-1.5 rounded-xl w-fit">
                                         <i class="fa-solid fa-circle-check text-sky-700"></i>
-                                        <span>Novo: profissional definido para seu serviço</span>
+                                        <span>Profissional definido para seu serviço</span>
                                     </div>
                                     <div class="space-y-1 text-xs text-slate-800">
                                         <p class="font-extrabold text-sky-900 text-sm">PROFISSIONAL DEFINIDO</p>
                                         <p><strong>Profissionais:</strong> ${o.prestador_responsavel}</p>
                                         <p><strong>Telefone:</strong> ${telefonePrestadorReal}</p>
-                                        <p><strong>Serviço:</strong> ${o.descricao_servic || 'Serviço contratado'}</p>
+                                        <p><strong>Serviço Nº ${codigoVisual}:</strong> ${o.descricao_servic || 'Serviço contratado'}</p>
                                     </div>
                                     <p class="text-xs font-medium text-slate-700 bg-white p-3 rounded-xl border border-sky-200">
                                         "Profissional definido para o seu serviço. O profissional ${o.prestador_responsavel}, telefone ${telefonePrestadorReal}, foi selecionado para realizar o seu serviço. Por favor, entre em contato com o profissional para combinar a melhor data e horário para o início do trabalho."
@@ -2047,46 +2587,55 @@
                         }
 
                         let acoesCliente = '';
+                        let botaoNegociarTexto = qtdNaoLidasCliente > 0 ? `NEGOCIAR ORÇAMENTO 🔵 ${qtdNaoLidasCliente}` : 'NEGOCIAR ORÇAMENTO';
+
                         if (isAguardandoResposta || isRecusadoOuNegociacao) {
                             acoesCliente = `
+                                ${badgeNotifClienteHtml}
                                 ${blocoFinanceiroCliente}
                                 <div class="flex flex-wrap gap-2 pt-2">
                                     <button onclick="clienteResponderOrcamento('${o.id}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ACEITAR ORÇAMENTO</button>
                                     <button onclick="clienteResponderOrcamento('${o.id}', false)" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">RECUSAR ORÇAMENTO</button>
                                     <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
                                         <i class="fa-solid fa-comments"></i>
-                                        <span>NEGOCIAR ORÇAMENTO</span>
+                                        <span>${botaoNegociarTexto}</span>
                                     </button>
                                 </div>
                             `;
-                        } else if (isAceito) {
+                        } else if (isPrestadorDefinido) {
                             acoesCliente = `
+                                ${badgeNotifClienteHtml}
                                 ${blocoFinanceiroCliente}
-                                <div class="pt-2">
-                                    <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1">
+                                <div class="flex flex-wrap gap-2 pt-2 items-center">
+                                    <button onclick="abrirModalConclusaoAvaliacaoCliente('${o.id}')" class="bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-xl text-xs font-extrabold transition shadow-md flex items-center space-x-2">
+                                        <i class="fa-solid fa-circle-check text-sm"></i>
+                                        <span>CONCLUIR E AVALIAR SERVIÇO</span>
+                                    </button>
+                                    <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1">
                                         <i class="fa-solid fa-comments"></i>
-                                        <span>Ver Histórico da Negociação</span>
+                                        <span>${qtdNaoLidasCliente > 0 ? `Histórico da Negociação 🔵 ${qtdNaoLidasCliente}` : 'Histórico da Negociação'}</span>
                                     </button>
                                 </div>
                             `;
-                        } else if (isConcluido && !o.foto_concluido) {
+                        } else if (isConcluido) {
                             acoesCliente = `
+                                ${badgeNotifClienteHtml}
                                 ${blocoFinanceiroCliente}
-                                <button onclick="abrirModalFotoConcluido('${o.id}')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Adicionar Foto (DEPOIS)</button>
-                            `;
-                        } else if (o.foto_concluido && !o.avaliado && o.prestador_responsavel) {
-                            acoesCliente = `
-                                ${blocoFinanceiroCliente}
-                                <button onclick="abrirModalAvaliacao('${o.id}')" class="bg-amber-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fa-solid fa-star mr-1"></i> AVALIAR</button>
+                                <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 space-y-1 text-xs text-purple-900">
+                                    <p class="font-black uppercase">STATUS: SERVIÇO CONCLUÍDO E AVALIADO</p>
+                                    <p class="text-slate-700"><strong>Sua Avaliação:</strong> <span class="text-amber-500 font-bold">${'⭐'.repeat(o.nota_avaliacao || 5)}</span></p>
+                                    <p class="text-slate-700 italic">"${o.comentario_avaliacao || 'Sem comentário.'}"</p>
+                                    <p class="text-[10px] text-slate-400">Concluído em: ${formatarDataHoraBr(o.data_conclusao || o.created_at)}</p>
+                                </div>
                             `;
                         } else {
-                            acoesCliente = blocoFinanceiroCliente;
+                            acoesCliente = `${badgeNotifClienteHtml}${blocoFinanceiroCliente}`;
                         }
 
                         htmlOrc += `
                             <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
                                 <div class="flex justify-between items-center">
-                                    <span class="font-bold text-slate-900 text-xs">CEP: ${o.cep_servico} - ${o.rua_servico}</span>
+                                    <span class="font-bold text-slate-900 text-xs">Orçamento Nº ${codigoVisual} — CEP: ${o.cep_servico} - ${o.rua_servico}</span>
                                     <span class="${badgeColor} px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
                                 </div>
                                 <p class="text-xs text-slate-600"><strong>Descrição:</strong> ${o.descricao_servic || ''}</p>
@@ -2094,10 +2643,9 @@
                                 ${blocoNotificacaoPrestadorDefinido}
 
                                 <div class="flex flex-wrap gap-4 pt-2">
-                                    ${o.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">ANTES:</p><img src="${o.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
+                                    ${o.foto_orcamento ? `<div><p class="text-[10px] text-slate-500 mb-1">FOTO DO SERVIÇO:</p><img src="${o.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>` : ''}
                                     ${o.foto_andamento_50 ? `<div><p class="text-[10px] text-orange-600 mb-1">Andamento 50%:</p><img src="${o.foto_andamento_50}" class="w-20 h-20 rounded-xl object-cover border border-orange-300"></div>` : ''}
-                                    ${o.foto_concluido ? `<div><p class="text-[10px] text-emerald-600 mb-1">DEPOIS:</p><img src="${o.foto_concluido}" class="w-20 h-20 rounded-xl object-cover border border-emerald-300"></div>` : ''}
-                                    ${o.avaliado ? `<div><p class="text-[10px] text-amber-600 mb-1">Avaliação:</p><span class="text-xs font-bold text-amber-500">${'⭐'.repeat(o.nota_avaliacao)}</span><p class="text-[11px] text-slate-600">${o.comentario_avaliacao || ''}</p></div>` : ''}
+                                    ${o.foto_concluido ? `<div><p class="text-[10px] text-purple-600 mb-1">FOTO DE CONCLUSÃO:</p><img src="${o.foto_concluido}" class="w-20 h-20 rounded-xl object-cover border border-purple-300"></div>` : ''}
                                 </div>
                                 ${acoesCliente}
                             </div>
@@ -2133,6 +2681,10 @@
             } catch (err) {
                 containerGaleria.innerHTML = `<p class="text-xs text-rose-600">Não foi possível carregar a Galeria.</p>`;
             }
+        }
+
+        function qtdNaoLidasCommunity(val) {
+            return typeof val === 'number' && val > 0;
         }
 
         async function executarLoginSupabase(event) {
@@ -2206,9 +2758,36 @@
                 document.getElementById('meuTipoPixInput').value = usuarioSessao.tipo_pix || "CPF";
                 document.getElementById('minhaChavePixInput').value = usuarioSessao.chave_pix || "";
 
+                // Verifica mensagens não lidas da administração para o prestador
+                const { data: msgsPrestador } = await supabaseClient
+                    .from('mensagens_prestador')
+                    .select('*')
+                    .eq('prestador_email', usuarioSessao.email);
+
+                let qtdNaoLidasPrestador = 0;
+                if (msgsPrestador) {
+                    qtdNaoLidasPrestador = msgsPrestador.filter(m => String(m.lida) === 'false' && (m.remetente_perfil || '').toLowerCase() !== 'prestador').length;
+                }
+
+                const btnMensagensPrestadorHeader = document.getElementById('btnMensagensPrestadorHeader');
+                const labelContadorMensagensPrestador = document.getElementById('labelContadorMensagensPrestador');
+                if (btnMensagensPrestadorHeader && labelContadorMensagensPrestador) {
+                    btnMensagensPrestadorHeader.classList.remove('hidden');
+                    btnMensagensPrestadorHeader.classList.add('flex');
+                    if (qtdNaoLidasPrestador > 0) {
+                        labelContadorMensagensPrestador.textContent = `Falar com Administração 💬 ${qtdNaoLidasPrestador}`;
+                        btnMensagensPrestadorHeader.classList.add('bg-orange-100', 'text-orange-900', 'border-2', 'border-orange-300');
+                    } else {
+                        labelContadorMensagensPrestador.textContent = "Falar com Administração";
+                        btnMensagensPrestadorHeader.classList.remove('bg-orange-100', 'border-2', 'border-orange-300');
+                    }
+                }
+
+                const { data: todosOrcsParaSeq } = await supabaseClient.from('orcamentos').select('id, created_at');
+
                 const containerDisponiveis = document.getElementById('listaServicosDisponiveisPrestador');
                 if (containerDisponiveis) {
-                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*');
                     const disponiveis = todosOrcs ? todosOrcs.filter(o => {
                         const statusOk = (o.status === 'PUBLICADO PARA PRESTADORES' || o.status === 'PRESTADOR ACEITOU');
                         let recusados = [];
@@ -2218,20 +2797,22 @@
                         const naoRecusou = !recusados.includes(usuarioSessao.email);
                         const naoAtribuidoOutro = !o.prestador_responsavel || o.prestador_responsavel === usuarioSessao.nome;
                         return statusOk && naoRecusou && naoAtribuidoOutro;
-                    }) : [];
+                    }).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)) : [];
 
                     if (disponiveis.length === 0) {
                         containerDisponiveis.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço disponível no momento.</p>`;
                     } else {
                         let htmlDisp = '';
                         disponiveis.forEach(s => {
+                            const codVisual = gerarCodigoSequencialVisual(todosOrcsParaSeq || [], s.id);
                             const valorBaseRef = s.valor_base || s.orcamento_valor || 0;
                             const valorPrestadorServico = valorBaseRef * 0.85;
+                            const dataCriacaoFormatada = formatarDataHoraBr(s.created_at);
                             htmlDisp += `
                                 <div class="bg-emerald-50/60 p-5 rounded-2xl border border-emerald-200 space-y-3">
                                     <div class="flex justify-between items-center">
-                                        <span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Oportunidade Disponível</span>
-                                        <span class="text-xs font-bold text-slate-500">Região: ${s.rua_servico || ''} (CEP: ${s.cep_servico})</span>
+                                        <span class="bg-emerald-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Serviço Nº ${codVisual}</span>
+                                        <span class="text-xs font-bold text-slate-500">${dataCriacaoFormatada}</span>
                                     </div>
                                     <div class="space-y-1 text-xs text-slate-700">
                                         <p><strong>Valor do Serviço:</strong> <span class="font-bold text-emerald-800">${formatarMoedaBr(valorPrestadorServico)}</span></p>
@@ -2252,21 +2833,27 @@
                 const containerNotas = document.getElementById('muralNotasPrestador');
                 if (containerNotas) {
                     const { data: orcList } = await supabaseClient.from('orcamentos').select('*').eq('avaliado', true);
-                    const minhasAvaliacoes = orcList ? orcList.filter(o => o.prestador_responsavel === usuarioSessao.nome) : [];
+                    const minhasAvaliacoes = orcList ? orcList.filter(o => o.prestador_responsavel === usuarioSessao.nome).sort((a, b) => new Date(b.data_conclusao || b.created_at || 0) - new Date(a.data_conclusao || a.created_at || 0)) : [];
+                    
                     if (minhasAvaliacoes.length === 0) {
                         containerNotas.innerHTML = `<p class="text-xs text-slate-400 col-span-full">Você ainda não possui avaliações.</p>`;
                     } else {
                         let htmlAval = '';
                         let somaNotas = 0;
                         minhasAvaliacoes.forEach(o => {
-                            somaNotas += o.nota_avaliacao;
+                            const codVisual = gerarCodigoSequencialVisual(todosOrcsParaSeq || [], o.id);
+                            const notaAtual = o.nota_avaliacao || 5;
+                            somaNotas += notaAtual;
+                            const dataFormatadaAval = formatarDataHoraBr(o.data_conclusao || o.created_at);
                             htmlAval += `
                                 <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200 space-y-2">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-xs font-bold text-slate-900">${o.cliente_email}</span>
-                                        <span class="text-amber-500 font-extrabold text-xs">${'⭐'.repeat(o.nota_avaliacao)} (${o.nota_avaliacao.toFixed(1)})</span>
+                                        <span class="text-xs font-bold text-slate-900">Serviço Nº ${codVisual} (${o.cliente_email})</span>
+                                        <span class="text-amber-500 font-extrabold text-xs">${'⭐'.repeat(notaAtual)} (${notaAtual}.0)</span>
                                     </div>
-                                    <p class="text-xs text-slate-700 italic">"${o.comentario_avaliacao || 'Sem comentário.'}"</p>
+                                    <p class="text-xs text-slate-700"><strong>Serviço:</strong> ${o.descricao_servic || 'Serviço realizado'}</p>
+                                    <p class="text-xs text-slate-700 italic">"Comentário: ${o.comentario_avaliacao || 'Sem comentário.'}"</p>
+                                    <p class="text-[10px] text-slate-400">Data: ${dataFormatadaAval}</p>
                                 </div>
                             `;
                         });
@@ -2277,15 +2864,16 @@
 
                 const containerServicos = document.getElementById('listaMeusServicosPrestador');
                 if (containerServicos) {
-                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*');
                     const { data: todosUsers } = await supabaseClient.from('usuarios').select('*');
-                    const meusServicos = todosOrcs ? todosOrcs.filter(o => o.prestador_responsavel === usuarioSessao.nome && (o.status === 'PRESTADOR DEFINIDO' || o.status === 'AGUARDANDO APROVAÇÃO 50%' || o.status === '50% APROVADO PARA PAGAMENTO')) : [];
+                    const meusServicos = todosOrcs ? todosOrcs.filter(o => o.prestador_responsavel === usuarioSessao.nome && (o.status === 'PRESTADOR DEFINIDO' || o.status === 'AGUARDANDO APROVAÇÃO 50%' || o.status === '50% APROVADO PARA PAGAMENTO' || o.status === 'SERVIÇO CONCLUÍDO')).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)) : [];
 
                     if (meusServicos.length === 0) {
                         containerServicos.innerHTML = `<p class="text-xs text-slate-400">Nenhum serviço confirmado no momento.</p>`;
                     } else {
                         let htmlServ = '';
                         meusServicos.forEach(s => {
+                            const codVisual = gerarCodigoSequencialVisual(todosOrcsParaSeq || [], s.id);
                             let nomeCliente = "Cliente Real";
                             let telefoneCliente = "Telefone não informado";
                             let enderecoCompletoCliente = "Endereço não informado";
@@ -2310,12 +2898,14 @@
                                 acao50Prestador = `<p class="text-xs font-bold text-amber-600 bg-amber-50 p-2 rounded-xl border border-amber-200">Comprovação de 50% enviada. Aguardando aprovação do Administrador.</p>`;
                             } else if (statusServico === '50% APROVADO PARA PAGAMENTO') {
                                 acao50Prestador = `<p class="text-xs font-bold text-emerald-700 bg-emerald-50 p-2 rounded-xl border border-emerald-200">50% aprovado para pagamento pelo Administrador.</p>`;
+                            } else if (statusServico === 'SERVIÇO CONCLUÍDO') {
+                                acao50Prestador = `<p class="text-xs font-bold text-purple-700 bg-purple-50 p-2 rounded-xl border border-purple-200">Serviço concluído e avaliado pelo cliente.</p>`;
                             }
 
                             htmlServ += `
                                 <div class="bg-sky-50/60 p-5 rounded-2xl border border-sky-200 space-y-3">
                                     <div class="flex justify-between items-center">
-                                        <span class="bg-sky-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Serviço Confirmado</span>
+                                        <span class="bg-sky-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Serviço Nº ${codVisual}</span>
                                         <span class="text-xs font-bold text-slate-700 uppercase">${statusServico}</span>
                                     </div>
                                     <div class="bg-white p-4 rounded-xl border border-sky-100 space-y-1 text-xs text-slate-700">
@@ -2324,6 +2914,12 @@
                                         <p><strong>CLIENTE:</strong> ${nomeCliente}</p>
                                         <p><strong>TELEFONE:</strong> ${telefoneCliente}</p>
                                         <p><strong>ENDEREÇO:</strong> ${enderecoCompletoCliente}</p>
+                                    </div>
+                                    <div class="pt-1">
+                                        <button onclick="abrirModalChatPrestadorAdmin('${usuarioSessao.email}', '${s.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                                            <i class="fa-solid fa-comments"></i>
+                                            <span>Falar com a Administração sobre este Serviço</span>
+                                        </button>
                                     </div>
                                     ${acao50Prestador}
                                 </div>
@@ -2338,20 +2934,29 @@
         }
 
         function mudarAbaAdmin(aba) {
-            ['clientes', 'prestadores', 'avaliacoes', 'orcamentos', 'saude'].forEach(a => {
+            ['clientes', 'prestadores', 'mensagensPrestadores', 'avaliacoes', 'orcamentos', 'financeiro', 'saude'].forEach(a => {
                 const secao = document.getElementById('secaoAdmin' + a.charAt(0).toUpperCase() + a.slice(1));
                 const btn = document.getElementById('menuAdmin' + a.charAt(0).toUpperCase() + a.slice(1));
                 if (secao && btn) {
                     if (a === aba) {
                         secao.classList.remove('hidden');
-                        btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition bg-blue-900 text-white shadow-sm";
+                        if (a === 'orcamentos' || a === 'mensagensPrestadores') {
+                            btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center justify-between transition bg-blue-900 text-white shadow-sm";
+                        } else {
+                            btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition bg-blue-900 text-white shadow-sm";
+                        }
                     } else {
                         secao.classList.add('hidden');
-                        btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100";
+                        if (a === 'orcamentos' || a === 'mensagensPrestadores') {
+                            btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center justify-between transition text-slate-700 hover:bg-slate-100";
+                        } else {
+                            btn.className = "w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center space-x-3 transition text-slate-700 hover:bg-slate-100";
+                        }
                     }
                 }
             });
             if (aba === 'saude') atualizarSaudeSistemaPainel();
+            if (aba === 'financeiro' || aba === 'mensagensPrestadores') carregarDadosAdmin();
         }
 
         function atualizarSaudeSistemaPainel() {
@@ -2383,123 +2988,463 @@
                 const { data: todosUsuarios, error: errUsers } = await supabaseClient.from('usuarios').select('*');
                 if (errUsers) throw errUsers;
 
-                const { data: orcData, error: errOrc } = await supabaseClient.from('orcamentos').select('*').order('created_at', { ascending: false });
+                const { data: orcData, error: errOrc } = await supabaseClient.from('orcamentos').select('*');
                 if (errOrc) throw errOrc;
+
+                const { data: todasMsgs } = await supabaseClient.from('mensagens_negociacao').select('*');
+                const { data: todasMsgsPrestadores } = await supabaseClient.from('mensagens_prestador').select('*');
+
+                const orcDataOrdenado = (orcData || []).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+                let totalMensagensNaoLidasAdminGeral = 0;
+                if (todasMsgs) {
+                    totalMensagensNaoLidasAdminGeral = todasMsgs.filter(m => String(m.lida) === 'false' && (m.remetente_perfil || '').toLowerCase() === 'cliente').length;
+                }
+
+                let totalMensagensNaoLidasPrestadores = 0;
+                if (todasMsgsPrestadores) {
+                    totalMensagensNaoLidasPrestadores = todasMsgsPrestadores.filter(m => String(m.lida) === 'false' && (m.remetente_perfil || '').toLowerCase() === 'prestador').length;
+                }
+
+                const badgeMenuGeral = document.getElementById('badgeMenuOrcamentosGeral');
+                if (badgeMenuGeral) {
+                    if (totalMensagensNaoLidasAdminGeral > 0) {
+                        badgeMenuGeral.textContent = totalMensagensNaoLidasAdminGeral;
+                        badgeMenuGeral.classList.remove('hidden');
+                    } else {
+                        badgeMenuGeral.classList.add('hidden');
+                    }
+                }
+
+                const badgeMenuMensagensPrestadores = document.getElementById('badgeMenuMensagensPrestadores');
+                if (badgeMenuMensagensPrestadores) {
+                    if (totalMensagensNaoLidasPrestadores > 0) {
+                        badgeMenuMensagensPrestadores.textContent = totalMensagensNaoLidasPrestadores;
+                        badgeMenuMensagensPrestadores.classList.remove('hidden');
+                    } else {
+                        badgeMenuMensagensPrestadores.classList.add('hidden');
+                    }
+                }
 
                 if (todosUsuarios) {
                     cacheClientesGeral = todosUsuarios.filter(u => u.perfil === 'cliente');
                     cachePrestadoresGeral = todosUsuarios.filter(u => u.perfil === 'prestador');
+                    cacheOrcamentosGeral = orcDataOrdenado;
                     
                     try { renderizarTabelaClientesAdmin(cacheClientesGeral); } catch(e) { registrarErroSeguro("Admin", "renderizarClientes", e); }
-                    try { renderizarTabelaPrestadoresAdmin(cachePrestadoresGeral, orcData || []); } catch(e) { registrarErroSeguro("Admin", "renderizarPrestadores", e); }
-                    try { renderizarNotasAvaliacoesAdmin(todosUsuarios, orcData || []); } catch(e) { registrarErroSeguro("Admin", "renderizarAvaliacoes", e); }
+                    try { renderizarTabelaPrestadoresAdmin(cachePrestadoresGeral, orcDataOrdenado); } catch(e) { registrarErroSeguro("Admin", "renderizarPrestadores", e); }
+                    try { renderizarListaCanaisPrestadorAdmin(cachePrestadoresGeral, todasMsgsPrestadores, orcDataOrdenado); } catch(e) { registrarErroSeguro("Admin", "renderizarCanaisPrestador", e); }
+                    try { renderizarNotasAvaliacoesAdmin(todosUsuarios, orcDataOrdenado); } catch(e) { registrarErroSeguro("Admin", "renderizarAvaliacoes", e); }
+                    try { renderizarTabelaFinanceiroCompleta(); } catch(e) { registrarErroSeguro("Admin", "renderizarFinanceiro", e); }
                 }
 
-                if (orcData) {
+                if (orcDataOrdenado) {
                     const containerOrcamentosAdmin = document.getElementById('listaOrcamentosAdmin');
                     if (containerOrcamentosAdmin) {
-                        let htmlOrc = `<div class="grid grid-cols-1 gap-3">`;
-                        orcData.forEach(o => {
-                            let nomeCli = "Cliente Desconhecido";
-                            let statusCliBadge = "";
-                            let cliObj = null;
-                            if (todosUsuarios) {
-                                cliObj = o.cliente_id ? todosUsuarios.find(u => u.id === o.cliente_id && u.perfil === 'cliente') : null;
-                                if (!cliObj && o.cliente_email) cliObj = todosUsuarios.find(u => u.email === o.cliente_email && u.perfil === 'cliente');
-                                if (cliObj) {
-                                    nomeCli = cliObj.nome;
-                                    if ((cliObj.status || 'ativo') === 'inativo') statusCliBadge = ' <span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded text-[10px] font-bold">Cliente Inativo</span>';
+                        if (orcDataOrdenado.length === 0) {
+                            containerOrcamentosAdmin.innerHTML = `<p class="text-xs text-slate-400">Nenhuma solicitação encontrada.</p>`;
+                        } else {
+                            let htmlOrc = `<div class="grid grid-cols-1 gap-3">`;
+                            orcDataOrdenado.forEach(o => {
+                                const codVisual = gerarCodigoSequencialVisual(orcDataOrdenado, o.id);
+                                let nomeCli = "Cliente Desconhecido";
+                                let statusCliBadge = "";
+                                let cliObj = null;
+                                if (todosUsuarios) {
+                                    cliObj = o.cliente_id ? todosUsuarios.find(u => u.id === o.cliente_id && u.perfil === 'cliente') : null;
+                                    if (!cliObj && o.cliente_email) cliObj = todosUsuarios.find(u => u.email === o.cliente_email && u.perfil === 'cliente');
+                                    if (cliObj) {
+                                        nomeCli = cliObj.nome;
+                                        if ((cliObj.status || 'ativo') === 'inativo') statusCliBadge = ' <span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded text-[10px] font-bold">Cliente Inativo</span>';
+                                    }
                                 }
-                            }
 
-                            const statusAtual = o.status || 'Solicitado';
-                            const valorBaseAdm = o.valor_base || o.orcamento_valor || 0;
-                            const valorFinalCliente = valorBaseAdm * 1.15;
-                            const valorPrestadorAdm = valorBaseAdm * 0.85;
+                                const statusAtual = o.status || 'Solicitado';
+                                const valorBaseAdm = o.valor_base || o.orcamento_valor || 0;
+                                const valorFinalCliente = valorBaseAdm * 1.15;
+                                const valorPrestadorAdm = valorBaseAdm * 0.85;
+                                const dataHoraCriacaoFormatada = formatarDataHoraBr(o.created_at);
 
-                            let acoesAdmin = '';
-                            if (statusAtual === 'Solicitado') {
-                                acoesAdmin = `<button onclick="abrirModalEnviarOrcamento('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Enviar Orçamento</button>`;
-                            } else if (statusAtual === 'ACEITO PELO CLIENTE') {
-                                acoesAdmin = `<button onclick="adminPublicarServico('${o.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">PUBLICAR SERVIÇO</button>`;
-                            } else if (statusAtual === 'EM NEGOCIAÇÃO' || statusAtual === 'RECUSADO PELO CLIENTE') {
-                                acoesAdmin = `
-                                    <div class="flex flex-wrap gap-2 items-center">
-                                        <span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">Cliente solicitou negociação</span>
-                                        <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1 shadow-sm">
-                                            <i class="fa-solid fa-comments"></i>
-                                            <span>Abrir Chat / Negociar</span>
-                                        </button>
-                                        <button onclick="abrirModalEnviarOrcamento('${o.id}', '${valorBaseAdm}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
-                                            Enviar Nova Proposta
-                                        </button>
-                                    </div>
-                                `;
-                            } else if (statusAtual === 'PRESTADOR ACEITOU') {
-                                let interessados = [];
-                                if (o.prestadores_interessados) {
-                                    try { interessados = JSON.parse(o.prestadores_interessados); } catch(e){}
+                                let qtdNaoLidasOrcamento = 0;
+                                if (todasMsgs) {
+                                    qtdNaoLidasOrcamento = todasMsgs.filter(m => String(m.orcamento_id) === String(o.id) && String(m.lida) === 'false' && (m.remetente_perfil || '').toLowerCase() === 'cliente').length;
                                 }
-                                acoesAdmin = `<div class="space-y-2"><p class="text-[11px] font-bold text-blue-900">Prestador(es) Interessado(s):</p>`;
-                                interessados.forEach(i => {
-                                    acoesAdmin += `
-                                        <div class="bg-blue-50 p-2 rounded-xl border border-blue-200 flex items-center justify-between text-xs">
-                                            <div>
-                                                <p><strong>Prestador:</strong> ${i.prestador_nome}</p>
-                                                <p><strong>Telefone:</strong> ${i.prestador_telefone}</p>
-                                            </div>
-                                            <button onclick="adminConfirmarPrestador('${o.id}', '${i.prestador_nome}')" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Confirmar Prestador</button>
+
+                                let acoesAdmin = '';
+                                if (statusAtual === 'Solicitado') {
+                                    acoesAdmin = `<button onclick="abrirModalEnviarOrcamento('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Enviar Orçamento</button>`;
+                                } else if (statusAtual === 'ACEITO PELO CLIENTE') {
+                                    acoesAdmin = `<button onclick="adminPublicarServico('${o.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">PUBLICAR SERVIÇO</button>`;
+                                } else if (statusAtual === 'EM NEGOCIAÇÃO' || statusAtual === 'RECUSADO PELO CLIENTE' || qtdNaoLidasOrcamento > 0) {
+                                    let badgeChatTexto = qtdNaoLidasOrcamento > 0 ? `🔵 ${qtdNaoLidasOrcamento} ${qtdNaoLidasOrcamento === 1 ? 'mensagem nova' : 'mensagens novas'}` : '● Cliente respondeu';
+                                    acoesAdmin = `
+                                        <div class="flex flex-wrap gap-2 items-center">
+                                            <span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${badgeChatTexto}</span>
+                                            <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1 shadow-sm">
+                                                <i class="fa-solid fa-comments"></i>
+                                                <span>${qtdNaoLidasOrcamento > 0 ? `Abrir Chat 🔵 ${qtdNaoLidasOrcamento}` : 'Abrir Chat / Negociar'}</span>
+                                            </button>
+                                            <button onclick="abrirModalEnviarOrcamento('${o.id}', '${valorBaseAdm}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+                                                Enviar Nova Proposta
+                                            </button>
                                         </div>
                                     `;
-                                });
-                                acoesAdmin += `</div>`;
-                            } else if (statusAtual === 'AGUARDANDO APROVAÇÃO 50%') {
-                                let prestadorObjPix = todosUsuarios && o.prestador_responsavel ? todosUsuarios.find(u => u.nome === o.prestador_responsavel && u.perfil === 'prestador') : null;
-                                const tipoPixPrestador = prestadorObjPix ? (prestadorObjPix.tipo_pix || 'Não informado') : 'Não informado';
-                                const chavePixPrestador = prestadorObjPix ? (prestadorObjPix.chave_pix || 'Não informada') : 'Não informada';
-                                const primeiro50Prestador = valorPrestadorAdm * 0.50;
-                                acoesAdmin = `
-                                    <div class="bg-orange-50/80 p-4 rounded-2xl border border-orange-200 space-y-3">
-                                        <p class="font-black text-orange-900 uppercase text-xs">Comprovação de 50% do Serviço:</p>
-                                        <div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 text-xs">
-                                            <p><strong>VALOR DO SERVIÇO DO PRESTADOR:</strong> ${formatarMoedaBr(valorPrestadorAdm)}</p>
-                                            <p><strong>VALOR REFERENTE AOS PRIMEIROS 50%:</strong> ${formatarMoedaBr(primeiro50Prestador)}</p>
-                                            <p><strong>Tipo PIX:</strong> ${tipoPixPrestador}</p>
-                                            <p><strong>Chave PIX:</strong> ${chavePixPrestador}</p>
+                                } else if (statusAtual === 'PRESTADOR ACEITOU') {
+                                    let interessados = [];
+                                    if (o.prestadores_interessados) {
+                                        try { interessados = JSON.parse(o.prestadores_interessados); } catch(e){}
+                                    }
+                                    acoesAdmin = `<div class="space-y-2"><p class="text-[11px] font-bold text-blue-900">Prestador(es) Interessado(s):</p>`;
+                                    interessados.forEach(i => {
+                                        acoesAdmin += `
+                                            <div class="bg-blue-50 p-2 rounded-xl border border-blue-200 flex items-center justify-between text-xs">
+                                                <div>
+                                                    <p><strong>Prestador:</strong> ${i.prestador_nome}</p>
+                                                    <p><strong>Telefone:</strong> ${i.prestador_telefone}</p>
+                                                </div>
+                                                <button onclick="adminConfirmarPrestador('${o.id}', '${i.prestador_nome}')" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Confirmar Prestador</button>
+                                            </div>
+                                        `;
+                                    });
+                                    acoesAdmin += `</div>`;
+                                } else if (statusAtual === 'AGUARDANDO APROVAÇÃO 50%') {
+                                    let prestadorObjPix = todosUsuarios && o.prestador_responsavel ? todosUsuarios.find(u => u.nome === o.prestador_responsavel && u.perfil === 'prestador') : null;
+                                    const tipoPixPrestador = prestadorObjPix ? (prestadorObjPix.tipo_pix || 'Não informado') : 'Não informado';
+                                    const chavePixPrestador = prestadorObjPix ? (prestadorObjPix.chave_pix || 'Não informada') : 'Não informada';
+                                    const primeiro50Prestador = valorPrestadorAdm * 0.50;
+                                    acoesAdmin = `
+                                        <div class="bg-orange-50/80 p-4 rounded-2xl border border-orange-200 space-y-3">
+                                            <p class="font-black text-orange-900 uppercase text-xs">Comprovação de 50% do Serviço:</p>
+                                            <div class="bg-white p-3 rounded-xl border border-orange-200 space-y-1 text-xs">
+                                                <p><strong>VALOR DO SERVIÇO DO PRESTADOR:</strong> ${formatarMoedaBr(valorPrestadorAdm)}</p>
+                                                <p><strong>VALOR REFERENTE AOS PRIMEIROS 50%:</strong> ${formatarMoedaBr(primeiro50Prestador)}</p>
+                                                <p><strong>Tipo PIX:</strong> ${tipoPixPrestador}</p>
+                                                <p><strong>Chave PIX:</strong> ${chavePixPrestador}</p>
+                                            </div>
+                                            ${o.foto_andamento_50 ? `<div><img src="${o.foto_andamento_50}" class="w-32 h-32 rounded-xl object-cover border border-orange-300"></div>` : ''}
+                                            <div class="flex space-x-3 pt-2">
+                                                <button onclick="adminAprovarComprovacao50('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Aprovar comprovação</button>
+                                                <button onclick="adminSolicitarNovaComprovacao50('${o.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Solicitar nova comprovação</button>
+                                            </div>
                                         </div>
-                                        ${o.foto_andamento_50 ? `<div><img src="${o.foto_andamento_50}" class="w-32 h-32 rounded-xl object-cover border border-orange-300"></div>` : ''}
-                                        <div class="flex space-x-3 pt-2">
-                                            <button onclick="adminAprovarComprovacao50('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Aprovar comprovação</button>
-                                            <button onclick="adminSolicitarNovaComprovacao50('${o.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Solicitar nova comprovação</button>
+                                    `;
+                                }
+
+                                htmlOrc += `
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-slate-900 text-xs">Orçamento Nº ${codVisual} — ${nomeCli}${statusCliBadge} (${o.cliente_email})</span>
+                                            <span class="bg-blue-100 text-blue-900 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500">Data/Hora: ${dataHoraCriacaoFormatada} | CEP: ${o.cep_servico} | Valor Base: ${formatarMoedaBr(valorBaseAdm)} | Cliente (+15%): ${formatarMoedaBr(valorFinalCliente)} | Prestador (-15%): ${formatarMoedaBr(valorPrestadorAdm)}</p>
+                                        ${o.prestador_responsavel ? `<p class="text-xs font-bold text-sky-700">Prestador Definido: ${o.prestador_responsavel}</p>` : ''}
+                                        <div class="flex flex-col space-y-2 pt-2 border-t border-slate-200">
+                                            ${acoesAdmin}
+                                            <div>
+                                                <button onclick='abrirDetalhesOrcamentoAdmin(${JSON.stringify(o)})' class="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Ver Solicitação</button>
+                                            </div>
                                         </div>
                                     </div>
                                 `;
-                            }
-
-                            htmlOrc += `
-                                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                                    <div class="flex justify-between items-center">
-                                        <span class="font-bold text-slate-900 text-xs">${nomeCli}${statusCliBadge} (${o.cliente_email})</span>
-                                        <span class="bg-blue-100 text-blue-900 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">${statusAtual}</span>
-                                    </div>
-                                    <p class="text-xs text-slate-500">CEP: ${o.cep_servico} | Valor Base: ${formatarMoedaBr(valorBaseAdm)} | Cliente (+15%): ${formatarMoedaBr(valorFinalCliente)} | Prestador (-15%): ${formatarMoedaBr(valorPrestadorAdm)}</p>
-                                    ${o.prestador_responsavel ? `<p class="text-xs font-bold text-sky-700">Prestador Definido: ${o.prestador_responsavel}</p>` : ''}
-                                    <div class="flex flex-col space-y-2 pt-2 border-t border-slate-200">
-                                        ${acoesAdmin}
-                                        <div>
-                                            <button onclick='abrirDetalhesOrcamentoAdmin(${JSON.stringify(o)})' class="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Ver Solicitação</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        htmlOrc += `</div>`;
-                        containerOrcamentosAdmin.innerHTML = htmlOrc;
+                            });
+                            htmlOrc += `</div>`;
+                            containerOrcamentosAdmin.innerHTML = htmlOrc;
+                        }
                     }
                 }
             } catch (err) {
                 registrarErroSeguro("Admin", "carregarDadosAdmin", err);
+                const containerOrcamentosAdmin = document.getElementById('listaOrcamentosAdmin');
+                if (containerOrcamentosAdmin) {
+                    containerOrcamentosAdmin.innerHTML = `<p class="text-xs text-rose-600 font-bold">Não foi possível carregar as solicitações. Tente novamente.</p>`;
+                }
             }
+        }
+
+        function renderizarListaCanaisPrestadorAdmin(prestadoresList, msgsList, orcsList) {
+            const container = document.getElementById('listaCanaisPrestadorAdmin');
+            if (!container) return;
+
+            if (!prestadoresList || prestadoresList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400">Nenhum prestador cadastrado no sistema.</p>`;
+                return;
+            }
+
+            let htmlCanais = `<div class="grid grid-cols-1 gap-3">`;
+            prestadoresList.forEach(p => {
+                const msgsPrestador = (msgsList || []).filter(m => String(m.prestador_email).toLowerCase() === String(p.email).toLowerCase());
+                const qtdNaoLidas = msgsPrestador.filter(m => String(m.lida) === 'false' && (m.remetente_perfil || '').toLowerCase() === 'prestador').length;
+
+                let ultimaMsgTexto = "Nenhuma mensagem trocada ainda.";
+                if (msgsPrestador.length > 0) {
+                    const ultima = [...msgsPrestador].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))[0];
+                    ultimaMsgTexto = `${ultima.mensagem} (${formatarDataHoraBr(ultima.created_at)})`;
+                }
+
+                let badgeNotifHtml = qtdNaoLidas > 0 ? `<span class="bg-orange-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-black uppercase">💬 ${qtdNaoLidas} ${qtdNaoLidas === 1 ? 'mensagem nova' : 'mensagens novas'}</span>` : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase">Nenhuma nova mensagem</span>`;
+
+                htmlCanais += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-bold text-slate-900 text-sm">${p.nome}</h4>
+                                ${badgeNotifHtml}
+                            </div>
+                            <p class="text-xs text-slate-500">${p.email} | Tel: ${p.telefone || 'N/A'} | Esp: ${p.especialidade || 'Geral'}</p>
+                            <p class="text-xs text-slate-700 italic">Última: ${ultimaMsgTexto}</p>
+                        </div>
+                        <div>
+                            <button onclick="abrirModalChatPrestadorAdmin('${p.email}')" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5">
+                                <i class="fa-solid fa-comments"></i>
+                                <span>Abrir Conversa</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            htmlCanais += `</div>`;
+            container.innerHTML = htmlCanais;
+        }
+
+        function renderizarTabelaFinanceiroCompleta() {
+            const containerFin = document.getElementById('listaFinanceiroAdmin');
+            const containerRanking = document.getElementById('tabelaRankingPrestadores');
+            if (!containerFin || !containerRanking) return;
+
+            const listaOrcs = cacheOrcamentosGeral || [];
+            const filtroPesq = (document.getElementById('filtroFinPesquisa')?.value || "").toLowerCase().trim();
+            const filtroStat = document.getElementById('filtroFinStatus')?.value || "";
+
+            let totalEntradasReais = 0;
+            let totalSaidasReais = 0;
+            let quantidadeServicosValidos = 0;
+
+            let htmlTabela = `
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b bg-slate-100 text-slate-700 font-bold">
+                            <th class="p-3">Nº</th>
+                            <th class="p-3">Data</th>
+                            <th class="p-3">Cliente</th>
+                            <th class="p-3">Serviço</th>
+                            <th class="p-3">Prestador</th>
+                            <th class="p-3">Base</th>
+                            <th class="p-3">Cliente</th>
+                            <th class="p-3">Prestador</th>
+                            <th class="p-3">Entrada</th>
+                            <th class="p-3">Saída</th>
+                            <th class="p-3">Saldo</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            let contadorLinhas = 0;
+            const orcsOrdenados = [...listaOrcs].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+            orcsOrdenados.forEach(o => {
+                const statusStr = o.status || 'Solicitado';
+                let entradaReal = 0;
+                let saidaReal = 0;
+                let statusFinanceiroText = "Aguardando pagamento";
+
+                const valorBaseNum = parseFloat(o.valor_base || o.orcamento_valor || 0);
+                const valorClienteNum = valorBaseNum * 1.15;
+                const valorPrestadorNum = valorBaseNum * 0.85;
+
+                if (statusStr === 'ACEITO PELO CLIENTE' || statusStr === 'PUBLICADO PARA PRESTADORES' || statusStr === 'PRESTADOR ACEITOU') {
+                    statusFinanceiroText = "Aguardando pagamento";
+                } else if (statusStr === 'PRESTADOR DEFINIDO' || statusStr === 'AGUARDANDO APROVAÇÃO 50%') {
+                    statusFinanceiroText = "Entrada recebida";
+                    entradaReal = valorClienteNum * 0.50;
+                } else if (statusStr === '50% APROVADO PARA PAGAMENTO') {
+                    statusFinanceiroText = "50% aprovado para pagamento";
+                    entradaReal = valorClienteNum * 0.50;
+                } else if (statusStr === 'SERVIÇO CONCLUÍDO' || statusStr === 'concluido') {
+                    statusFinanceiroText = "Pagamento concluído";
+                    entradaReal = valorClienteNum;
+                    saidaReal = valorPrestadorNum;
+                }
+
+                if (filtroStat && statusFinanceiroText !== filtroStat) return;
+                if (filtroPesq) {
+                    const matchCli = (o.cliente_email || "").toLowerCase().includes(filtroPesq);
+                    const matchDesc = (o.descricao_servic || "").toLowerCase().includes(filtroPesq);
+                    const matchPrest = (o.prestador_responsavel || "").toLowerCase().includes(filtroPesq);
+                    if (!matchCli && !matchDesc && !matchPrest) return;
+                }
+
+                quantidadeServicosValidos++;
+                totalEntradasReais += entradaReal;
+                totalSaidasReais += saidaReal;
+                contadorLinhas++;
+
+                const codVisual = gerarCodigoSequencialVisual(listaOrcs, o.id);
+                const dataFormatada = formatarDataHoraBr(o.created_at);
+                const saldoLinha = entradaReal - saidaReal;
+
+                htmlTabela += `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-3 font-bold">Nº ${codVisual}</td>
+                        <td class="p-3 text-slate-500">${dataFormatada}</td>
+                        <td class="p-3">${o.cliente_email}</td>
+                        <td class="p-3 truncate max-w-[120px]">${o.descricao_servic || '--'}</td>
+                        <td class="p-3">${o.prestador_responsavel || 'Não definido'}</td>
+                        <td class="p-3">${formatarMoedaBr(valorBaseNum)}</td>
+                        <td class="p-3">${formatarMoedaBr(valorClienteNum)}</td>
+                        <td class="p-3">${formatarMoedaBr(valorPrestadorNum)}</td>
+                        <td class="p-3 text-emerald-600 font-bold">${formatarMoedaBr(entradaReal)}</td>
+                        <td class="p-3 text-rose-600 font-bold">${formatarMoedaBr(saidaReal)}</td>
+                        <td class="p-3 font-extrabold text-blue-900">${formatarMoedaBr(saldoLinha)}</td>
+                        <td class="p-3"><span class="bg-blue-50 text-blue-800 px-2 py-0.5 rounded text-[10px] font-bold">${statusFinanceiroText}</span></td>
+                        <td class="p-3 text-center">
+                            <button onclick='abrirDetalhesFinanceiroModal(${JSON.stringify(o)}, ${entradaReal}, ${saidaReal}, "${statusFinanceiroText}")' class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1.5 rounded-xl font-bold transition">Ver detalhes</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            if (contadorLinhas === 0) {
+                htmlTabela += `<tr><td colspan="13" class="p-4 text-center text-slate-400">Nenhuma movimentação financeira encontrada com os filtros atuais.</td></tr>`;
+            }
+
+            htmlTabela += `</tbody></table>`;
+            containerFin.innerHTML = htmlTabela;
+
+            const saldoGeral = totalEntradasReais - totalSaidasReais;
+            document.getElementById('finResumoEntradas').textContent = formatarMoedaBr(totalEntradasReais);
+            document.getElementById('finResumoSaidas').textContent = formatarMoedaBr(totalSaidasReais);
+            document.getElementById('finResumoSaldo').textContent = formatarMoedaBr(saldoGeral);
+            document.getElementById('finResumoServicos').textContent = quantidadeServicosValidos;
+
+            renderizarRankingPrestadores(listaOrcs);
+        }
+
+        function limparFiltrosFinanceiro() {
+            if (document.getElementById('filtroFinPesquisa')) document.getElementById('filtroFinPesquisa').value = "";
+            if (document.getElementById('filtroFinStatus')) document.getElementById('filtroFinStatus').value = "";
+            renderizarTabelaFinanceiroCompleta();
+        }
+
+        function renderizarRankingPrestadores(listaOrcs) {
+            const containerRanking = document.getElementById('tabelaRankingPrestadores');
+            if (!containerRanking) return;
+
+            const prestadoresMap = {};
+
+            listaOrcs.forEach(o => {
+                if (o.prestador_responsavel && (o.status === 'PRESTADOR DEFINIDO' || o.status === 'AGUARDANDO APROVAÇÃO 50%' || o.status === '50% APROVADO PARA PAGAMENTO' || o.status === 'SERVIÇO CONCLUÍDO')) {
+                    const pNome = o.prestador_responsavel;
+                    if (!prestadoresMap[pNome]) {
+                        prestadoresMap[pNome] = {
+                            nome: pNome,
+                            qtdServicos: 0,
+                            valorTotal: 0,
+                            notas: []
+                        };
+                    }
+                    prestadoresMap[pNome].qtdServicos++;
+                    const base = parseFloat(o.valor_base || o.orcamento_valor || 0);
+                    prestadoresMap[pNome].valorTotal += (base * 0.85);
+                    if (o.avaliado && o.nota_avaliacao) {
+                        prestadoresMap[pNome].notas.push(o.nota_avaliacao);
+                    }
+                }
+            });
+
+            let rankingArray = Object.values(prestadoresMap).sort((a, b) => b.qtdServicos - a.qtdServicos);
+
+            if (rankingArray.length === 0) {
+                containerRanking.innerHTML = `<p class="text-xs text-slate-400">Nenhum prestador vinculado a serviços confirmados ainda.</p>`;
+                return;
+            }
+
+            let htmlRank = `
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b bg-slate-100 text-slate-700 font-bold">
+                            <th class="p-3">Posição</th>
+                            <th class="p-3">Prestador</th>
+                            <th class="p-3">Área de Atuação</th>
+                            <th class="p-3">Qtd. Serviços</th>
+                            <th class="p-3">Valor Total (Prestador)</th>
+                            <th class="p-3">Nota Média</th>
+                            <th class="p-3">Avaliações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            rankingArray.forEach((r, idx) => {
+                const posicao = `${idx + 1}º`;
+                let areaAtuacao = "Serviços Gerais";
+                const prestObj = cachePrestadoresGeral.find(p => p.nome === r.nome);
+                if (prestObj && prestObj.especialidade) areaAtuacao = prestObj.especialidade;
+
+                let mediaNotaStr = "Sem avaliações";
+                let qtdAval = r.notas.length;
+                if (qtdAval > 0) {
+                    const soma = r.notas.reduce((acc, curr) => acc + curr, 0);
+                    mediaNotaStr = `⭐ ${(soma / qtdAval).toFixed(1)}`;
+                }
+
+                htmlRank += `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-3 font-extrabold text-orange-600">${posicao}</td>
+                        <td class="p-3 font-bold">${r.nome}</td>
+                        <td class="p-3">${areaAtuacao}</td>
+                        <td class="p-3 font-bold text-blue-900">${r.qtdServicos} serviço(s)</td>
+                        <td class="p-3 text-emerald-700 font-bold">${formatarMoedaBr(r.valorTotal)}</td>
+                        <td class="p-3 font-bold">${mediaNotaStr}</td>
+                        <td class="p-3">${qtdAval} avaliação(ões)</td>
+                    </tr>
+                `;
+            });
+
+            htmlRank += `</tbody></table>`;
+            containerRanking.innerHTML = htmlRank;
+        }
+
+        async function abrirDetalhesFinanceiroModal(o, entradaReal, saidaReal, statusFin) {
+            const container = document.getElementById('conteudoDetalhesFinanceiro');
+            const valorBase = parseFloat(o.valor_base || o.orcamento_valor || 0);
+            const valorCliente = valorBase * 1.15;
+            const valorPrestador = valorBase * 0.85;
+            const saldo = entradaReal - saidaReal;
+            const dataHora = formatarDataHoraBr(o.created_at);
+
+            let prestadorObjPix = cachePrestadoresGeral.find(p => p.nome === o.prestador_responsavel);
+            const tipoPix = prestadorObjPix ? (prestadorObjPix.tipo_pix || 'Não informado') : 'Não informado';
+            const chavePix = prestadorObjPix ? (prestadorObjPix.chave_pix || 'Não informada') : 'Não informada';
+
+            container.innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>Cliente:</strong> ${o.cliente_email}</p>
+                    <p><strong>Serviço:</strong> ${o.descricao_servic || '--'}</p>
+                    <p><strong>Prestador:</strong> ${o.prestador_responsavel || 'Não definido'}</p>
+                    <p><strong>Valor Base:</strong> ${formatarMoedaBr(valorBase)}</p>
+                    <p><strong>Valor Cliente (+15%):</strong> ${formatarMoedaBr(valorCliente)}</p>
+                    <p><strong>Valor Prestador (-15%):</strong> ${formatarMoedaBr(valorPrestador)}</p>
+                    <p><strong>Entrada recebida:</strong> <span class="text-emerald-600 font-bold">${formatarMoedaBr(entradaReal)}</span></p>
+                    <p><strong>Saída realizada:</strong> <span class="text-rose-600 font-bold">${formatarMoedaBr(saidaReal)}</span></p>
+                    <p><strong>Saldo:</strong> <span class="text-blue-900 font-bold">${formatarMoedaBr(saldo)}</span></p>
+                    <p><strong>Status:</strong> ${statusFin}</p>
+                    <p><strong>Data/Hora:</strong> ${dataHora}</p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-2xl border border-orange-200 space-y-1 mt-3">
+                    <p class="font-bold text-orange-900 uppercase">Dados PIX do Prestador (Protegido)</p>
+                    <p><strong>Tipo PIX:</strong> ${tipoPix}</p>
+                    <p><strong>Chave PIX:</strong> ${chavePix}</p>
+                </div>
+                ${o.foto_andamento_50 ? `<div class="mt-3"><p class="font-bold text-slate-800 mb-1">Foto Comprobatória 50%:</p><img src="${o.foto_andamento_50}" class="w-28 h-28 rounded-xl object-cover border"></div>` : ''}
+            `;
+            document.getElementById('modalDetalhesFinanceiro').classList.remove('hidden');
+        }
+
+        function fecharModalDetalhesFinanceiro() {
+            document.getElementById('modalDetalhesFinanceiro').classList.add('hidden');
         }
 
         async function abrirFichaPrestadorAdmin(prestadorId) {
@@ -2612,18 +3557,41 @@
                 }
             } catch (e) {}
 
+            const { data: todosOrcsParaSeq } = await supabaseClient.from('orcamentos').select('id, created_at');
+            const codVisual = gerarCodigoSequencialVisual(todosOrcsParaSeq || [], o.id);
             const valorBaseAdm = o.valor_base || o.orcamento_valor || 0;
             const valorFinalCliente = valorBaseAdm * 1.15;
             const valorPrestadorAdm = valorBaseAdm * 0.85;
+            const dataHoraCriacaoFormatada = formatarDataHoraBr(o.created_at);
+
+            let secaoFotoOrcamentoAdmin = '';
+            if (o.foto_orcamento && o.foto_orcamento.trim() !== "") {
+                secaoFotoOrcamentoAdmin = `
+                    <div class="space-y-2 pt-2 border-t border-slate-200">
+                        <p class="font-black text-slate-900 uppercase text-xs">FOTO DO SERVIÇO</p>
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 w-fit">
+                            <img src="${o.foto_orcamento}" alt="Foto do Serviço" class="w-48 h-48 rounded-xl object-cover border border-slate-300 shadow-xs">
+                        </div>
+                    </div>
+                `;
+            } else {
+                secaoFotoOrcamentoAdmin = `
+                    <div class="space-y-2 pt-2 border-t border-slate-200">
+                        <p class="font-black text-slate-900 uppercase text-xs">FOTO DO SERVIÇO</p>
+                        <p class="text-xs text-slate-400 italic">Foto não enviada.</p>
+                    </div>
+                `;
+            }
 
             container.innerHTML = `
                 <div class="flex justify-between items-center border-b border-slate-200 pb-4">
-                    <h3 class="text-xl font-black text-slate-900">Detalhes da Solicitação</h3>
+                    <h3 class="text-xl font-black text-slate-900">Orçamento Nº ${codVisual}</h3>
                     <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold uppercase">${o.status || 'Solicitado'}</span>
                 </div>
                 <div class="space-y-4 text-xs text-slate-700">
                     <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-200 space-y-1">
                         <p class="font-black text-blue-900 text-sm uppercase">Valores do Orçamento:</p>
+                        <p><strong>Data/Hora:</strong> ${dataHoraCriacaoFormatada}</p>
                         <p><strong>Valor Base:</strong> ${formatarMoedaBr(valorBaseAdm)}</p>
                         <p><strong>Valor Cliente (+15%):</strong> ${formatarMoedaBr(valorFinalCliente)}</p>
                         <p><strong>Valor Prestador (-15%):</strong> ${formatarMoedaBr(valorPrestadorAdm)}</p>
@@ -2636,6 +3604,10 @@
                         <p><strong>E-mail:</strong> ${o.cliente_email}</p>
                     </div>
                     <p><strong>Descrição:</strong> ${o.descricao_servic || 'Sem descrição.'}</p>
+                    
+                    ${secaoFotoOrcamentoAdmin}
+
+                    ${o.foto_concluido ? `<div class="space-y-1 pt-2 border-t border-slate-200"><p class="font-black text-purple-900 uppercase">Foto de Conclusão Enviada pelo Cliente:</p><img src="${o.foto_concluido}" class="w-32 h-32 rounded-xl object-cover border border-purple-300"></div>` : ''}
                 </div>
             `;
             document.getElementById('modalAdminDetalhesOrcamento').classList.remove('hidden');
@@ -2744,12 +3716,37 @@
         function renderizarNotasAvaliacoesAdmin(todosUsuarios, orcamentosList) {
             const container = document.getElementById('listaNotasAvaliacoesAdmin');
             if (!container) return;
-            const avalList = orcamentosList.filter(o => o.avaliado === true);
-            let html = `<table class="w-full text-left text-xs"><tr class="border-b"><th class="p-3">Prestador</th><th class="p-3">Cliente</th><th class="p-3">Nota</th><th class="p-3">Comentário</th></tr>`;
+            const avalList = (orcamentosList || []).filter(o => o.avaliado === true).sort((a, b) => new Date(b.data_conclusao || b.created_at || 0) - new Date(a.data_conclusao || a.created_at || 0));
+
+            if (avalList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400">Nenhuma avaliação encontrada.</p>`;
+                return;
+            }
+            let html = `<div class="grid grid-cols-1 gap-4">`;
             avalList.forEach(a => {
-                html += `<tr class="border-b"><td class="p-3 font-bold">${a.prestador_responsavel || ''}</td><td class="p-3">${a.cliente_email}</td><td class="p-3 text-amber-500 font-bold">${'⭐'.repeat(a.nota_avaliacao)}</td><td class="p-3">${a.comentario_avaliacao || ''}</td></tr>`;
+                const codVisual = gerarCodigoSequencialVisual(orcamentosList, a.id);
+                const notaAtual = a.nota_avaliacao || 5;
+                const dataFormatadaAdm = formatarDataHoraBr(a.data_conclusao || a.created_at);
+                html += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <div>
+                                <p class="font-bold text-slate-900">Orçamento Nº ${codVisual}</p>
+                                <p><strong>Cliente:</strong> ${a.cliente_email}</p>
+                                <p><strong>Prestador:</strong> <span class="font-bold text-sky-900">${a.prestador_responsavel || 'Não informado'}</span></p>
+                            </div>
+                            <span class="text-amber-500 font-extrabold text-sm">${'⭐'.repeat(notaAtual)} (${notaAtual}.0)</span>
+                        </div>
+                        <p><strong>Serviço:</strong> ${a.descricao_servic || 'Serviço residencial'}</p>
+                        <p class="italic text-slate-700"><strong>Comentário:</strong> "${a.comentario_avaliacao || 'Sem comentário.'}"</p>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-[10px] text-slate-400">Data/Hora: ${dataFormatadaAdm}</span>
+                            ${a.foto_concluido ? `<div><p class="text-[10px] text-purple-700 font-bold mb-1">Foto da Conclusão:</p><img src="${a.foto_concluido}" class="w-16 h-16 rounded-xl object-cover border border-purple-300"></div>` : ''}
+                        </div>
+                    </div>
+                `;
             });
-            html += `</table>`;
+            html += `</div>`;
             container.innerHTML = html;
         }
 
