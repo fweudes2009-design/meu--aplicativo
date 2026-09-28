@@ -544,6 +544,9 @@
                         <p class="text-xs text-slate-400">Oportunidades publicadas pelo administrador aceitas previamente pelos clientes.</p>
                     </div>
                 </div>
+                <div id="listaIndicacoesPrestador" class="space-y-4 mb-4">
+                    <p class="text-xs text-slate-400">Carregando indicações...</p>
+                </div>
                 <div id="listaServicosDisponiveisPrestador" class="space-y-4">
                     <p class="text-xs text-slate-400">Carregando serviços disponíveis...</p>
                 </div>
@@ -942,6 +945,30 @@
         </div>
     </div>
 
+    <!-- MODAL DE INDICAÇÃO MANUAL DE PRESTADOR -->
+    <div id="modalIndicarPrestador" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full mx-4 shadow-2xl relative max-h-[90vh] flex flex-col space-y-4 border border-orange-200">
+            <button onclick="fecharModalIndicarPrestador()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div><span class="bg-orange-100 text-orange-900 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Módulo Orçamentos</span><h3 class="text-xl font-black text-slate-900 mt-1">Indicar Prestador</h3><p id="resumoIndicacaoPrestador" class="text-xs text-slate-500 mt-1">Selecione um Prestador ativo para este serviço.</p></div>
+            <input type="text" id="pesquisaIndicacaoPrestador" oninput="renderizarListaIndicacaoPrestadores()" placeholder="Pesquisar por nome, área ou município..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none">
+            <div id="listaIndicacaoPrestadores" class="flex-1 overflow-y-auto space-y-2 min-h-[180px] max-h-[50vh]"><p class="text-xs text-slate-400">Carregando prestadores...</p></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DA INDICAÇÃO -->
+    <div id="modalConfirmarIndicacaoPrestador" class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl relative space-y-4 border border-orange-200">
+            <button onclick="fecharModalConfirmarIndicacaoPrestador()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div><span class="bg-orange-100 text-orange-900 px-3 py-0.5 rounded-full text-[10px] font-black uppercase">Confirmação</span><h3 class="text-xl font-black text-slate-900 mt-1">Confirmar indicação?</h3></div>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs text-slate-700">
+                <p><strong>Prestador:</strong> <span id="confirmacaoIndicacaoPrestador">--</span></p>
+                <p><strong>Serviço:</strong> <span id="confirmacaoIndicacaoServico">--</span></p>
+                <p><strong>Valor do Serviço:</strong> <span id="confirmacaoIndicacaoValor">R$ 0,00</span></p>
+            </div>
+            <div class="flex justify-end gap-2 pt-2"><button type="button" onclick="fecharModalConfirmarIndicacaoPrestador()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2.5 rounded-xl text-xs font-bold transition">CANCELAR</button><button type="button" onclick="confirmarIndicacaoPrestador()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition">CONFIRMAR INDICAÇÃO</button></div>
+        </div>
+    </div>
+
     <!-- MODAL DE CHAT ADMINISTRADOR ↔ PRESTADOR -->
     <div id="modalChatPrestadorAdmin" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm hidden">
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full mx-4 shadow-2xl relative max-h-[90vh] flex flex-col space-y-4 border border-orange-200">
@@ -1225,6 +1252,10 @@
         let cacheClientesGeral = [];
         let cachePrestadoresGeral = [];
         let cacheOrcamentosGeral = [];
+        let prestadoresIndicacaoCache = [];
+        let orcamentoIndicacaoAtual = null;
+        let prestadorIndicacaoSelecionado = null;
+        let orcamentosIndicacaoAvaliacoes = [];
         let emailUsuarioRecuperacao = null;
         let realtimeSubscriptionAtiva = null;
         let realtimeChatSubscriptionAtiva = null;
@@ -2296,6 +2327,56 @@
             }
         }
 
+        function fecharModalIndicarPrestador() { document.getElementById('modalIndicarPrestador').classList.add('hidden'); prestadoresIndicacaoCache = []; orcamentoIndicacaoAtual = null; prestadorIndicacaoSelecionado = null; }
+        function fecharModalConfirmarIndicacaoPrestador() { document.getElementById('modalConfirmarIndicacaoPrestador').classList.add('hidden'); prestadorIndicacaoSelecionado = null; }
+
+        function renderizarListaIndicacaoPrestadores() {
+            const container = document.getElementById('listaIndicacaoPrestadores'); if (!container) return;
+            const termo = (document.getElementById('pesquisaIndicacaoPrestador')?.value || '').toLowerCase().trim();
+            const lista = (prestadoresIndicacaoCache || []).filter(p => { const nome=(p.nome||'').toLowerCase(), area=(p.especialidade||'').toLowerCase(), municipio=(p.cidade||'').toLowerCase(); return !termo || nome.includes(termo) || area.includes(termo) || municipio.includes(termo); });
+            if (!lista.length) { container.innerHTML = `<p class="text-xs text-slate-400">Nenhum Prestador ativo encontrado.</p>`; return; }
+            container.innerHTML = lista.map(p => {
+                const avaliacoes=(orcamentosIndicacaoAvaliacoes||[]).filter(o=>o.avaliado&&o.prestador_responsavel===p.nome&&o.nota_avaliacao);
+                let nota='Sem avaliações'; if(avaliacoes.length){ const media=avaliacoes.reduce((s,o)=>s+Number(o.nota_avaliacao||0),0)/avaliacoes.length; nota=`⭐ ${media.toFixed(1)} (${avaliacoes.length})`; }
+                const foto=p.foto_perfil?`<img src="${p.foto_perfil}" class="w-12 h-12 rounded-full object-cover border border-slate-200">`:`<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-user"></i></div>`;
+                return `<button type="button" onclick="selecionarPrestadorParaIndicacao('${String(p.id).replace(/'/g,"\'")}')" class="w-full text-left bg-slate-50 hover:bg-orange-50 p-3 rounded-2xl border border-slate-200 hover:border-orange-300 transition flex items-center gap-3">${foto}<div class="min-w-0 flex-1"><p class="font-black text-slate-900 text-sm truncate">${p.nome||''}</p><p class="text-xs text-slate-600 truncate">${p.especialidade||'Área não informada'} · ${p.cidade||'Município não informado'}</p><p class="text-xs text-slate-500">Nota média: ${nota}</p></div></button>`;
+            }).join('');
+        }
+
+        async function abrirModalIndicarPrestador(orcamentoId) {
+            if(!usuarioSessao||usuarioSessao.perfil!=='admin') return;
+            try {
+                const {data:orcObj,error:errOrc}=await supabaseClient.from('orcamentos').select('*').eq('id',orcamentoId).single();
+                if(errOrc||!orcObj) throw errOrc||new Error('Orçamento não encontrado.');
+                if(orcObj.status!=='ACEITO PELO CLIENTE'){ alert('A indicação de Prestador está disponível somente após o Cliente aceitar o orçamento.'); return; }
+                const {data:prestadores,error:errPrest}=await supabaseClient.from('usuarios').select('*').eq('perfil','prestador').eq('status','ativo'); if(errPrest) throw errPrest;
+                const {data:orcsAvaliacao}=await supabaseClient.from('orcamentos').select('prestador_responsavel, avaliado, nota_avaliacao');
+                orcamentosIndicacaoAvaliacoes=orcsAvaliacao||[]; prestadoresIndicacaoCache=prestadores||[]; orcamentoIndicacaoAtual=orcObj; prestadorIndicacaoSelecionado=null;
+                document.getElementById('resumoIndicacaoPrestador').textContent=`Serviço: ${orcObj.descricao_servic||'Serviço solicitado'}`; document.getElementById('pesquisaIndicacaoPrestador').value=''; renderizarListaIndicacaoPrestadores(); document.getElementById('modalIndicarPrestador').classList.remove('hidden');
+            } catch(err){ alert(traduzirErroTecnico(err,'Admin','abrirModalIndicarPrestador')); }
+        }
+
+        function selecionarPrestadorParaIndicacao(prestadorId) {
+            const prestador=(prestadoresIndicacaoCache||[]).find(p=>String(p.id)===String(prestadorId)); if(!prestador||!orcamentoIndicacaoAtual)return; prestadorIndicacaoSelecionado=prestador;
+            const valorBase=parseFloat(orcamentoIndicacaoAtual.valor_base||orcamentoIndicacaoAtual.orcamento_valor||0), valorPrestador=valorBase*0.85;
+            document.getElementById('confirmacaoIndicacaoPrestador').textContent=prestador.nome||'--'; document.getElementById('confirmacaoIndicacaoServico').textContent=orcamentoIndicacaoAtual.descricao_servic||'Serviço solicitado'; document.getElementById('confirmacaoIndicacaoValor').textContent=formatarMoedaBr(valorPrestador); document.getElementById('modalConfirmarIndicacaoPrestador').classList.remove('hidden');
+        }
+
+        async function confirmarIndicacaoPrestador() {
+            if(!usuarioSessao||usuarioSessao.perfil!=='admin'||!orcamentoIndicacaoAtual||!prestadorIndicacaoSelecionado)return;
+            const btn=document.querySelector('#modalConfirmarIndicacaoPrestador button[onclick="confirmarIndicacaoPrestador()"]'); if(btn)btn.disabled=true;
+            try {
+                const {data:orcAtual,error:errOrc}=await supabaseClient.from('orcamentos').select('*').eq('id',orcamentoIndicacaoAtual.id).single(); if(errOrc||!orcAtual)throw errOrc||new Error('Orçamento não encontrado.');
+                if(orcAtual.status!=='ACEITO PELO CLIENTE')throw new Error('Este orçamento não está mais disponível para indicação.');
+                const {data:prestAtual,error:errPrest}=await supabaseClient.from('usuarios').select('*').eq('id',prestadorIndicacaoSelecionado.id).eq('perfil','prestador').eq('status','ativo').single(); if(errPrest||!prestAtual)throw errPrest||new Error('Prestador não está ativo ou não foi encontrado.');
+                let indicacoes=[]; if(orcAtual.prestadores_interessados){try{indicacoes=JSON.parse(orcAtual.prestadores_interessados);}catch(e){}}
+                if(indicacoes.some(i=>i.tipo==='INDICACAO_MANUAL'&&i.prestador_email===prestAtual.email&&i.status==='PENDENTE'))throw new Error('Este Prestador já possui uma indicação pendente para este serviço.');
+                indicacoes.push({tipo:'INDICACAO_MANUAL',prestador_email:prestAtual.email,prestador_nome:prestAtual.nome,prestador_telefone:prestAtual.telefone||'Não informado',status:'PENDENTE',data_indicacao:new Date().toISOString()});
+                const {error:errUpdate}=await supabaseClient.from('orcamentos').update({prestadores_interessados:JSON.stringify(indicacoes)}).eq('id',orcAtual.id); if(errUpdate)throw errUpdate;
+                fecharModalConfirmarIndicacaoPrestador(); fecharModalIndicarPrestador(); alert('Indicação enviada ao Prestador.'); carregarDadosAdmin();
+            }catch(err){alert(traduzirErroTecnico(err,'Admin','confirmarIndicacaoPrestador'));}finally{if(btn)btn.disabled=false;}
+        }
+
         async function adminPublicarServico(orcamentoId) {
             if (!usuarioSessao || usuarioSessao.perfil !== 'admin') return;
             try {
@@ -2390,6 +2471,25 @@
             } catch (err) {
                 alert(traduzirErroTecnico(err, "Admin", "adminConfirmarPrestador"));
             }
+        }
+
+        async function prestadorResponderIndicacao(orcamentoId, aceitar) {
+            if(!usuarioSessao||usuarioSessao.perfil!=='prestador')return;
+            try {
+                const {data:orcObj,error:errOrc}=await supabaseClient.from('orcamentos').select('*').eq('id',orcamentoId).single(); if(errOrc||!orcObj)throw errOrc||new Error('Serviço não encontrado.');
+                if (orcObj.status !== 'ACEITO PELO CLIENTE') throw new Error('Esta indicação não está mais disponível.');
+                let indicacoes=[]; if(orcObj.prestadores_interessados){try{indicacoes=JSON.parse(orcObj.prestadores_interessados);}catch(e){}}
+                const idx=indicacoes.findIndex(i=>i.tipo==='INDICACAO_MANUAL'&&i.prestador_email===usuarioSessao.email&&i.status==='PENDENTE'); if(idx<0)throw new Error('Esta indicação não está mais disponível.');
+                indicacoes[idx].status=aceitar?'ACEITA':'RECUSADA'; indicacoes[idx].data_resposta=new Date().toISOString();
+                const updatePayload={prestadores_interessados:JSON.stringify(indicacoes)};
+                if(aceitar)updatePayload.prestador_responsavel=usuarioSessao.nome;
+                if(aceitar)updatePayload.status='PRESTADOR DEFINIDO';
+                else {let recusados=[];if(orcObj.prestadores_recusados){try{recusados=JSON.parse(orcObj.prestadores_recusados);}catch(e){}}if(!recusados.includes(usuarioSessao.email))recusados.push(usuarioSessao.email);updatePayload.prestadores_recusados=JSON.stringify(recusados);}
+                const {error:errUpdate}=await supabaseClient.from('orcamentos').update(updatePayload).eq('id',orcamentoId); if(errUpdate)throw errUpdate;
+                const mensagemRetorno=aceitar?'Prestador aceitou a indicação.':'Prestador recusou a indicação.';
+                const {error:errMsg}=await supabaseClient.from('mensagens_prestador').insert([{prestador_email:usuarioSessao.email,orcamento_id:orcamentoId,remetente_email:usuarioSessao.email,remetente_nome:usuarioSessao.nome,remetente_perfil:'prestador',mensagem:mensagemRetorno,lida:false}]); if(errMsg)registrarErroSeguro('Prestador','notificarRespostaIndicacao',errMsg);
+                alert(aceitar?'Indicação aceita com sucesso.':'Indicação recusada.'); carregarPainelPrestador();
+            }catch(err){alert(traduzirErroTecnico(err,'Prestador','prestadorResponderIndicacao'));}
         }
 
         function abrirModalEnvioFoto50(orcamentoId) {
@@ -2545,10 +2645,10 @@
                         let badgeNotifClienteHtml = '';
                         if (qtdNaoLidasCommunity(qtdNaoLidasCliente)) {
                             badgeNotifClienteHtml = `
-                                <div class="bg-sky-100 border border-sky-300 p-3 rounded-xl flex items-center justify-between text-xs font-bold text-sky-900 mb-2">
-                                    <span>Administrador respondeu (Nova mensagem na negociação)</span>
+                                <button type="button" onclick="abrirModalNegociacaoChat('${o.id}')" class="w-full bg-sky-100 border border-sky-300 p-3 rounded-xl flex items-center justify-between text-xs font-bold text-sky-900 mb-2 hover:bg-sky-200 transition text-left">
+                                    <span>Nova mensagem da Administração</span>
                                     <span class="bg-sky-600 text-white px-2 py-0.5 rounded-full text-[10px] font-black">🔵 ${qtdNaoLidasCliente}</span>
-                                </div>
+                                </button>
                             `;
                         }
 
@@ -2785,9 +2885,16 @@
 
                 const { data: todosOrcsParaSeq } = await supabaseClient.from('orcamentos').select('id, created_at');
 
+                const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*');
+                const containerIndicacoes = document.getElementById('listaIndicacoesPrestador');
+                if (containerIndicacoes) {
+                    const indicacoesRecebidas=(todosOrcs||[]).filter(o=>{if(!o.prestadores_interessados)return false;try{return JSON.parse(o.prestadores_interessados).some(i=>i.tipo==='INDICACAO_MANUAL'&&i.prestador_email===usuarioSessao.email&&i.status==='PENDENTE');}catch(e){return false;}}).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+                    if(!indicacoesRecebidas.length)containerIndicacoes.innerHTML=`<p class="text-xs text-slate-400">Nenhuma indicação de serviço no momento.</p>`;
+                    else { let htmlIndicacoes=''; indicacoesRecebidas.forEach(s=>{const codVisual=gerarCodigoSequencialVisual(todosOrcsParaSeq||[],s.id), valorBaseRef=s.valor_base||s.orcamento_valor||0, valorPrestadorServico=valorBaseRef*0.85; htmlIndicacoes+=`<div class="bg-orange-50/70 p-5 rounded-2xl border border-orange-200 space-y-3"><div class="flex justify-between items-center"><span class="bg-orange-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">Indicação · Serviço Nº ${codVisual}</span><span class="text-xs font-bold text-slate-500">${formatarDataHoraBr(s.created_at)}</span></div><p class="text-sm font-black text-slate-900">Você foi indicado para realizar um serviço.</p><div class="space-y-1 text-xs text-slate-700"><p><strong>Serviço:</strong> ${s.descricao_servic||'Serviço solicitado'}</p><p><strong>Descrição:</strong> ${s.descricao_servic||'Não informada'}</p><p><strong>Valor do Serviço:</strong> <span class="font-bold text-orange-800">${formatarMoedaBr(valorPrestadorServico)}</span></p><p><strong>Condição de pagamento:</strong> 50% no início e 50% após a conclusão, conforme fluxo atual.</p></div>${s.foto_orcamento?`<div><p class="text-[10px] text-slate-500 mb-1">Foto do Serviço:</p><img src="${s.foto_orcamento}" class="w-20 h-20 rounded-xl object-cover border"></div>`:''}<div class="flex space-x-3 pt-2 border-t border-orange-100"><button onclick="prestadorResponderIndicacao('${s.id}',true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ACEITAR INDICAÇÃO</button><button onclick="prestadorResponderIndicacao('${s.id}',false)" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">RECUSAR INDICAÇÃO</button></div></div>`;}); containerIndicacoes.innerHTML=htmlIndicacoes;}
+                }
+
                 const containerDisponiveis = document.getElementById('listaServicosDisponiveisPrestador');
                 if (containerDisponiveis) {
-                    const { data: todosOrcs } = await supabaseClient.from('orcamentos').select('*');
                     const disponiveis = todosOrcs ? todosOrcs.filter(o => {
                         const statusOk = (o.status === 'PUBLICADO PARA PRESTADORES' || o.status === 'PRESTADOR ACEITOU');
                         let recusados = [];
@@ -3072,9 +3179,25 @@
 
                                 let acoesAdmin = '';
                                 if (statusAtual === 'Solicitado') {
-                                    acoesAdmin = `<button onclick="abrirModalEnviarOrcamento('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Enviar Orçamento</button>`;
+                                    acoesAdmin = `
+                                        <div class="flex flex-wrap gap-2 items-center">
+                                            <button onclick="abrirModalNegociacaoChat('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1 shadow-sm">
+                                                <i class="fa-solid fa-comments"></i>
+                                                <span>${qtdNaoLidasOrcamento > 0 ? `Abrir Chat 🔵 ${qtdNaoLidasOrcamento}` : 'Abrir Chat'}</span>
+                                            </button>
+                                            <button onclick="abrirModalEnviarOrcamento('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">Enviar Orçamento</button>
+                                        </div>
+                                    `;
                                 } else if (statusAtual === 'ACEITO PELO CLIENTE') {
-                                    acoesAdmin = `<button onclick="adminPublicarServico('${o.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">PUBLICAR SERVIÇO</button>`;
+                                    let indicacoesManuais = [];
+                                    if (o.prestadores_interessados) { try { indicacoesManuais = JSON.parse(o.prestadores_interessados).filter(i => i.tipo === 'INDICACAO_MANUAL'); } catch(e) {} }
+                                    let retornoIndicacaoHtml = '';
+                                    indicacoesManuais.filter(i => i.status === 'ACEITA' || i.status === 'RECUSADA').forEach(i => {
+                                        const textoRetorno = i.status === 'ACEITA' ? 'Prestador aceitou a indicação.' : 'Prestador recusou a indicação.';
+                                        const corRetorno = i.status === 'ACEITA' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800';
+                                        retornoIndicacaoHtml += `<div class="${corRetorno} border p-2 rounded-xl text-xs font-bold">${textoRetorno} <span class="font-black">${i.prestador_nome || ''}</span></div>`;
+                                    });
+                                    acoesAdmin = `<div class="flex flex-wrap gap-2 items-center"><button onclick="adminPublicarServico('${o.id}')" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">PUBLICAR SERVIÇO</button><button onclick="abrirModalIndicarPrestador('${o.id}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">INDICAR PRESTADOR</button></div>${retornoIndicacaoHtml}`;
                                 } else if (statusAtual === 'EM NEGOCIAÇÃO' || statusAtual === 'RECUSADO PELO CLIENTE' || qtdNaoLidasOrcamento > 0) {
                                     let badgeChatTexto = qtdNaoLidasOrcamento > 0 ? `🔵 ${qtdNaoLidasOrcamento} ${qtdNaoLidasOrcamento === 1 ? 'mensagem nova' : 'mensagens novas'}` : '● Cliente respondeu';
                                     acoesAdmin = `
