@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fixou - Conectando Você aos Melhores Profissionais</title>
+    
+<meta name="theme-color" content="#f97316">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FIXOU">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para Ícones -->
@@ -4110,6 +4118,22 @@
             mudarTela('login');
             alert("Sessão encerrada com segurança.");
         }
-    </script>
+  
+// PWA FIXOU - Registro do Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(function () {
+                console.log('FIXOU PWA: Service Worker registrado com sucesso.');
+            })
+            .catch(function (error) {
+                console.error('FIXOU PWA: erro ao registrar Service Worker:', error);
+            });
+    });
+}
+
+</script>
 </body>
 </html>
+
+
